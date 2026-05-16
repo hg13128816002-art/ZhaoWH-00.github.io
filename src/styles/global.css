@@ -1,13 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
-/* Ensure Chinese text renders in a Hei-style (黑体) across devices */
-:root {
-	--font-cn: 'Noto Sans SC', 'Heiti SC', 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'SimHei', sans-serif;
+/*
+	自托管字体声明（占位）。
+	请把字体文件放到 `public/fonts/`：
+		- NotoSansSC-Regular.woff2
+		- NotoSansSC-Bold.woff2
+
+	如果你希望我代为下载并放入 `public/fonts/`，我可以帮你做（需确认许可）。
+*/
+
+@font-face {
+	font-family: 'Noto Sans SC Local';
+	src: local('Noto Sans SC'), local('NotoSansSC'), local('Microsoft YaHei'), local('Microsoft YaHei UI'), url('/fonts/NotoSansSC-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
 }
 
-html, body {
-	font-family: var(--font-cn);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+@font-face {
+	font-family: 'Noto Sans SC Local';
+	src: local('Noto Sans SC Bold'), local('NotoSansSC-Bold'), local('Microsoft YaHei Bold'), url('/fonts/NotoSansSC-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
 }
+
+@font-face {
+  font-family: 'Noto Sans SC Local';
+  src: local('Noto Sans SC Black'), local('NotoSansSC-Black'), url('/fonts/NotoSansSC-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+.font-normal { font-weight: 400 !important; }

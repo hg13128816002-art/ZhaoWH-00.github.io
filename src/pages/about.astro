@@ -12,6 +12,9 @@ import PureTransition from '../components/PureTransition.astro';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About // ZHAO WENHAO</title>
+  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/scripts/font-loader.js" is:inline></script>
 </head>
 <body class="min-h-screen w-full bg-[#050505] text-neutral-100 font-mono select-none flex flex-col md:flex-row relative" style="margin: 0; padding: 0; background-color: #050505;">
@@ -28,7 +31,7 @@ import PureTransition from '../components/PureTransition.astro';
     <div class="relative z-10 pointer-events-none">
       <div class="text-[#8EDB35] text-xs tracking-[0.4em] font-bold">// CYBERNETIC_SHELL</div>
       <h1 class="text-white text-5xl md:text-7xl font-black tracking-tighter mt-4 leading-none" style="color: #ffffff;">
-        赵文浩<br/>WENHAO
+        <span class="font-black" style="font-weight: 900; letter-spacing: -0.04em;">赵文浩</span><br/>WENHAO
       </h1>
       <div class="mt-4 inline-block bg-[#050505] px-3 py-1.5 border border-[#8EDB35]/40 text-[#8EDB35] text-xs tracking-widest font-bold" style="color: #8EDB35; background-color: #050505;">
         [ 男 / 19岁 / 25级本科生 ]

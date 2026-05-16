@@ -1,0 +1,4 @@
+Noto Sans SC (subset) downloaded via Google Fonts CSS: https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap
+Source files are from fonts.gstatic.com per Google Fonts service.
+License: Noto fonts are released under the SIL Open Font License, or their specific license as indicated by Google Fonts.
+Please review: https://fonts.google.com/specimen/Noto+Sans+SC and https://scripts.sil.org/
