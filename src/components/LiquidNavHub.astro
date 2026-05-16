@@ -122,8 +122,9 @@
   canvas.addEventListener('click', () => {
   if (lockedPill) {
     // 呼叫咱们的高阶矩阵切片幕布降下！
-    if (typeof window.triggerPureTransition === 'function') {
-      window.triggerPureTransition(lockedPill.href);
+    const triggerPureTransition = (window as any).triggerPureTransition;
+    if (typeof triggerPureTransition === 'function') {
+      triggerPureTransition(lockedPill.href);
     } else {
       // 极度安全的底层兜底
       window.location.href = lockedPill.href;

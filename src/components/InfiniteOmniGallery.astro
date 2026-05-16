@@ -63,6 +63,13 @@
   const cardW = 600; const cardH = 337; 
   const GRID_SIZE_X = 650; const GRID_SIZE_Y = 390;
 
+  type Project = {
+    title: string;
+    posterSrc: string;
+    videoSrc: string;
+    imgObj?: HTMLImageElement;
+  };
+
   // ==========================================
   // ！！！解答问题 1 & 2：完美对应的数据结构！！！
   // 以后你真实的 OSS 链接就按这种“封面-视频”一对一的格式填入。
@@ -70,7 +77,7 @@
   // (你可以把 public 里的 test.mp4 复制两份改个名，就能看到完美不串台的效果了)
   // ==========================================
   // ！！！你的真实云端数字档案库 ！！！
-  const projects = [
+  const projects: Project[] = [
     { 
       title: "LIMINAL-临近边缘的幻想.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png",
@@ -271,5 +278,33 @@
     const rect = progressContainer.getBoundingClientRect();
     const pos = (e.clientX - rect.left) / rect.width;
     video.currentTime = pos * video.duration;
+  });
+
+  video.addEventListener('play', () => {
+    playHint.style.opacity = '0';
+  });
+
+  video.addEventListener('pause', () => {
+    playHint.style.opacity = '1';
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (overlay.style.opacity !== '1') return;
+    const target = e.target;
+    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable)) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      togglePlay();
+      return;
+    }
+
+    if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+      e.preventDefault();
+      if (!isNaN(video.duration) && video.duration > 0) {
+        const delta = e.code === 'ArrowLeft' ? -5 : 5;
+        video.currentTime = Math.min(Math.max(video.currentTime + delta, 0), video.duration);
+      }
+    }
   });
 </script>
