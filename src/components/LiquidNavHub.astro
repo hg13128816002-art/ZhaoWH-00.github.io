@@ -28,6 +28,10 @@
 
 </div>
 
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&display=swap');
+</style>
+
 <script>
   const canvas = document.getElementById('liquid-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
@@ -80,7 +84,7 @@
     locked: boolean;
   }
 
-  ctx.font = 'bold 20px monospace';
+  ctx.font = 'bold 20px "Space Mono",monospace';
   const pills: Pill[] = [];
   const items = [...templates, ...templates]; 
 
@@ -215,7 +219,7 @@
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
-        ctx.font = '900 20px monospace';
+        ctx.font = '900 20px "Space Mono", monospace';
         ctx.fillText(p.text, cx, cy);
       } else {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
@@ -223,7 +227,7 @@
         ctx.strokeRect(p.x, p.y, p.w, p.h);
 
         ctx.fillStyle = '#e5e5e5'; 
-        ctx.font = 'bold 20px monospace';
+        ctx.font = 'bold 20px "Space Mono", monospace';
         ctx.fillText(p.text, cx, cy);
       }
       ctx.restore();
@@ -239,5 +243,8 @@
     requestAnimationFrame(animate);
   }
 
-  animate();
+// 强制等待 "Space Mono" 字体加载完毕后，再启动动画引擎！
+  document.fonts.ready.then(() => {
+    animate();
+  });
 </script>

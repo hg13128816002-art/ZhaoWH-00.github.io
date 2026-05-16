@@ -4,6 +4,8 @@
 import '../styles/global.css';
 import FloatingButton from '../components/FloatingButton.astro';
 import PureTransition from '../components/PureTransition.astro';
+const headerText = '嗨！很高兴你能看到这里，如果你对我的作品有任何想法或合作意向，随时欢迎联系我！';
+const headerFontSize = 24; // px — 开发者可在此修改文字与字号
 ---
 
 <!DOCTYPE html>
@@ -26,11 +28,15 @@ import PureTransition from '../components/PureTransition.astro';
     </a>
   </div>
 
+  <div id="developer-header" class="z-30 w-full mt-13 text-center" style={`color: #8EDB35; font-weight: 700; font-size: ${headerFontSize}px;`}>
+    {headerText}
+  </div>
+
   <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
     <canvas id="oscilloscope-canvas" class="block w-full" style="width: 100%; height: 55vh;"></canvas>
     
     <div id="signal-feedback" class="absolute text-[#0a0a0a] bg-[#8EDB35] text-2xl md:text-3xl font-black tracking-widest opacity-0 px-8 py-3 pointer-events-none border border-white/20 transition-opacity duration-150" style="position: absolute; opacity: 0; z-index: 15;">
-      SIGNAL_LOCKED
+    /您成功的复制了我的联系方式/
     </div>
   </div>
 
