@@ -56,7 +56,7 @@
   window.addEventListener('resize', resize);
   setTimeout(resize, 0);
 
-  const BASE_SPEED = 2.0;
+  const BASE_SPEED = 3.0;
   let currentSpeedMultiplier = 1.0; 
   const GREEN = '#8EDB35';
 
@@ -96,9 +96,11 @@
     { title: "风景写生", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" }
   ];
 
-  projects.forEach((p: any) => {
+projects.forEach((p: any) => {
     p.imgObj = new Image();
-    p.imgObj.src = p.src;
+    // 🚨 性能优化 1：利用阿里云 OSS 实时压缩，Canvas 只加载 800px 的缩略图！
+    // 极大减轻浏览器内存和显卡渲染压力
+    p.imgObj.src = p.src + "?x-oss-process=image/resize,w_800"; 
   });
 
   // ================= 3. 全新双轨传送带引擎 =================
@@ -191,7 +193,7 @@
         if (isHit) { card.hovered = true; anyHovered = true; hoveredCard = card; } 
         else { card.hovered = false; }
         
-        card.scaleState += ((card.hovered ? 1 : 0) - card.scaleState) * 0.12;
+        card.scaleState += ((card.hovered ? 1 : 0) - card.scaleState) * 0.25;
         currentY += card.h + gap;
       });
     });
@@ -226,9 +228,8 @@
   }
   setTimeout(animate, 100);
 
-  // ================= 4. 核心渲染器 (完全无损真实比例) =================
+// ================= 4. 核心渲染器 (完全无损真实比例) =================
   function renderCard(card: any) {
-    ctx.save();
     const gap = 40;
     
     let ratio = card.w / card.h;
@@ -250,24 +251,39 @@
     const cW = card.w + (tW - card.w) * card.scaleState;
     const cH = card.h + (tH - card.h) * card.scaleState;
 
+    // 🚨 性能优化 2：视口剔除 (Culling)
+    // 如果卡片的底部比屏幕顶部还要高，或者卡片的顶部比屏幕底部还要低
+    // 说明它完全不在视野里，直接 return 跳过这帧的渲染！
+    if (cY > height || cY + cH < 0) {
+      return; 
+    }
+
+    ctx.save();
+   
+    // 🚨 性能优化 3：将坐标强制取整，关闭浏览器昂贵的亚像素抗锯齿计算
+    const drawX = Math.floor(cX);
+    const drawY = Math.floor(cY);
+    const drawW = Math.floor(cW);
+    const drawH = Math.floor(cH);
+    
     ctx.globalAlpha = 1.0;
     if (card.project.imgObj && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
-      ctx.drawImage(card.project.imgObj, cX, cY, cW, cH);
+      ctx.drawImage(card.project.imgObj, drawX, drawY, drawW, drawH);
     } else {
       ctx.fillStyle = '#111';
-      ctx.fillRect(cX, cY, cW, cH);
+      ctx.fillRect(drawX, drawY, drawW, drawH);
     }
 
     ctx.strokeStyle = card.hovered ? GREEN : '#2a2a2a';
     ctx.lineWidth = card.hovered ? 2 : 1;
-    ctx.strokeRect(cX, cY, cW, cH);
+    ctx.strokeRect(drawX, drawY, drawW, drawH);
 
     if (card.hovered) {
       ctx.fillStyle = 'rgba(5, 5, 5, 0.8)';
-      ctx.fillRect(cX, cY + cH - 35, cW, 35);
+      ctx.fillRect(drawX, drawY + drawH - 35, drawW, 35);
       ctx.fillStyle = GREEN;
       ctx.font = '12px monospace';
-      ctx.fillText("> " + card.project.title, cX + 15, cY + cH - 12);
+      ctx.fillText("> " + card.project.title, drawX + 15, drawY + drawH - 12);
     }
     
     ctx.restore();
