@@ -1,0 +1,223 @@
+---
+// src/pages/contact.astro
+// 像素级交互打磨版：恢复 violent 波形震荡反馈 + 移除 Telegram 节点 + 稳定排版
+import '../styles/global.css';
+import FloatingButton from '../components/FloatingButton.astro';
+import PureTransition from '../components/PureTransition.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact // HAO</title>
+</head>
+<body class="w-screen h-screen bg-[#0a0a0a] text-neutral-100 font-mono overflow-hidden select-none flex flex-col justify-between p-8 md:p-12 relative" style="margin: 0; padding: 3rem; box-sizing: border-box;">
+  <PureTransition />
+
+  <div class="flex justify-between items-start z-20" style="position: relative; z-index: 20;">
+    <div>
+      <div class="text-[#8EDB35] text-xs tracking-[0.4em] font-bold">// TELEMETRY_ACTIVE</div>
+      <div class="text-neutral-500 text-xs mt-1 tracking-widest">OSCILLOSCOPE_ONLINE</div>
+    </div>
+    <a href="/hub" class="text-[#8EDB35] hover:underline text-xs tracking-widest font-bold">
+      [ CLOSE_CHANNEL ]
+    </a>
+  </div>
+
+  <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
+    <canvas id="oscilloscope-canvas" class="block w-full" style="width: 100%; height: 55vh;"></canvas>
+    
+    <div id="signal-feedback" class="absolute text-[#0a0a0a] bg-[#8EDB35] text-2xl md:text-3xl font-black tracking-widest opacity-0 px-8 py-3 pointer-events-none border border-white/20 transition-opacity duration-150" style="position: absolute; opacity: 0; z-index: 15;">
+      SIGNAL_LOCKED
+    </div>
+  </div>
+
+  <div class="z-20 w-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-auto" style="position: relative; z-index: 20; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: auto;">
+    
+    <button 
+      data-copy="zhaowenhaodesign@163.com" 
+      class="contact-btn group p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer"
+      style="height: 11rem; padding: 1.5rem; background-color: #0d0d0d; border: 2px solid #262626; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;"
+    >
+      <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" style="width: 24px; height: 24px; flex-shrink: 0;">
+          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        <span class="text-[#8EDB35] text-sm tracking-widest font-bold" style="color: #8EDB35;">// 邮箱/E-mail</span>
+      </div>
+
+      <div>
+        <div class="text-white text-base font-black truncate" style="color: #ffffff;">INITIATE_EMAIL</div>
+        <div class="text-neutral-400 text-xs mt-1 truncate copy-target" style="color: #a3a3a3;">zhaowenhaodesign@163.com</div>
+      </div>
+    </button>
+
+    <button 
+      data-copy="Zwh1326562" 
+      class="contact-btn group p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer"
+      style="height: 11rem; padding: 1.5rem; background-color: #0d0d0d; border: 2px solid #262626; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;"
+    >
+      <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" style="width: 24px; height: 24px; flex-shrink: 0;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+        <span class="text-[#8EDB35] text-sm tracking-widest font-bold" style="color: #8EDB35;">// 微信/WeChat</span>
+      </div>
+
+      <div>
+        <div class="text-white text-base font-black" style="color: #ffffff;">WECHAT // ENCRYPTED</div>
+        <div class="text-neutral-400 text-xs mt-1 copy-target" style="color: #a3a3a3;">Click to copy ID</div>
+      </div>
+    </button>
+
+    <a 
+      href="https://space.bilibili.com/" 
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer block"
+      style="height: 11rem; padding: 1.5rem; background-color: #0d0d0d; border: 2px solid #262626; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; box-sizing: border-box;"
+    >
+      <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" style="width: 24px; height: 24px; flex-shrink: 0;">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+        </svg>
+        <span class="text-[#8EDB35] text-sm tracking-widest font-bold" style="color: #8EDB35;">// 哔哩哔哩/bilibili</span>
+      </div>
+
+      <div>
+        <div class="text-white text-base font-black flex items-center gap-2" style="color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+          <span>BILIBILI_STATION</span>
+          <span style="color: #525252;">↗</span>
+        </div>
+        <div class="text-neutral-500 text-xs mt-1" style="color: #737373;">Direct launch to index</div>
+      </div>
+    </a>
+
+  </div>
+
+  <script>
+    const canvas = document.getElementById('oscilloscope-canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    const feedback = document.getElementById('signal-feedback')!;
+
+    // 绘制环境尺码测算
+    let width = window.innerWidth;
+    let height = window.innerHeight * 0.55;
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight * 0.55;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize(); setTimeout(resize, 50);
+
+    // 示波器交互参数
+    let targetFrequency = 0.02;
+    let currentFrequency = 0.02;
+    let targetAmplitude = 60; // 默认静默振幅
+    let currentAmplitude = 60;
+    let phase = 0;
+
+    // 鼠标移动影响频率和振幅微调
+    window.addEventListener('mousemove', (e) => {
+      // 避免复制时的剧烈震荡被鼠标移动立刻拉平，只在正常状态下接受鼠标调频
+      if (feedback.style.opacity === '0' || feedback.style.opacity === '') {
+        const normY = e.clientY / window.innerHeight;
+        const normX = e.clientX / window.innerWidth;
+        targetFrequency = 0.01 + normY * 0.08;
+        targetAmplitude = 30 + normX * 120;
+      }
+    });
+
+    // 渲染主循环
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 高级物理动量缓动算法，制造“追随”感
+      currentFrequency += (targetFrequency - currentFrequency) * 0.08;
+      currentAmplitude += (targetAmplitude - currentAmplitude) * 0.08;
+      phase += 0.1;
+
+      // 绘制深色中轴基线
+      ctx.strokeStyle = '#1a1a1a';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, height / 2); ctx.lineTo(width, height / 2); ctx.stroke();
+
+      // 绘制主先锋绿正弦波
+      ctx.strokeStyle = '#8EDB35';
+      ctx.lineWidth = 3;
+      // 增加光晕感
+      ctx.shadowBlur = feedback.style.opacity === '1' ? 20 : 0;
+      ctx.shadowColor = '#8EDB35';
+      ctx.beginPath();
+
+      for (let x = 0; x < width; x++) {
+        // 使用组合波形制造噪点质感
+        const y = height / 2 
+                + Math.sin(x * currentFrequency + phase) * currentAmplitude 
+                + Math.cos(x * currentFrequency * 2 - phase) * (currentAmplitude * 0.25);
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0; // 重置光晕
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ================= 像素级交互反馈核心逻辑 =================
+    const buttons = document.querySelectorAll('.contact-btn');
+    
+    // 用于保存原始文字的全局 Map，防止热更新冲突
+    const originalTexts = new Map();
+
+    buttons.forEach((btn, index) => {
+      const targetLabel = btn.querySelector('.copy-target') as HTMLElement;
+      // 唯一 ID 标记防止缓存错误
+      const btnId = `btn-${index}`;
+      originalTexts.set(btnId, targetLabel.innerText);
+
+      btn.addEventListener('click', () => {
+        const copyText = (btn as HTMLElement).dataset.copy;
+
+        if (copyText) {
+          // 1. 执行真实复制
+          navigator.clipboard.writeText(copyText).catch(() => {});
+          
+          // === 反馈机制：全量激活 ===
+          
+          // 机制 A：局部文字状态流转 (在按钮内产生状态反馈)
+          targetLabel.innerText = "COPIED SUCCESSFULLY!";
+          targetLabel.style.color = '#8EDB35';
+          targetLabel.style.fontWeight = 'bold';
+          
+          // 机制 B-1：示波器瞬间暴走振荡 (设置为 280px 的剧烈满屏全幅震荡)
+          targetAmplitude = 280; 
+          
+          // 机制 B-2：中央提示浮层瞬间闪现
+          feedback.style.opacity = '1';
+
+          // === 反馈结束，数据握手确立，恢复静默状态 ===
+          setTimeout(() => {
+            // A 恢复：文字变回 ID 
+            targetLabel.innerText = originalTexts.get(btnId);
+            targetLabel.style.color = '#a3a3a3'; // 恢复冷灰色
+            targetLabel.style.fontWeight = 'normal';
+            
+            // B-1 恢复：示波器慢慢滑回鼠标状态
+            targetAmplitude = 60;
+            
+            // B-2 恢复：中央提示层隐藏
+            feedback.style.opacity = '0';
+          }, 1400); // 1.4s 的握手数据流传输感
+        }
+      });
+    });
+  </script>
+</body>
+<FloatingButton /> </body>
+</html>

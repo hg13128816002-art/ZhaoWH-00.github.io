@@ -1,0 +1,275 @@
+---
+// src/components/InfiniteOmniGallery.astro
+// 最终形态：GLSL级伪随机散落算法 + 完美对应的数据结构
+---
+
+<div class="relative w-screen h-screen bg-[#0a0a0a] overflow-hidden select-none font-mono">
+  
+  <canvas id="omni-canvas" class="absolute inset-0 block w-full h-full z-10 cursor-crosshair"></canvas>
+
+  <div class="absolute top-8 left-8 z-20 pointer-events-none">
+    <div class="text-[#8EDB35] text-[10px] tracking-[0.5em] font-bold">OMNIDIRECTIONAL // VIDEO_ARCHIVE_NODE</div>
+    <div class="text-neutral-600 text-[10px] mt-2 tracking-widest">GRID_RATIO: CUSTOM_XY // CHAOTIC_SCATTERING</div>
+  </div>
+
+  <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+    
+    <div class="absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
+      <div id="video-hud" class="text-[#8EDB35] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">STATUS: DECRYPTING_FILE</div>
+      <div id="close-video" class="text-[#8EDB35] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#0a0a0a] px-4 py-2 border border-[#8EDB35]/30 hover:border-[#8EDB35]">
+        [ X ] TERMINATE_LINK
+      </div>
+    </div>
+
+    <div id="video-stage" class="relative w-[85vw] aspect-video border border-neutral-900 group pointer-events-auto cursor-crosshair">
+      <div class="absolute -inset-[1px] border border-[#8EDB35]/20 pointer-events-none z-10"></div>
+      
+      <video id="main-video" class="w-full h-full object-cover grayscale-[0.3] hover:grayscale-0 transition-all duration-700" src=""></video>
+
+      <div id="play-hint" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-100 transition-opacity duration-300 z-20">
+        <div class="px-6 py-3 border border-[#8EDB35] text-[#8EDB35] text-xs tracking-[0.4em] bg-[#050505]/80 backdrop-blur-sm">
+          [ CLICK_TO_PLAY / PAUSE ]
+        </div>
+      </div>
+
+      <div class="absolute bottom-0 left-0 w-full p-8 flex flex-col gap-4 pointer-events-none z-30">
+        <div class="relative w-full h-8 pointer-events-auto cursor-pointer" id="progress-container">
+          <div class="absolute inset-x-0 top-1/2 h-[1px] -translate-y-1/2 bg-neutral-800"></div>
+          <div id="progress-bar" class="absolute top-1/2 left-0 h-[1px] -translate-y-1/2 bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] w-0 pointer-events-none"></div>
+        </div>
+
+        <div class="flex justify-between items-end">
+          <div class="flex flex-col gap-1">
+            <div class="text-[#8EDB35] text-[10px] tracking-widest opacity-80">● SIGNAL_LIVE</div>
+            <div id="overlay-title" class="text-white text-sm font-bold tracking-[0.2em]">FILE_NAME.MOV</div>
+          </div>
+          <div class="flex flex-col items-end gap-1 text-neutral-600 text-[10px] tracking-widest">
+            <div id="time-display">00:00 / 00:00</div>
+            <div>RES: NATIVE // SECURE_NODE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('omni-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d', { alpha: false })!; 
+  const GREEN = '#8EDB35';
+  const BG_COLOR = '#0a0a0a';
+  const SPEED_FACTOR = 0.05; 
+  
+  const cardW = 600; const cardH = 337; 
+  const GRID_SIZE_X = 650; const GRID_SIZE_Y = 390;
+
+  // ==========================================
+  // ！！！解答问题 1 & 2：完美对应的数据结构！！！
+  // 以后你真实的 OSS 链接就按这种“封面-视频”一对一的格式填入。
+  // 现在为了你在本地能测试播放，我把三个视频链接暂时写成了 test1.mp4, test2.mp4, test3.mp4
+  // (你可以把 public 里的 test.mp4 复制两份改个名，就能看到完美不串台的效果了)
+  // ==========================================
+  // ！！！你的真实云端数字档案库 ！！！
+  const projects = [
+    { 
+      title: "LIMINAL-临近边缘的幻想.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png",
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" 
+    },
+    { 
+      title: "VR严肃游戏《未曾熄灭的》PV.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BD%9C%E5%93%81%E6%B5%B7%E6%8A%A5.jpg", 
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8BPV.mp4" 
+    },
+    { 
+      title: "STARE.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/starE%E5%B0%81%E9%9D%A2.png", 
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/starE.mp4" 
+    },
+    { 
+      title: "任尔EWSN风？.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E5%B0%81%E9%9D%A2.png", 
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F.mp4" 
+    },
+    { 
+      title: "清迈良园土地庙微改造.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png", 
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" 
+    },
+    { 
+      title: "缘.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png", 
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" 
+    },
+    { 
+      title: "那洲村AR小游戏DEMO演示.MP4", 
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png", // TODO: 未来替换为你在 OSS 的封面图链接
+      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%B0%8F%E6%B8%B8%E6%88%8FDemo%E6%BC%94%E7%A4%BA.mp4" 
+    }
+  ];
+
+  projects.forEach((p: any) => {
+    p.imgObj = new Image();
+    p.imgObj.src = p.posterSrc;
+  });
+
+  let width = window.innerWidth; let height = window.innerHeight;
+  let cameraX = 0; let cameraY = 0;
+  const mouse = { x: width / 2, y: height / 2 };
+  let hoveredNodeCoord: any = null; 
+
+  function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  resize();
+
+  const overlay = document.getElementById('video-overlay')!;
+
+  function animate() {
+    ctx.fillStyle = BG_COLOR;
+    ctx.fillRect(0, 0, width, height);
+
+    if (overlay.style.opacity !== '1') {
+      const dx = mouse.x - width / 2;
+      const dy = mouse.y - height / 2;
+      cameraX -= dx * SPEED_FACTOR;
+      cameraY -= dy * SPEED_FACTOR;
+    }
+
+    const startX = Math.floor((-cameraX - width) / GRID_SIZE_X);
+    const endX = Math.ceil((-cameraX + width) / GRID_SIZE_X);
+    const startY = Math.floor((-cameraY - height) / GRID_SIZE_Y);
+    const endY = Math.ceil((-cameraY + height) / GRID_SIZE_Y);
+
+    hoveredNodeCoord = null; 
+
+    for (let ix = startX; ix <= endX; ix++) {
+      for (let iy = startY; iy <= endY; iy++) {
+        
+        // ==========================================
+        // ！！！解答问题 3：GLSL 伪随机哈希散落算法！！！
+        // 抛弃明显的线性循环，利用 sin 震荡把坐标转化为彻底无序但固定的索引
+        // 这样你的作品就会像星空一样毫无规律地打乱分布！
+        // ==========================================
+        const hash = Math.abs(Math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453);
+        const projectIndex = Math.floor(hash) % projects.length;
+        
+        const project = projects[projectIndex];
+        const posX = ix * GRID_SIZE_X + cameraX + width / 2;
+        const posY = iy * GRID_SIZE_Y + cameraY + height / 2;
+        const cardLeft = posX - cardW/2;
+        const cardTop = posY - cardH/2;
+
+        const isHit = mouse.x > cardLeft && mouse.x < cardLeft + cardW && mouse.y > cardTop && mouse.y < cardTop + cardH;
+        if (isHit && overlay.style.opacity !== '1') { hoveredNodeCoord = { ix, iy, project }; }
+
+        if (project.imgObj && project.imgObj.complete && project.imgObj.naturalWidth > 0) {
+          const img = project.imgObj;
+          const imgRatio = img.naturalWidth / img.naturalHeight;
+          const boxRatio = cardW / cardH;
+          let sW = img.naturalWidth, sH = img.naturalHeight, sX = 0, sY = 0;
+          if (imgRatio > boxRatio) { sW = img.naturalHeight * boxRatio; sX = (img.naturalWidth - sW) / 2; } 
+          else { sH = img.naturalWidth / boxRatio; sY = (img.naturalHeight - sH) / 2; }
+          ctx.globalAlpha = 1.0;
+          ctx.drawImage(img, sX, sY, sW, sH, cardLeft, cardTop, cardW, cardH);
+        } else {
+          ctx.fillStyle = '#111'; ctx.fillRect(cardLeft, cardTop, cardW, cardH);
+        }
+
+        const shouldHighlight = hoveredNodeCoord && hoveredNodeCoord.ix === ix && hoveredNodeCoord.iy === iy;
+        if (shouldHighlight) {
+          ctx.strokeStyle = GREEN; ctx.lineWidth = 2;
+          ctx.strokeRect(cardLeft, cardTop, cardW, cardH);
+          ctx.fillStyle = 'rgba(5,5,5,0.85)';
+          ctx.fillRect(cardLeft, cardTop + cardH - 30, cardW, 30);
+          ctx.fillStyle = GREEN; ctx.font = '12px monospace'; ctx.textAlign = 'left';
+          ctx.fillText(`> DECRYPT: ${project.title}`, cardLeft + 15, cardTop + cardH - 15);
+        } else {
+          ctx.strokeStyle = '#222'; ctx.lineWidth = 1;
+          ctx.strokeRect(cardLeft, cardTop, cardW, cardH);
+          ctx.fillStyle = 'rgba(5,5,5,0.6)';
+          ctx.fillRect(cardLeft, cardTop + cardH - 25, cardW, 25);
+          ctx.fillStyle = '#666'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+          ctx.fillText(project.title, cardLeft + 10, cardTop + cardH - 12);
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  const video = document.getElementById('main-video') as HTMLVideoElement;
+  const btnClose = document.getElementById('close-video')!;
+  const stage = document.getElementById('video-stage')!;
+  const playHint = document.getElementById('play-hint')!;
+  const progressBar = document.getElementById('progress-bar')!;
+  const progressContainer = document.getElementById('progress-container')!;
+  const timeDisplay = document.getElementById('time-display')!;
+  const overlayTitle = document.getElementById('overlay-title')!;
+
+  // ==========================================
+  // ！！！终极放映终端交互逻辑 (智能特征排除防穿透版) ！！！
+  // ==========================================
+  window.addEventListener('mousedown', (e) => {
+    const target = e.target as HTMLElement;
+
+    // ！！！核心黑魔法：智能识别 UI 并给悬浮球让路 ！！！
+    // 只要你点击的元素（或它的父级）是链接、按钮，或者带有光标变手 (cursor-pointer) 的样式
+    // 物理引擎立刻终止，把点击权 100% 还给你的悬浮球！
+    const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
+    
+    if (isUIInteraction) {
+      return; // 乖乖让路，忽略视频弹出
+    }
+
+    // 如果视频终端已经打开，忽略底盘点击
+    if (overlay.style.opacity === '1') return;
+
+    if (hoveredNodeCoord && hoveredNodeCoord.project) {
+      const project = hoveredNodeCoord.project;
+      overlayTitle.innerText = project.title;
+      
+      video.src = project.videoSrc;
+      
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.opacity = '1';
+      
+      playHint.style.opacity = '0';
+      video.play().catch(err => {
+        playHint.style.opacity = '1';
+        console.log("Auto-play requires interaction");
+      });
+    }
+  });
+
+  btnClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    video.pause();
+    setTimeout(() => { video.src = ''; playHint.style.opacity = '1'; }, 500); 
+  });
+
+  function togglePlay() {
+    if (video.paused) { video.play(); playHint.style.opacity = '0'; } 
+    else { video.pause(); playHint.style.opacity = '1'; }
+  }
+  stage.addEventListener('click', togglePlay);
+  
+  video.addEventListener('timeupdate', () => {
+    const percent = (video.currentTime / video.duration) * 100;
+    progressBar.style.width = `${percent}%`;
+    const curMin = Math.floor(video.currentTime / 60).toString().padStart(2, '0');
+    const curSec = Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+    const durMin = Math.floor(video.duration / 60).toString().padStart(2, '0');
+    const durSec = Math.floor(video.duration % 60).toString().padStart(2, '0');
+    if(!isNaN(video.duration)) { timeDisplay.innerText = `${curMin}:${curSec} / ${durMin}:${durSec}`; }
+  });
+
+  progressContainer.addEventListener('click', (e: any) => {
+    e.stopPropagation(); 
+    const rect = progressContainer.getBoundingClientRect();
+    const pos = (e.clientX - rect.left) / rect.width;
+    video.currentTime = pos * video.duration;
+  });
+</script>

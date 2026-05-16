@@ -1,0 +1,335 @@
+---
+// src/components/DualTrackGallery.astro
+// 终极画廊版：防弹传送带引擎 + 原图自适应瀑布流 + 满血亮度
+---
+
+<div class="relative w-screen h-screen bg-[#0a0a0a] flex overflow-hidden select-none font-mono">
+  
+  <div id="gallery-container" class="relative w-[65%] h-full overflow-hidden border-r border-neutral-900 cursor-crosshair">
+    <canvas id="gallery-canvas" class="absolute inset-0 block w-full h-full"></canvas>
+  </div>
+
+  <div class="w-[35%] h-full bg-[#0a0a0a] flex flex-col justify-between p-12 pointer-events-none z-20">
+    <div class="text-neutral-700 text-xs tracking-[0.3em]">
+      <span>SYSTEM // CONVEYOR_TRACK_V3 (STABLE)</span>
+    </div>
+    
+    <div id="filename-display" class="text-[#8EDB35] text-xl font-bold tracking-tight opacity-0 transition-opacity duration-200"></div>
+
+    <div class="text-neutral-800 text-[10px] tracking-widest">
+      <span>[ 65% VIEWPORT DOMINANCE // MASONRY_FLOW ]</span>
+    </div>
+  </div>
+
+  <div id="deep-zoom-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+    
+    <div class="absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
+      <div id="zoom-hud" class="text-[#8EDB35] text-[10px] tracking-[0.2em] opacity-80">ZOOM: 100% // DRAG_TO_PAN</div>
+      <div id="close-viewer" class="text-[#8EDB35] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#0a0a0a] px-4 py-2 border border-[#8EDB35]/30 hover:border-[#8EDB35]">
+        [ X ] TERMINATE_VIEW
+      </div>
+    </div>
+
+    <div id="zoom-viewport" class="relative w-full h-full cursor-grab active:cursor-grabbing flex items-center justify-center touch-none">
+      <img id="zoom-target" src="" alt="High-Res Asset" class="max-w-[90vw] max-h-[90vh] object-contain transition-transform duration-75 ease-out select-none pointer-events-none" />
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ================= 1. 基础引擎初始化 =================
+  const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d', { alpha: false })!;
+  const filenameDisplay = document.getElementById('filename-display')!;
+  const container = document.getElementById('gallery-container')!;
+
+  let width = window.innerWidth * 0.65;
+  let height = window.innerHeight;
+
+  function resize() {
+    width = container.clientWidth || window.innerWidth * 0.65;
+    height = container.clientHeight || window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+  window.addEventListener('resize', resize);
+  setTimeout(resize, 0);
+
+  const BASE_SPEED = 2.0;
+  let currentSpeedMultiplier = 1.0; 
+  const GREEN = '#8EDB35';
+
+  // ================= 2. 真实数据源 (32份机密档案) =================
+  const projects = [
+    { title: "LIMINAL-临近边缘的幻想-海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3-%E6%B5%B7%E6%8A%A5.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》宣传海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景10", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF10%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF3%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景4", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF4%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景5", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF5%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景6", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF6%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景7", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF7%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景8", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF8%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景9", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF9%20%E6%8B%B7%E8%B4%9D.webp" },
+    { title: "“婺源印象”画展导览册（节选）", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E2%80%9C%E5%A9%BA%E6%BA%90%E5%8D%B0%E8%B1%A1%E2%80%9D%E7%94%BB%E5%B1%95%E5%AF%BC%E8%A7%88%E5%86%8C%EF%BC%88%E8%8A%82%E9%80%89%EF%BC%89.webp" },
+    { title: "《人生是旷野，不是轨道》工艺海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" },
+    { title: "《群体性孤独》公益海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" },
+    { title: "杂志排版练习", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%9D%82%E5%BF%97%E6%8E%92%E7%89%88%E7%BB%83%E4%B9%A0.webp" },
+    { title: "清迈良园导览路线图", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%AF%BC%E8%A7%88%E8%B7%AF%E7%BA%BF%E5%9B%BE.webp" },
+    { title: "艺术装置《STARE》- P1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P1.webp" },
+    { title: "艺术装置《STARE》- P2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P2.webp" },
+    { title: "艺术装置《STARE》- P3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P3.webp" },
+    { title: "艺术装置《STARE》- P4", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P4.webp" },
+    { title: "艺术装置《STARE》- P5", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P5.webp" },
+    { title: "艺术装置《STARE》- P6", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P6.webp" },
+    { title: "艺术装置《STARE》- P7", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" },
+    { title: "艺术装置《STARE》- P8", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P8.webp" },
+    { title: "艺术装置《STARE》- P9", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P9.webp" },
+    { title: "艺术装置《任尔EWSN风？》- P1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P1.webp" },
+    { title: "艺术装置《任尔EWSN风？》- P2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P2.webp" },
+    { title: "艺术装置《任尔EWSN风？》- P3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P3.webp" },
+    { title: "节气海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%8A%82%E6%B0%94%E6%B5%B7%E6%8A%A5.webp" },
+    { title: "自画像", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" },
+    { title: "风景写生", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" }
+  ];
+
+  projects.forEach((p: any) => {
+    p.imgObj = new Image();
+    p.imgObj.src = p.src;
+  });
+
+  // ================= 3. 全新双轨传送带引擎 =================
+  let tracks = [
+    { offset: 0, cards: [] as any[] }, // 左列（向上滚）
+    { offset: 0, cards: [] as any[] }  // 右列（向下滚）
+  ];
+
+  function initCards() {
+    tracks[0].cards = [];
+    tracks[1].cards = [];
+    tracks[0].offset = 0;
+    tracks[1].offset = 0;
+
+    projects.forEach((project: any, i: number) => {
+      const col = i % 2; 
+      tracks[col].cards.push({
+        col, project, hovered: false, scaleState: 0, x: 0, y: 0, w: 0, h: 0
+      });
+    });
+  }
+  setTimeout(initCards, 50);
+
+  const mouse = { x: -1000, y: -1000 };
+  let hoveredCard: any = null;
+
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  container.addEventListener('mouseleave', () => {
+    mouse.x = -1000; mouse.y = -1000;
+  });
+
+  function animate() {
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, width, height);
+    
+    const colWidth = width / 2;
+    const gap = 40;
+
+    // 1. 同步加载真实的图片比例
+    tracks.forEach(track => {
+      track.cards.forEach(card => {
+        if (!card.project.heightCalculated && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
+          card.project.ratio = card.project.imgObj.naturalWidth / card.project.imgObj.naturalHeight;
+          card.project.heightCalculated = true;
+        }
+      });
+    });
+
+    // 2. 推进传送带
+    const speed = BASE_SPEED * currentSpeedMultiplier;
+    tracks[0].offset -= speed;
+    tracks[1].offset += speed;
+
+    // 3. 传送带无缝首尾拼接逻辑 (绝对不会再上天了！)
+    // 左列(向上)：如果最顶部的卡片已经完全滚出屏幕上面，把它抽出来塞到队伍最末尾
+    while (tracks[0].cards.length > 0) {
+      let topCard = tracks[0].cards[0];
+      let tH = topCard.project.heightCalculated ? (colWidth - gap) / topCard.project.ratio : (colWidth - gap) * 1.4;
+      if (tracks[0].offset + tH + gap < -gap) {
+        tracks[0].offset += tH + gap;
+        tracks[0].cards.push(tracks[0].cards.shift());
+      } else break;
+    }
+
+    // 右列(向下)：如果队伍的“头”（由于一直往下滚，会产生空白）露出超过 0，立刻把队伍最末尾的卡片抽出来补到头上
+    while (tracks[1].cards.length > 0 && tracks[1].offset > 0) {
+      let bottomCard = tracks[1].cards.pop();
+      let bH = bottomCard.project.heightCalculated ? (colWidth - gap) / bottomCard.project.ratio : (colWidth - gap) * 1.4;
+      tracks[1].cards.unshift(bottomCard);
+      tracks[1].offset -= (bH + gap);
+    }
+
+    // 4. 实时响应式布局计算 & 悬停检测
+    let anyHovered = false;
+    hoveredCard = null;
+
+    tracks.forEach((track, colIndex) => {
+      let currentY = track.offset;
+      track.cards.forEach(card => {
+        card.w = colWidth - gap;
+        card.h = card.project.heightCalculated ? card.w / card.project.ratio : card.w * 1.4;
+        card.x = colIndex * colWidth + gap / 2;
+        card.y = currentY;
+        
+        const isHit = mouse.x > card.x && mouse.x < card.x + card.w && mouse.y > card.y && mouse.y < card.y + card.h;
+        if (isHit) { card.hovered = true; anyHovered = true; hoveredCard = card; } 
+        else { card.hovered = false; }
+        
+        card.scaleState += ((card.hovered ? 1 : 0) - card.scaleState) * 0.12;
+        currentY += card.h + gap;
+      });
+    });
+
+    currentSpeedMultiplier += ((anyHovered ? 0.15 : 1.0) - currentSpeedMultiplier) * 0.08;
+
+    // ==========================================
+    // 5. 渲染输出 (修复 Z-index 层级穿透版)
+    // ==========================================
+    
+    // 第一遍：把所有没有被放大的底图全部铺好 (处于底端)
+    tracks.forEach(track => {
+      track.cards.forEach(c => { 
+        if (c.scaleState <= 0.01) renderCard(c); 
+      });
+    });
+
+    // 第二遍：单独把那些正在被悬停/放大的图片画出来 (绝对位于最顶层！)
+    tracks.forEach(track => {
+      track.cards.forEach(c => { 
+        if (c.scaleState > 0.01) renderCard(c); 
+      });
+    });
+
+    if (hoveredCard) {
+      filenameDisplay.innerText = hoveredCard.project.title;
+      filenameDisplay.style.opacity = '1';
+    } else {
+      filenameDisplay.style.opacity = '0';
+    }
+    requestAnimationFrame(animate);
+  }
+  setTimeout(animate, 100);
+
+  // ================= 4. 核心渲染器 (完全无损真实比例) =================
+  function renderCard(card: any) {
+    ctx.save();
+    const gap = 40;
+    
+    let ratio = card.w / card.h;
+    let maxTW = width - gap*2;
+    let maxTH = height - gap*2;
+    let tW = maxTW;
+    let tH = tW / ratio;
+    
+    if (tH > maxTH) {
+      tH = maxTH;
+      tW = tH * ratio;
+    }
+    
+    let tX = (width - tW) / 2;
+    let tY = (height - tH) / 2;
+
+    const cX = card.x + (tX - card.x) * card.scaleState;
+    const cY = card.y + (tY - card.y) * card.scaleState;
+    const cW = card.w + (tW - card.w) * card.scaleState;
+    const cH = card.h + (tH - card.h) * card.scaleState;
+
+    ctx.globalAlpha = 1.0;
+    if (card.project.imgObj && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
+      ctx.drawImage(card.project.imgObj, cX, cY, cW, cH);
+    } else {
+      ctx.fillStyle = '#111';
+      ctx.fillRect(cX, cY, cW, cH);
+    }
+
+    ctx.strokeStyle = card.hovered ? GREEN : '#2a2a2a';
+    ctx.lineWidth = card.hovered ? 2 : 1;
+    ctx.strokeRect(cX, cY, cW, cH);
+
+    if (card.hovered) {
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.8)';
+      ctx.fillRect(cX, cY + cH - 35, cW, 35);
+      ctx.fillStyle = GREEN;
+      ctx.font = '12px monospace';
+      ctx.fillText("> " + card.project.title, cX + 15, cY + cH - 12);
+    }
+    
+    ctx.restore();
+  }
+
+  // ================= 5. 深空放缩暗房引擎 & 防穿透机制 =================
+  const overlay = document.getElementById('deep-zoom-overlay')!;
+  const viewport = document.getElementById('zoom-viewport')!;
+  const targetImg = document.getElementById('zoom-target') as HTMLImageElement;
+  const btnClose = document.getElementById('close-viewer')!;
+  const hud = document.getElementById('zoom-hud')!;
+
+  let zScale = 1; let zX = 0; let zY = 0;
+  let isDragging = false; let startX = 0; let startY = 0;
+
+  function updateTransform() {
+    targetImg.style.transform = `translate(${zX}px, ${zY}px) scale(${zScale})`;
+    hud.innerText = `ZOOM: ${Math.round(zScale * 100)}% // DRAG_TO_PAN`;
+  }
+
+  window.addEventListener('mousedown', (e) => {
+    const target = e.target as HTMLElement;
+    const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
+    if (isUIInteraction) return;
+
+    if (overlay.style.opacity !== '1' && hoveredCard && hoveredCard.project.src) {
+      zScale = 1; zX = 0; zY = 0;
+      updateTransform();
+      targetImg.src = hoveredCard.project.src;
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.opacity = '1';
+    }
+  });
+
+  btnClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    setTimeout(() => { targetImg.src = ''; }, 500); 
+  });
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const zoomIntensity = 0.05;
+    const delta = e.deltaY < 0 ? 1 : -1;
+    let newScale = zScale * Math.exp(delta * zoomIntensity);
+    zScale = Math.max(1, Math.min(newScale, 6)); 
+    if(zScale === 1) { zX = 0; zY = 0; }
+    updateTransform();
+  }, { passive: false });
+
+  viewport.addEventListener('mousedown', (e) => {
+    if (zScale <= 1) return; 
+    isDragging = true;
+    startX = e.clientX - zX; startY = e.clientY - zY;
+  });
+  
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    zX = e.clientX - startX; zY = e.clientY - startY;
+    updateTransform();
+  });
+  
+  window.addEventListener('mouseup', () => { isDragging = false; });
+</script>

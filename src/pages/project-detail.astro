@@ -1,0 +1,116 @@
+---
+// src/pages/project-detail.astro
+// 究极防弹版：物理隔离双栏架构 (左侧绝对固定 + 右侧原生滚动)
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARCHIVE // NEVER_EXTINGUISHED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700;800&display=swap');
+    /* 恢复原生滚动条，手感更丝滑 */
+    body { font-family: 'JetBrains Mono', monospace; background-color: #050505; color: #a3a3a3; margin: 0; overflow-x: hidden; }
+    
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #333; }
+    ::-webkit-scrollbar-thumb:hover { background: #8EDB35; }
+
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="relative w-full min-h-screen select-none">
+
+  <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+
+  <a href="/" class="fixed top-8 right-8 z-50 w-12 h-12 rounded-full border border-[#8EDB35]/30 bg-[#0a0a0a]/80 backdrop-blur-sm flex items-center justify-center text-[#8EDB35] hover:bg-[#8EDB35] hover:text-black transition-all duration-300 group cursor-pointer shadow-[0_0_15px_rgba(142,219,53,0.1)] hover:shadow-[0_0_25px_rgba(142,219,53,0.5)]" style="color: #8EDB35; text-decoration: none;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="square" stroke-linejoin="miter" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+  </a>
+
+  <div class="fixed top-0 left-0 w-full md:w-1/2 h-[45vh] md:h-screen border-b md:border-b-0 md:border-r border-neutral-900 z-10 bg-[#020202] p-8 lg:p-16">
+    <div class="absolute top-6 left-6 text-neutral-700 text-[10px] tracking-widest z-30">VISUAL_DATA // PROMO_POSTER</div>
+    
+    <div class="relative w-full h-full group">
+       <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#8EDB35] z-20 transition-all duration-300 group-hover:w-8 group-hover:h-8"></div>
+       <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#8EDB35] z-20 transition-all duration-300 group-hover:w-8 group-hover:h-8"></div>
+       
+       <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" 
+            alt="Never Extinguished Promo" 
+            class="absolute inset-0 w-full h-full object-contain filter grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 p-2 md:p-6" />
+    </div>
+  </div>
+
+  <div class="w-full md:w-1/2 mt-[45vh] md:mt-0 md:ml-[50%] min-h-screen z-20 relative bg-[#050505] p-8 lg:p-16 xl:p-24 flex flex-col shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">
+    
+    <header class="mb-12">
+      <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] flex items-center gap-2 mb-6">
+         <div class="w-1.5 h-1.5 bg-[#8EDB35] animate-pulse"></div>
+         FILE_DECRYPTED // 001
+      </div>
+      <h1 class="text-white text-5xl lg:text-7xl font-extrabold tracking-tight uppercase leading-[1.1] mb-2 break-words">
+        未曾熄灭的
+      </h1>
+      <h2 class="text-neutral-500 text-lg lg:text-xl tracking-[0.2em] uppercase">NEVER EXTINGUISHED</h2>
+    </header>
+
+    <div class="grid grid-cols-2 xl:grid-cols-3 gap-y-8 gap-x-4 border-y border-neutral-900 py-8 mb-12 bg-[#050505]/30">
+      <div>
+        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">TIMESTAMP</div>
+        <div class="text-neutral-200 text-sm">2026</div>
+      </div>
+      <div>
+        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">CATEGORY</div>
+        <div class="text-[#8EDB35] text-sm">Serious Game / VR</div>
+      </div>
+      <div class="col-span-2 xl:col-span-1">
+        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">ENGINE</div>
+        <div class="text-neutral-200 text-sm">Unity / Meta XR</div>
+      </div>
+    </div>
+
+    <section class="space-y-12">
+      <div>
+        <h3 class="text-white text-sm tracking-[0.2em] font-bold border-l-2 border-[#8EDB35] pl-3 mb-4">I. EXPERIENCE_DESIGN</h3>
+        <p class="text-[15px] leading-[1.8] text-neutral-400 text-justify">
+          这是一场基于虚拟现实（VR）的严肃游戏实验。通过剥离传统的娱乐性游戏机制，本作将玩家置入一个高度沉浸且充满压迫感的叙事空间中，探讨记忆、废墟与个体精神状态在极端环境下的挣扎与重构。
+        </p>
+      </div>
+      
+      <div>
+        <h3 class="text-white text-sm tracking-[0.2em] font-bold border-l-2 border-[#8EDB35] pl-3 mb-4">II. ENVIRONMENT_ARCHITECTURE</h3>
+        <p class="text-[15px] leading-[1.8] text-neutral-400 text-justify">
+          在场景架构上，彻底抛弃了明亮饱和的视觉糖水，转而采用阴郁、冷峻的材质表现。通过 Unity 渲染管线与光影压榨，塑造出一种介于“真实物理法则”与“心理潜意识幻境”之间的临界感（Liminality）。
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <h3 class="text-neutral-600 text-[10px] tracking-[0.2em] border-b border-neutral-900 pb-3 mb-6">ATTACHMENT // ENVIRONMENT_SCANS</h3>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+         <div class="bg-[#0a0a0a] border border-neutral-900 p-2 group w-full">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" 
+                 class="w-full aspect-[4/3] object-cover filter grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500" />
+         </div>
+         <div class="bg-[#0a0a0a] border border-neutral-900 p-2 group w-full">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" 
+                 class="w-full aspect-[4/3] object-cover filter grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500" />
+         </div>
+      </div>
+    </section>
+
+    <div class="mt-auto pt-16 pb-8 text-neutral-800 text-[10px] tracking-widest border-t border-neutral-900">
+      [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+    </div>
+  </div>
+
+</body>
+</html>

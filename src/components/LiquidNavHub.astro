@@ -1,0 +1,242 @@
+---
+// src/components/LiquidNavHub.astro
+// 终极完美版：已修复 Canvas 透明度叠加黑屏 Bug，视频通透透出！
+---
+
+<div id="liquid-nav-root" class="relative w-screen h-screen bg-[#0a0a0a] overflow-hidden font-mono select-none">
+  
+  <video 
+    id="bg-video"
+    src="/showcase-bg.mp4" 
+    autoplay 
+    loop 
+    muted 
+    playsinline 
+    class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
+  ></video>
+
+  <div class="absolute top-8 right-8 text-right pointer-events-none z-20">
+    <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] font-bold">SECTION // 02_NAVIGATION_HUB</div>
+    <div class="text-neutral-500 text-[10px] mt-1 tracking-widest">BACKGROUND: DYNAMIC_VIDEO</div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none z-20 text-neutral-400 text-xs tracking-widest">
+    [ MOVE CURSOR TO CAPTURE & CLICK ]
+  </div>
+
+  <canvas id="liquid-canvas" class="absolute inset-0 block w-full h-full z-10 cursor-none"></canvas>
+
+</div>
+
+<script>
+  const canvas = document.getElementById('liquid-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  // 强制点火引擎
+  const bgVideo = document.getElementById('bg-video') as HTMLVideoElement;
+  if (bgVideo) {
+    bgVideo.muted = true; 
+    const playPromise = bgVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        window.addEventListener('mousemove', () => {
+          bgVideo.play().catch(() => {});
+        }, { once: true });
+      });
+    }
+  }
+
+  // 全局尺寸同步
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const GREEN = '#8EDB35';
+  
+  const templates = [
+    { text: "Watch the videos of the works", href: "/omni" },
+    { text: "View the pictures of the works", href: "/dual" },
+    { text: "Get to know me", href: "/about" },
+    { text: "Contact me", href: "/contact" }
+  ];
+
+  interface Pill {
+    id: number;
+    text: string;
+    href: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    vx: number;
+    vy: number;
+    locked: boolean;
+  }
+
+  ctx.font = 'bold 15px monospace';
+  const pills: Pill[] = [];
+  const items = [...templates, ...templates]; 
+
+  items.forEach((item, index) => {
+    const textWidth = ctx.measureText(item.text).width;
+    const w = textWidth + 50;  
+    const h = 42;              
+
+    const x = Math.random() * (width - w - 100) + 50;
+    const y = Math.random() * (height - h - 100) + 50;
+    
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.8 + Math.random() * 0.5;
+
+    pills.push({
+      id: index,
+      text: item.text,
+      href: item.href,
+      x: x,
+      y: y,
+      w: w,
+      h: h,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      locked: false
+    });
+  });
+
+  const mouse = { x: width / 2, y: height / 2 };
+  let bubbleX = width / 2;
+  let bubbleY = height / 2;
+  let lockedPill: Pill | null = null;
+  
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  canvas.addEventListener('click', () => {
+  if (lockedPill) {
+    // 呼叫咱们的高阶矩阵切片幕布降下！
+    if (typeof window.triggerPureTransition === 'function') {
+      window.triggerPureTransition(lockedPill.href);
+    } else {
+      // 极度安全的底层兜底
+      window.location.href = lockedPill.href;
+    }
+  }
+});
+
+  const LOCK_DIST = 90;   
+  const BREAK_DIST = 160; 
+
+  function animate() {
+    // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.75)';
+    ctx.fillRect(0, 0, width, height);
+
+    if (!lockedPill) {
+      bubbleX += (mouse.x - bubbleX) * 0.15;
+      bubbleY += (mouse.y - bubbleY) * 0.15;
+
+      pills.forEach(p => {
+        const cx = p.x + p.w / 2;
+        const cy = p.y + p.h / 2;
+        const dist = Math.hypot(mouse.x - cx, mouse.y - cy);
+        if (dist < LOCK_DIST) {
+          lockedPill = p;
+          p.locked = true;
+        }
+      });
+    } else {
+      const targetCx = lockedPill.x + lockedPill.w / 2;
+      const targetCy = lockedPill.y + lockedPill.h / 2;
+
+      const stretchX = (mouse.x - targetCx) * 0.28;
+      const stretchY = (mouse.y - targetCy) * 0.28;
+
+      bubbleX += (targetCx + stretchX - bubbleX) * 0.2;
+      bubbleY += (targetCy + stretchY - bubbleY) * 0.2;
+
+      const distToCenter = Math.hypot(mouse.x - targetCx, mouse.y - targetCy);
+      if (distToCenter > BREAK_DIST) {
+        lockedPill.locked = false;
+        const angle = Math.atan2(mouse.y - targetCy, mouse.x - targetCx);
+        lockedPill.vx = -Math.cos(angle) * 2.5;
+        lockedPill.vy = -Math.sin(angle) * 2.5;
+        lockedPill = null;
+      }
+    }
+
+    ctx.save();
+    ctx.fillStyle = GREEN;
+    if (!lockedPill) {
+      ctx.beginPath();
+      ctx.arc(bubbleX, bubbleY, 65, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      const padding = 18;
+      const bx = lockedPill.x - padding;
+      const by = lockedPill.y - padding;
+      const bw = lockedPill.w + padding * 2;
+      const bh = lockedPill.h + padding * 2;
+      const radius = 28;
+
+      ctx.beginPath();
+      ctx.roundRect(
+        bx + (bubbleX - (lockedPill.x + lockedPill.w/2)) * 0.3, 
+        by + (bubbleY - (lockedPill.y + lockedPill.h/2)) * 0.3, 
+        bw, bh, radius
+      );
+      ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+
+    pills.forEach(p => {
+      if (!p.locked) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x <= 20 || p.x + p.w >= width - 20) { p.vx *= -1; p.x = Math.max(20, Math.min(p.x, width - p.w - 20)); }
+        if (p.y <= 20 || p.y + p.h >= height - 20) { p.vy *= -1; p.y = Math.max(20, Math.min(p.y, height - p.h - 20)); }
+      }
+
+      ctx.save();
+      const cx = p.x + p.w / 2;
+      const cy = p.y + p.h / 2;
+
+      if (p.locked) {
+        ctx.fillStyle = '#000000';
+        ctx.font = '900 15px monospace';
+        ctx.fillText(p.text, cx, cy);
+      } else {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(p.x, p.y, p.w, p.h);
+
+        ctx.fillStyle = '#e5e5e5'; 
+        ctx.font = 'bold 15px monospace';
+        ctx.fillText(p.text, cx, cy);
+      }
+      ctx.restore();
+    });
+
+    if (!lockedPill) {
+      ctx.fillStyle = '#0a0a0a';
+      ctx.beginPath();
+      ctx.arc(bubbleX, bubbleY, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>

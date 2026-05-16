@@ -1,0 +1,58 @@
+---
+// src/components/HomeBaseBtn.astro
+// 导航页专属：重返主页的物理基站/故障灯塔入口
+---
+
+<a href="/" class="fixed top-8 left-8 z-[9999] group flex items-center gap-4 pointer-events-auto select-none no-underline">
+  
+  <div class="relative w-14 h-14 md:w-16 md:h-16 flex items-center justify-center bg-[#050505]/60 backdrop-blur-md border border-neutral-800 group-hover:border-[#8EDB35]/50 transition-colors duration-300">
+    <div class="absolute inset-1 border border-[#8EDB35]/30 border-dashed animate-[spin_10s_linear_infinite]"></div>
+    <div class="absolute inset-2 border border-[#8EDB35]/15 animate-[spin_15s_linear_infinite_reverse]"></div>
+    
+    <div class="relative w-6 h-6 text-[#8EDB35] group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_8px_#8EDB35]">
+      <svg class="w-full h-full animate-vibe-glitch" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+        <path stroke-linecap="square" stroke-linejoin="miter" d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+      <svg class="absolute top-0 left-0 w-full h-full text-[#8EDB35] opacity-50 blur-[1.5px] animate-vibe-glitch-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+        <path stroke-linecap="square" stroke-linejoin="miter" d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="flex flex-col justify-center overflow-hidden">
+    <div class="font-mono text-[#8EDB35] text-[11px] md:text-xs font-bold tracking-[0.3em] group-hover:animate-pulse drop-shadow-[0_0_6px_rgba(142,219,53,0.5)] whitespace-nowrap">
+      > [ RETURN://HOME_BASE ]
+    </div>
+    <div class="font-mono text-neutral-600 text-[9px] md:text-[10px] tracking-widest mt-1 transition-colors duration-300 group-hover:text-white/80 whitespace-nowrap">
+      GOTO://ROOT_DIR
+    </div>
+  </div>
+
+</a>
+
+<style>
+  /* --- 极其凌厉的数字切片故障动效 --- */
+  
+  /* 箭头主体的机械抽搐感：95% 的时间保持静止，偶尔发生横向与角度撕裂 */
+  @keyframes vibe-glitch {
+    0%, 100% { transform: translate(0, 0) skew(0deg); opacity: 1; }
+    2%, 4% { transform: translate(-3px, 1px) skew(-5deg); opacity: 0.8; }
+    6%, 8% { transform: translate(3px, -1px) skew(5deg); opacity: 0.9; }
+    10%, 98% { transform: translate(0, 0) skew(0deg); opacity: 1; }
+  }
+  
+  /* 残影的逆向拉扯：配合主体的撕裂产生虚影 */
+  @keyframes vibe-glitch-shadow {
+    0%, 100% { transform: translate(0, 0); opacity: 0; }
+    2%, 4% { transform: translate(3px, -1px); opacity: 0.6; }
+    6%, 8% { transform: translate(-3px, 1px); opacity: 0.8; }
+    10%, 98% { transform: translate(0, 0); opacity: 0; }
+  }
+
+  .animate-vibe-glitch {
+    animation: vibe-glitch 4s infinite step-end;
+  }
+  .animate-vibe-glitch-shadow {
+    animation: vibe-glitch-shadow 4s infinite step-end;
+  }
+</style>

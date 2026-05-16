@@ -1,11 +1,307 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// src/pages/index.astro
+// 终极无Bug生产版：严密三体 Staggered 宇宙 + 绝对单层信仰环 + 完美字符朝向 (头顶指心)
+import '../styles/global.css';
+import Preloader from '../components/Preloader.astro';
+import PureTransition from '../components/PureTransition.astro';
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZHAO WENHAO // PORTFOLIO</title>
+</head>
+<body class="w-screen h-screen bg-[#050505] overflow-hidden select-none relative font-mono cursor-none" style="margin: 0; padding: 0; background-color: #050505;">
+  <PureTransition />
+<Preloader />
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex flex-col justify-center opacity-25">
+    <div class="w-[280vw] -translate-x-[80vw] rotate-[-24deg] flex flex-col gap-2 select-none">
+      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+      </div>
+    </div>
+  </div>
+
+  <canvas id="omni-universe" class="absolute inset-0 block w-full h-full z-10 pointer-events-none"></canvas>
+
+  <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center gap-2 select-none" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">MAKE</h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">SOMETHING</h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">DIFFERENT.</h1>
+    </div>
+
+    <div class="absolute bottom-10 inset-x-0 text-center z-20 pointer-events-none">
+      <span class="text-neutral-600 text-xs tracking-[0.4em] animate-pulse font-mono">
+        [ CLICK_ANYWHERE_TO_LAUNCH_HUB ]
+      </span>
+    </div>
+  </div>
+
+  <div id="hardware-cursor" class="fixed top-0 left-0 pointer-events-none z-40 flex items-center justify-center -translate-x-1/2 -translate-y-1/2">
+    <div class="absolute w-2 h-2 bg-[#8EDB35] rounded-full shadow-[0_0_12px_#8EDB35]"></div>
+    <div class="absolute w-6 h-[1px] bg-[#8EDB35]/70"></div>
+    <div class="absolute h-6 w-[1px] bg-[#8EDB35]/70"></div>
+  </div>
+
+  <div id="warp-flash" class="absolute inset-0 bg-[#8EDB35] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <script>
+    // ================= 终极全域 Canvas 粒子引擎 =================
+    const canvas = document.getElementById('omni-universe') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    const hwCursor = document.getElementById('hardware-cursor')!;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    function resize() {
+      width = window.innerWidth; height = window.innerHeight;
+      canvas.width = width; canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let cursorX = mouseX;
+    let cursorY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+    });
+
+    // 信仰链目标定义 (尾部加入适量空格完美分布圆周)
+    const creedString = "INTEGRATE THINKING INTO DESIGN • ";
+    const targetLength = creedString.length;
+
+    interface OmniParticle {
+      x: number; y: number;
+      baseX: number; baseY: number;
+      originalChar: string;
+      currentChar: string;
+      size: number;
+      angle: number; speed: number;
+      clusterIndex: number;
+      type: 'core' | 'ring';
+      
+      orbitR?: number;
+      ringRX?: number; ringRY?: number; ringTilt?: number;
+      
+      // ！！！终极单层与指心控制属性 ！！！
+      targetCursorSlot: number; // 预分配在信条环上的专属独立槽位 (0 - 32)
+      isRingAssigned: boolean;  // 核心标记：该粒子是否被选中组成那绝对唯一的“单层光环”
+      isCaptured: boolean;
+    }
+
+    const baseChars = ['设', '计', '思', '维', '先', '锋', '0', '1', '+', '#', '×', '•'];
+    const particles: OmniParticle[] = [];
+    
+    // ！！！极其核心修复：精准映射手绘图的三体布局与大小节奏 ！！！
+    const planets = [
+      // 01. 红色区域：超巨型主星 (左上至中左)。极大画幅，拥有辽阔顺时针星环，长轴略微右偏。
+      { cx: width * 0.28, cy: height * 0.45, coreR: 176, ringRX: 418, ringRY: 132, tilt: 0.35, orbitRotation: Math.PI / 12, dir: 1, pCore: 220, pRing: 260, baseSize: 16 },
+      // 02. 黄色区域：中型伴星 (右下偏中)。适中画幅，逆时针偏转大星环，长轴左倾。
+      { cx: width * 0.78, cy: height * 0.75, coreR: 90, ringRX: 240, ringRY: 75, tilt: -0.4, orbitRotation: -Math.PI / 6, dir: -1, pCore: 120, pRing: 150, baseSize: 13 },
+      // 03. 蓝色区域：微型远星 (右上深空)。极其精致紧凑，点缀深空景深。
+      { cx: width * 0.82, cy: height * 0.22, coreR: 50, ringRX: 140, ringRY: 40, tilt: 0.2, orbitRotation: Math.PI / 8, dir: 1, pCore: 70, pRing: 90, baseSize: 10 }
+    ];
+
+    // 全量安全天体灌注 (修复底层死锁)
+    planets.forEach((p, pIdx) => {
+      // 灌注自转内核
+      for (let i = 0; i < p.pCore; i++) {
+        // 确保每个星球平均只有前 targetLength 个粒子被标记为“单层组成者”，多余的仅作普通飞溅物
+        const slot = i % targetLength;
+        const isAssigned = i < targetLength; 
+        particles.push({
+          x: 0, y: 0, baseX: 0, baseY: 0,
+          originalChar: baseChars[Math.floor(Math.random() * baseChars.length)],
+          currentChar: '', size: Math.random() * 6 + p.baseSize,
+          angle: Math.random() * Math.PI * 2, speed: (Math.random() * 0.004 + 0.002) * p.dir,
+          clusterIndex: pIdx, type: 'core', orbitR: Math.sqrt(Math.random()) * p.coreR,
+          targetCursorSlot: slot, isRingAssigned: isAssigned, isCaptured: false
+        });
+      }
+      // 灌注宏大星环
+      for (let i = 0; i < p.pRing; i++) {
+        const slot = i % targetLength;
+        // 让星环也贡献一层备用骨架，确保视觉极其丰满但绝不重叠乱码
+        const isAssigned = i < targetLength; 
+        particles.push({
+          x: 0, y: 0, baseX: 0, baseY: 0,
+          originalChar: baseChars[Math.floor(Math.random() * baseChars.length)],
+          currentChar: '', size: Math.random() * 4 + p.baseSize * 0.8,
+          angle: (i / p.pRing) * Math.PI * 2, speed: (0.0015 + Math.random() * 0.0015) * p.dir,
+          clusterIndex: pIdx, type: 'ring', 
+          ringRX: p.ringRX * (0.82 + Math.random() * 0.36), ringRY: p.ringRY * (0.82 + Math.random() * 0.36),
+          ringTilt: p.tilt,
+          targetCursorSlot: slot, isRingAssigned: isAssigned, isCaptured: false
+        });
+      }
+    });
+
+    let cursorSpinAngle = 0;
+
+    function renderUniverse() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 光标物理缓动更新
+      cursorX += (mouseX - cursorX) * 0.15;
+      cursorY += (mouseY - cursorY) * 0.15;
+      hwCursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+      
+      // 光标环自转极速驱动
+      cursorSpinAngle += 0.015;
+
+      // 实时计算三体核心响应视口变化
+      planets[0].cx = width * 0.28; planets[0].cy = height * 0.45;
+      planets[1].cx = width * 0.78; planets[1].cy = height * 0.75;
+      planets[2].cx = width * 0.82; planets[2].cy = height * 0.22;
+
+      particles.forEach(n => {
+        const p = planets[n.clusterIndex];
+
+        // --- 独立天体矩阵轨道演算 ---
+        n.angle += n.speed;
+        let localX = 0; let localY = 0;
+
+        if (n.type === 'core') {
+          localX = Math.cos(n.angle) * n.orbitR!;
+          localY = Math.sin(n.angle) * n.orbitR!;
+        } else {
+          const ux = Math.cos(n.angle) * n.ringRX!;
+          const uy = Math.sin(n.angle) * n.ringRY!;
+          localX = ux * Math.cos(n.ringTilt!) - uy * Math.sin(n.ringTilt!);
+          localY = ux * Math.sin(n.ringTilt!) + uy * Math.cos(n.ringTilt!);
+        }
+
+        // 叠加天体偏转角形成彻底独立的朝向错落感
+        n.baseX = p.cx + (localX * Math.cos(p.orbitRotation) - localY * Math.sin(p.orbitRotation));
+        n.baseY = p.cy + (localX * Math.sin(p.orbitRotation) + localY * Math.cos(p.orbitRotation));
+
+        // --- 物理场域干涉判定 ---
+        const distToPlanet = Math.hypot(cursorX - p.cx, cursorY - p.cy);
+        const domainRadius = n.clusterIndex === 0 ? 500 : (n.clusterIndex === 1 ? 320 : 250);
+
+        if (distToPlanet < domainRadius) {
+          const distToCursor = Math.hypot(cursorX - n.baseX, cursorY - n.baseY);
+          const pullRange = 250; 
+
+          if (distToCursor < pullRange) {
+            n.isCaptured = true;
+          }
+        } else {
+          n.isCaptured = false;
+        }
+
+        // --- ！！！极致显像输出：应用绝对单层与头顶指心矩阵 ！！！ ---
+        ctx.save();
+        
+        if (n.isCaptured) {
+          if (n.isRingAssigned) {
+            // 【主干信条层】：被选中的粒子极其精准地嵌入基准位，形成绝对唯一单层光环
+            const targetSlotAngle = cursorSpinAngle + (n.targetCursorSlot / targetLength) * Math.PI * 2;
+            const targetRingX = cursorX + Math.cos(targetSlotAngle) * 125; // 轨道半径加大至 125px 确保绝佳间距
+            const targetRingY = cursorY + Math.sin(targetSlotAngle) * 125;
+
+            n.x += (targetRingX - n.x) * 0.18;
+            n.y += (targetRingY - n.y) * 0.18;
+
+            n.currentChar = creedString[n.targetCursorSlot];
+            ctx.fillStyle = '#8EDB35'; 
+            ctx.font = 'bold 15px sans-serif'; 
+
+            // ！！！完美几何秩序：头顶精确指心 ！！！
+            // 将字符输出原点移至当前坐标，旋转角度锁定为目标夹角 + $\pi/2$ (90度)
+            ctx.translate(n.x, n.y);
+            ctx.rotate(targetSlotAngle + Math.PI / 2);
+            ctx.fillText(n.currentChar, 0, 0); 
+          } else {
+            // 【外围飞溅游离层】：未被选入文字环的多余粒子，仅作为被吸引的光带飞散在中心周围
+            // 绝不直接拼成乱序文字干扰圆环阅读，保证画面既有被掠夺的宏大动感又绝对干净！
+            const pullAngle = Math.atan2(cursorY - n.baseY, cursorX - n.baseX);
+            n.x += (cursorX - Math.cos(pullAngle) * 80 - n.x) * 0.1;
+            n.y += (cursorY - Math.sin(pullAngle) * 80 - n.y) * 0.1;
+
+            n.currentChar = n.originalChar;
+            ctx.fillStyle = 'rgba(142, 219, 53, 0.4)'; 
+            ctx.font = `bold ${n.size * 0.8}px monospace`;
+            ctx.translate(n.x, n.y);
+            ctx.fillText(n.currentChar, 0, 0); 
+          }
+        } else {
+          // 【母星引力崩溃回吸态】：干净利落地自动吸回原始星系阵地
+          n.x += (n.baseX - n.x) * 0.12;
+          n.y += (n.baseY - n.y) * 0.12;
+          
+          n.currentChar = n.originalChar;
+          ctx.fillStyle = n.type === 'ring' ? 'rgba(142, 219, 53, 0.25)' : 'rgba(120, 120, 120, 0.35)';
+          ctx.font = `bold ${n.size}px monospace`;
+          ctx.translate(n.x, n.y);
+          ctx.fillText(n.currentChar, 0, 0); 
+        }
+
+        ctx.restore();
+      });
+
+      requestAnimationFrame(renderUniverse);
+    }
+    renderUniverse();
+
+   // ================= 全局跃迁协议 =================
+const flash = document.getElementById('warp-flash')!;
+
+function enterHub() {
+  // 检查咱们的 DIY 物理闸门接口是否成功挂载在全局 window 上
+  if (typeof (window as any).triggerPureTransition === 'function') {
+    // 呼叫物理闸门以 400ms 极速降下覆盖全屏，随后由引擎自动平滑重定向
+    (window as any).triggerPureTransition('/hub');
+  } else {
+    // 极其稳妥的底层兜底：万一遇到极速连点或组件未载入，走原生跳转保证不卡死
+    flash.style.opacity = '1';
+    setTimeout(() => { window.location.href = '/hub'; }, 200);
+  }
+}
+
+// 事件监听保持绝对原样，点击任意处或敲击回车瞬间呼叫重组
+window.addEventListener('click', enterHub);
+window.addEventListener('keydown', (e) => { 
+  if (e.key === 'Enter') enterHub(); 
+});
+  </script>
+
+  <style>
+    * { cursor: none !important; }
+    @keyframes moveLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-25%); } }
+    @keyframes moveRight { 0% { transform: translateX(-25%); } 100% { transform: translateX(0%); } }
+    .marquee-left { display: inline-block; animation: moveLeft 12s linear infinite; }
+    .marquee-right { display: inline-block; animation: moveRight 12s linear infinite; }
+  </style>
+</body>
+</html>

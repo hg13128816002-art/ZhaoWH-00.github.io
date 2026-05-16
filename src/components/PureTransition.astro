@@ -1,0 +1,68 @@
+---
+// src/components/PureTransition.astro
+// 终极先锋版跨页转场：错落矩阵切片 (Staggered Slices) + 激光边缘 + 系统级标识
+---
+
+<div id="diy-transition-gate" class="fixed inset-0 z-[10005] flex w-screen h-screen pointer-events-none select-none overflow-hidden">
+  
+  <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] origin-bottom">
+     <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
+  </div>
+  <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[75ms] origin-bottom border-l border-neutral-900/50">
+     <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
+  </div>
+  <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[150ms] origin-bottom border-l border-neutral-900/50">
+     <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
+  </div>
+  <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[225ms] origin-bottom border-l border-neutral-900/50">
+     <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
+  </div>
+  <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[300ms] origin-bottom border-l border-neutral-900/50">
+     <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
+  </div>
+
+  <div id="transition-logo" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#8EDB35] font-mono text-[10px] md:text-xs tracking-[0.5em] font-bold opacity-0 transition-opacity duration-300 delay-[400ms]">
+    // SYSTEM_OVERRIDE_ACTIVE
+  </div>
+  
+</div>
+
+<script>
+  const slices = document.querySelectorAll('.slice');
+  const logo = document.getElementById('transition-logo');
+
+  // 1. 【进场动效】：新页面骨架挂载完毕，阵列带错落感向上顺滑开启
+  window.addEventListener('pageshow', () => {
+    requestAnimationFrame(() => {
+      slices.forEach((slice: any) => {
+        slice.style.transform = 'translateY(-100%)';
+      });
+      if (logo) logo.style.opacity = '0';
+    });
+  });
+
+  // 2. 【退场动效】：接收全局跃迁指令，阵列从天而降
+  (window as any).triggerPureTransition = function(targetUrl: string) {
+    // 强行移除之前向上抽离的形变，使其恢复至 translateY(0)，即顺滑降下覆盖全屏
+    slices.forEach((slice: any) => {
+      slice.style.transform = 'translateY(0)';
+    });
+    // 中央字符在幕布快要合拢时高级亮起
+    if (logo) logo.style.opacity = '1';
+
+    // 引擎精密计时：基础动画时长 600ms + 最后一个切片的最大延迟 300ms = 900ms 彻底闭合
+    // 我们设定 950ms 后执行底层物理暗转跳页
+    setTimeout(() => {
+      window.location.href = targetUrl;
+    }, 950);
+  };
+
+  // 3. 【全站智能自动拦截】
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest('a');
+    if (link && link.href && link.href.startsWith(window.location.origin) && !link.target) {
+      e.preventDefault();
+      (window as any).triggerPureTransition(link.href);
+    }
+  });
+</script>

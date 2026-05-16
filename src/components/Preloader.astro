@@ -1,0 +1,99 @@
+---
+// src/components/Preloader.astro
+// 终极先锋史诗版加载屏：宏大深空轨道 + 真实激光填充进度 + 极纤细呼吸文本
+---
+
+<div id="vanguard-preloader" class="fixed inset-0 z-[10010] bg-[#050505] flex items-center justify-center transition-opacity duration-[800ms] select-none pointer-events-auto">
+  
+  <div class="relative flex items-center justify-center animate-scale-up-slow">
+    
+    <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="118" stroke="#1a1a1a" stroke-width="1"></circle>
+      
+      <circle 
+        id="loading-orbit"
+        cx="120" cy="120" r="118" 
+        stroke="#8EDB35" 
+        stroke-width="1.5" 
+        stroke-dasharray="741" 
+        stroke-dashoffset="741" 
+        stroke-linecap="round"
+        class="drop-shadow-[0_0_8px_#8EDB35] transition-all duration-[120ms] ease-out origin-center -rotate-90"
+      ></circle>
+    </svg>
+
+    <div class="absolute flex items-center justify-center font-sans text-white/90 text-sm md:text-base font-extralight tracking-[0.8em] pl-2 whitespace-nowrap">
+      LOADING
+      <span class="absolute left-full flex gap-1">
+        <span class="animate-pulse-dot [animation-delay:0ms]">.</span>
+        <span class="animate-pulse-dot [animation-delay:250ms]">.</span>
+        <span class="animate-pulse-dot [animation-delay:500ms]">.</span>
+      </span>
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+  /* 整个容器极其缓慢的放大浮现，增加史诗感 */
+  @keyframes scale-up-slow {
+    0% { transform: scale(0.95); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  .animate-scale-up-slow {
+    animation: scale-up-slow 3s ease-out forwards;
+  }
+
+  /* 纤细文字点的呼吸 */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.9; text-shadow: 0 0 8px rgba(142,219,53,0.5); color: #8EDB35; }
+  }
+  .animate-pulse-dot {
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  const preloader = document.getElementById('vanguard-preloader')!;
+  const orbit = document.getElementById('loading-orbit')!;
+
+  // 轨道总周长参数，必须与 SVG 里的 dasharray 一致
+  const CIRCUMFERENCE = 741; 
+  const isBooted = sessionStorage.getItem('vanguard_vibe_booted_v4');
+
+  if (isBooted) {
+    preloader.style.display = 'none';
+  } else {
+    // 第一次来，执行真实的轨道填充加载
+    let progress = 0;
+    
+    // 模拟真实的、带有停顿感的物理加载节奏
+    const loadInterval = setInterval(() => {
+      // 每次随机增加进度，营造真实处理数据的感觉
+      const increment = Math.random() * 8 + 2; 
+      progress += increment;
+      
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(loadInterval);
+        
+        // 100% 满载后，执行退场闪烁与销毁
+        setTimeout(() => {
+          orbit.style.opacity = '0'; // 轨道瞬间隐去
+          preloader.style.opacity = '0'; // 黑幕淡出
+          
+          sessionStorage.setItem('vanguard_vibe_booted_v4', 'true');
+          setTimeout(() => preloader.style.display = 'none', 800);
+        }, 400); // 满载后停顿 400ms，让用户看清满圈状态
+      }
+
+      // 计算当前进度对应的 offset 值 (0% = 741, 100% = 0)
+      const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+      orbit.style.strokeDashoffset = offset.toString();
+
+    }, 80); // 整体画圈节奏，大约 1.5 - 2 秒内画完
+  }
+</script>
