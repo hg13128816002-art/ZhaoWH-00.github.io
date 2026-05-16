@@ -1,7 +1,6 @@
 ---
 // src/components/LiquidNavHub.astro
 // 终极完美版：已修复 Canvas 透明度叠加黑屏 Bug，视频通透透出！
-import '../styles/global.css'; 
 ---
 
 <div id="liquid-nav-root" class="relative w-screen h-screen bg-[#0a0a0a] overflow-hidden font-mono select-none">
@@ -67,6 +66,7 @@ import '../styles/global.css';
 
   const GREEN = '#8EDB35';
   
+  const FONT_STACK = '"Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif';
   const templates = [
     { text: "Watch the videos of the works 视频", href: "/omni" },
     { text: "View the pictures of the works 图片", href: "/dual" },
@@ -91,7 +91,8 @@ import '../styles/global.css';
   const items = [...templates, ...templates]; 
 
   function createPills() {
-    ctx.font = 'bold 20px "Noto Sans SC Local", "Space Mono", monospace';
+    ctx.font = 'bold 20px "Space Mono"';
+    ctx.font = `bold 20px ${FONT_STACK}`;
     items.forEach((item, index) => {
     const textWidth = ctx.measureText(item.text).width;
     const w = textWidth + 80;  
@@ -224,7 +225,7 @@ import '../styles/global.css';
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
-        ctx.font = '900 20px "Noto Sans SC Local", "Space Mono", monospace';
+        ctx.font = `900 20px ${FONT_STACK}`;
         ctx.fillText(p.text, cx, cy);
       } else {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
@@ -232,7 +233,7 @@ import '../styles/global.css';
         ctx.strokeRect(p.x, p.y, p.w, p.h);
 
         ctx.fillStyle = '#e5e5e5'; 
-        ctx.font = 'bold 20px "Noto Sans SC Local", "Space Mono", monospace';
+        ctx.font = `bold 20px ${FONT_STACK}`;
         ctx.fillText(p.text, cx, cy);
       }
       ctx.restore();
