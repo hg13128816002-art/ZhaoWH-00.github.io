@@ -29,13 +29,14 @@
 </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&display=swap');
+  /* 使用自托管中文黑体，并让 canvas 文本优先使用 Noto Sans SC Local */
 </style>
 
 <script>
   const canvas = document.getElementById('liquid-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
   canvas.style.visibility = 'hidden';
+  const notoFontPromise = window.fontsReadyPromise || (document.fonts && document.fonts.load ? document.fonts.load('20px "Noto Sans SC Local"') : Promise.resolve());
 
   // 强制点火引擎
   const bgVideo = document.getElementById('bg-video') as HTMLVideoElement;
@@ -85,11 +86,12 @@
     locked: boolean;
   }
 
-  ctx.font = 'bold 20px "Space Mono",monospace';
   const pills: Pill[] = [];
   const items = [...templates, ...templates]; 
 
-  items.forEach((item, index) => {
+  function createPills() {
+    ctx.font = 'bold 20px "Noto Sans SC Local", "Space Mono", monospace';
+    items.forEach((item, index) => {
     const textWidth = ctx.measureText(item.text).width;
     const w = textWidth + 80;  
     const h = 60;              
@@ -113,6 +115,7 @@
       locked: false
     });
   });
+  }
 
   const mouse = { x: width / 2, y: height / 2 };
   let bubbleX = width / 2;
@@ -220,7 +223,7 @@
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
-        ctx.font = '900 20px "Space Mono", monospace';
+        ctx.font = '900 20px "Noto Sans SC Local", "Space Mono", monospace';
         ctx.fillText(p.text, cx, cy);
       } else {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
@@ -228,7 +231,7 @@
         ctx.strokeRect(p.x, p.y, p.w, p.h);
 
         ctx.fillStyle = '#e5e5e5'; 
-        ctx.font = 'bold 20px "Space Mono", monospace';
+        ctx.font = 'bold 20px "Noto Sans SC Local", "Space Mono", monospace';
         ctx.fillText(p.text, cx, cy);
       }
       ctx.restore();
@@ -244,8 +247,12 @@
     requestAnimationFrame(animate);
   }
 
-// 强制等待 "Space Mono" 字体加载完毕后，再启动动画引擎！
-  document.fonts.ready.then(() => {
+  notoFontPromise.then(() => {
+    createPills();
+    canvas.style.visibility = 'visible';
+    animate();
+  }).catch(() => {
+    createPills();
     canvas.style.visibility = 'visible';
     animate();
   });
