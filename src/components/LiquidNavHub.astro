@@ -61,10 +61,10 @@
   const GREEN = '#8EDB35';
   
   const templates = [
-    { text: "Watch the videos of the works", href: "/omni" },
-    { text: "View the pictures of the works", href: "/dual" },
-    { text: "Get to know me", href: "/about" },
-    { text: "Contact me", href: "/contact" }
+    { text: "Watch the videos of the works 视频", href: "/omni" },
+    { text: "View the pictures of the works 图片", href: "/dual" },
+    { text: "Get to know me 关于我", href: "/about" },
+    { text: "Contact me 联系我", href: "/contact" }
   ];
 
   interface Pill {
@@ -80,14 +80,14 @@
     locked: boolean;
   }
 
-  ctx.font = 'bold 15px monospace';
+  ctx.font = 'bold 20px monospace';
   const pills: Pill[] = [];
   const items = [...templates, ...templates]; 
 
   items.forEach((item, index) => {
     const textWidth = ctx.measureText(item.text).width;
-    const w = textWidth + 50;  
-    const h = 42;              
+    const w = textWidth + 80;  
+    const h = 60;              
 
     const x = Math.random() * (width - w - 100) + 50;
     const y = Math.random() * (height - h - 100) + 50;
@@ -132,8 +132,8 @@
   }
 });
 
-  const LOCK_DIST = 90;   
-  const BREAK_DIST = 160; 
+  const LOCK_DIST = 120;   
+  const BREAK_DIST = 220; 
 
   function animate() {
     // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
@@ -181,12 +181,12 @@
       ctx.arc(bubbleX, bubbleY, 65, 0, Math.PI * 2);
       ctx.fill();
     } else {
-      const padding = 18;
+      const padding = 24;
       const bx = lockedPill.x - padding;
       const by = lockedPill.y - padding;
       const bw = lockedPill.w + padding * 2;
       const bh = lockedPill.h + padding * 2;
-      const radius = 28;
+      const radius = 32;
 
       ctx.beginPath();
       ctx.roundRect(
@@ -215,7 +215,7 @@
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
-        ctx.font = '900 15px monospace';
+        ctx.font = '900 20px monospace';
         ctx.fillText(p.text, cx, cy);
       } else {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
@@ -223,7 +223,7 @@
         ctx.strokeRect(p.x, p.y, p.w, p.h);
 
         ctx.fillStyle = '#e5e5e5'; 
-        ctx.font = 'bold 15px monospace';
+        ctx.font = 'bold 20px monospace';
         ctx.fillText(p.text, cx, cy);
       }
       ctx.restore();
