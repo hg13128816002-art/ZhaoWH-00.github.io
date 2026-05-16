@@ -14,6 +14,7 @@ const headerFontSize = 24; // px — 开发者可在此修改文字与字号
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact // HAO</title>
+  <script src="/scripts/font-loader.js" is:inline></script>
 </head>
 <body class="w-screen h-screen bg-[#0a0a0a] text-neutral-100 font-mono overflow-hidden select-none flex flex-col justify-between p-8 md:p-12 relative" style="margin: 0; padding: 3rem; box-sizing: border-box;">
   <PureTransition />
@@ -120,6 +121,8 @@ const headerFontSize = 24; // px — 开发者可在此修改文字与字号
     }
     window.addEventListener('resize', resize);
     resize(); setTimeout(resize, 50);
+    // 隐藏画布，直到字体加载完成再显示并启动动画
+    canvas.style.visibility = 'hidden';
 
     // 示波器交互参数
     let targetFrequency = 0.02;
@@ -172,8 +175,16 @@ const headerFontSize = 24; // px — 开发者可在此修改文字与字号
       ctx.shadowBlur = 0; // 重置光晕
 
       requestAnimationFrame(animate);
-    }
-    animate();
+      }
+      // 等待字体加载再开始绘制，避免回退字体出现在 Canvas
+      if (window.fontsReadyPromise) {
+        window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; animate(); });
+      } else if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; animate(); });
+      } else {
+        canvas.style.visibility = 'visible';
+        animate();
+      }
 
     // ================= 像素级交互反馈核心逻辑 =================
     const buttons = document.querySelectorAll('.contact-btn');

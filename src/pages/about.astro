@@ -12,6 +12,7 @@ import PureTransition from '../components/PureTransition.astro';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About // ZHAO WENHAO</title>
+  <script src="/scripts/font-loader.js" is:inline></script>
 </head>
 <body class="min-h-screen w-full bg-[#050505] text-neutral-100 font-mono select-none flex flex-col md:flex-row relative" style="margin: 0; padding: 0; background-color: #050505;">
   <PureTransition />
@@ -168,6 +169,7 @@ import PureTransition from '../components/PureTransition.astro';
   <script>
     // 动态调整画布尺寸，彻底放行底部滚动
     const canvas = document.getElementById('terminal-grid') as HTMLCanvasElement;
+    canvas.style.visibility = 'hidden';
     const ctx = canvas.getContext('2d')!;
     
     function resize() {
@@ -197,7 +199,16 @@ import PureTransition from '../components/PureTransition.astro';
       
       requestAnimationFrame(animate);
     }
-    animate();
+    // 等待字体加载完毕再开始绘制，避免 canvas 使用回退字体。
+    if (window.fontsReadyPromise) {
+      window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; animate(); });
+    } else if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; animate(); });
+    } else {
+      // 兜底：直接启动
+      canvas.style.visibility = 'visible';
+      animate();
+    }
   </script>
 
   <style>

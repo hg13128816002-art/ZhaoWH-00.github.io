@@ -55,6 +55,7 @@
 
 <script>
   const canvas = document.getElementById('omni-canvas') as HTMLCanvasElement;
+  canvas.style.visibility = 'hidden';
   const ctx = canvas.getContext('2d', { alpha: false })!; 
   const GREEN = '#8EDB35';
   const BG_COLOR = '#0a0a0a';
@@ -203,7 +204,16 @@
     }
     requestAnimationFrame(animate);
   }
-  animate();
+
+  // 延迟启动，确保字体加载完毕再绘制文本，避免回退字体被烙印到 Canvas
+  if (window.fontsReadyPromise) {
+    window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; animate(); });
+  } else if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; animate(); });
+  } else {
+    canvas.style.visibility = 'visible';
+    animate();
+  }
 
   const video = document.getElementById('main-video') as HTMLVideoElement;
   const btnClose = document.getElementById('close-video')!;

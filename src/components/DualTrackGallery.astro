@@ -40,6 +40,7 @@
 <script>
   // ================= 1. 基础引擎初始化 =================
   const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
+  canvas.style.visibility = 'hidden';
   const ctx = canvas.getContext('2d', { alpha: false })!;
   const filenameDisplay = document.getElementById('filename-display')!;
   const container = document.getElementById('gallery-container')!;
@@ -226,7 +227,15 @@ projects.forEach((p: any) => {
     }
     requestAnimationFrame(animate);
   }
-  setTimeout(animate, 100);
+  // 延迟启动主循环，确保字体加载完毕再绘制文本
+  if (window.fontsReadyPromise) {
+    window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; setTimeout(animate, 100); });
+  } else if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; setTimeout(animate, 100); });
+  } else {
+    canvas.style.visibility = 'visible';
+    setTimeout(animate, 100);
+  }
 
 // ================= 4. 核心渲染器 (完全无损真实比例) =================
   function renderCard(card: any) {

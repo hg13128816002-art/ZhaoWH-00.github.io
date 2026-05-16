@@ -12,6 +12,7 @@ import PureTransition from '../components/PureTransition.astro';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZHAO WENHAO // PORTFOLIO</title>
+  <script src="/scripts/font-loader.js" is:inline></script>
 </head>
 <body class="w-screen h-screen bg-[#050505] overflow-hidden select-none relative font-mono cursor-none" style="margin: 0; padding: 0; background-color: #050505;">
   <PureTransition />
@@ -86,6 +87,8 @@ import PureTransition from '../components/PureTransition.astro';
     }
     window.addEventListener('resize', resize);
     resize();
+    // 默认隐藏 canvas，待字体加载完毕再显示并开始渲染，避免回退字体被绘制到画布上
+    canvas.style.visibility = 'hidden';
 
     let mouseX = width / 2;
     let mouseY = height / 2;
@@ -272,7 +275,15 @@ import PureTransition from '../components/PureTransition.astro';
 
       requestAnimationFrame(renderUniverse);
     }
-    renderUniverse();
+    // 等待字体加载完毕再开始渲染
+    if (window.fontsReadyPromise) {
+      window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; renderUniverse(); });
+    } else if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; renderUniverse(); });
+    } else {
+      canvas.style.visibility = 'visible';
+      renderUniverse();
+    }
 
    // ================= 全局跃迁协议 =================
 const flash = document.getElementById('warp-flash')!;

@@ -35,6 +35,7 @@
 <script>
   const canvas = document.getElementById('liquid-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
+  canvas.style.visibility = 'hidden';
 
   // 强制点火引擎
   const bgVideo = document.getElementById('bg-video') as HTMLVideoElement;
@@ -245,6 +246,7 @@
 
 // 强制等待 "Space Mono" 字体加载完毕后，再启动动画引擎！
   document.fonts.ready.then(() => {
+    canvas.style.visibility = 'visible';
     animate();
   });
 </script>
