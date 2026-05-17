@@ -1,9 +1,9 @@
 ---
 // src/pages/project-detail.astro
-// 究极防弹版：物理隔离双栏架构 (左侧绝对固定 + 右侧原生滚动)
+// 修复版：移除 Tailwind CDN，使用原生 CSS
 ---
 
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,24 @@
   <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/scripts/font-loader.js" is:inline></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700;800&display=swap');
-    /* 恢复原生滚动条，手感更丝滑 */
-    body { font-family: 'Noto Sans SC Local', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; background-color: #050505; color: #a3a3a3; margin: 0; overflow-x: hidden; }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans SC Local', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      background-color: #050505;
+      color: #a3a3a3;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      user-select: none;
+    }
     
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #050505; }
@@ -24,94 +37,445 @@
     ::-webkit-scrollbar-thumb:hover { background: #8EDB35; }
 
     .grid-bg {
+      position: fixed;
+      inset: 0;
       background-size: 40px 40px;
       background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
                         linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .home-btn {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 50;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: 1px solid rgba(142, 219, 53, 0.3);
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8EDB35;
+      transition: all 0.3s;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(142, 219, 53, 0.1);
+      text-decoration: none;
+    }
+    
+    .home-btn:hover {
+      background: #8EDB35;
+      color: black;
+      box-shadow: 0 0 25px rgba(142, 219, 53, 0.5);
+    }
+    
+    .home-btn svg {
+      transition: transform 0.3s;
+    }
+    
+    .home-btn:hover svg {
+      transform: translateX(-0.25rem);
+    }
+    
+    .left-panel {
+      position: relative;
+      width: 100%;
+      min-height: 50vh;
+      max-height: 60vh;
+      border-bottom: 1px solid #171717;
+      z-index: 10;
+      background: #020202;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .left-panel-label {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      color: #404040;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      z-index: 30;
+    }
+    
+    .img-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .corner-tl {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1rem;
+      height: 1rem;
+      border-top: 1px solid #8EDB35;
+      border-left: 1px solid #8EDB35;
+      z-index: 20;
+      transition: all 0.3s;
+    }
+    
+    .corner-br {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 1rem;
+      height: 1rem;
+      border-bottom: 1px solid #8EDB35;
+      border-right: 1px solid #8EDB35;
+      z-index: 20;
+      transition: all 0.3s;
+    }
+    
+    .img-container:hover .corner-tl,
+    .img-container:hover .corner-br {
+      width: 2rem;
+      height: 2rem;
+    }
+    
+    .main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      filter: grayscale(0.2);
+      transition: all 0.7s;
+      display: block;
+    }
+    
+    .img-container:hover .main-img {
+      filter: grayscale(0);
+    }
+    
+    .right-panel {
+      width: 100%;
+      min-height: 50vh;
+      z-index: 20;
+      position: relative;
+      background: #050505;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .file-label {
+      color: #8EDB35;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .pulse-dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      background: #8EDB35;
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .title-main {
+      color: white;
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+    
+    .title-sub {
+      color: #737373;
+      font-size: 0.875rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      border-top: 1px solid #171717;
+      border-bottom: 1px solid #171717;
+      padding: 1.5rem 0;
+      margin: 2rem 0;
+      background: rgba(5, 5, 5, 0.3);
+    }
+    
+    .meta-item-label {
+      color: #525252;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.375rem;
+    }
+    
+    .meta-item-value {
+      color: #e5e5e5;
+      font-size: 0.875rem;
+    }
+    
+    .meta-item-value.green {
+      color: #8EDB35;
+    }
+    
+    .section {
+      margin-bottom: 3rem;
+    }
+    
+    .section-title {
+      color: white;
+      font-size: 0.875rem;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      border-left: 2px solid #8EDB35;
+      padding-left: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .section-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #a3a3a3;
+      text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .attachment-section {
+      margin-top: 4rem;
+    }
+    
+    .attachment-title {
+      color: #525252;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid #171717;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .image-item {
+      background: #0a0a0a;
+      border: 1px solid #171717;
+      padding: 0.5rem;
+    }
+    
+    .image-item img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(0.5);
+      transition: all 0.5s;
+    }
+    
+    .image-item:hover img {
+      filter: grayscale(0);
+    }
+    
+    .footer {
+      margin-top: auto;
+      padding-top: 4rem;
+      padding-bottom: 2rem;
+      color: #262626;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      border-top: 1px solid #171717;
+    }
+    
+    /* 桌面端响应式 */
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        flex-direction: row;
+      }
+      
+      .left-panel {
+        position: sticky;
+        top: 0;
+        width: 40%;
+        height: 100vh;
+        min-height: 100vh;
+        border-bottom: none;
+        border-right: 1px solid #171717;
+        padding: 3rem;
+        flex-shrink: 0;
+      }
+      
+      .main-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      
+      .right-panel {
+        width: 60%;
+        margin-left: 0;
+        margin-top: 0;
+        min-height: 100vh;
+        padding: 3rem;
+      }
+      
+      .title-main {
+        font-size: 3.5rem;
+      }
+      
+      .title-sub {
+        font-size: 1rem;
+      }
+      
+      
+      .section-text {
+        font-size: 15px;
+        line-height: 1.8;
+        text-align: left;
+      }
+      
+      .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .left-panel {
+        padding: 4rem;
+      }
+      
+      .right-panel {
+        padding: 4rem 5rem;
+      }
+      
+      .title-main {
+        font-size: 4.5rem;
+      }
+      
+      .title-sub {
+        font-size: 1.125rem;
+      }
+      
+      .meta-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .meta-full-width {
+        grid-column: span 3;
+      }
+    }
+    
+    @media (min-width: 1280px) {
+      .right-panel {
+        padding: 5rem 6rem;
+      }
     }
   </style>
 </head>
-<body class="relative w-full min-h-screen select-none">
+<body>
 
-  <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+  <div class="grid-bg"></div>
 
-  <a href="/" class="fixed top-8 right-8 z-50 w-12 h-12 rounded-full border border-[#8EDB35]/30 bg-[#0a0a0a]/80 backdrop-blur-sm flex items-center justify-center text-[#8EDB35] hover:bg-[#8EDB35] hover:text-black transition-all duration-300 group cursor-pointer shadow-[0_0_15px_rgba(142,219,53,0.1)] hover:shadow-[0_0_25px_rgba(142,219,53,0.5)]" style="color: #8EDB35; text-decoration: none;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <a href="/" class="home-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="square" stroke-linejoin="miter" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
     </svg>
   </a>
 
-  <div class="fixed top-0 left-0 w-full md:w-1/2 h-[45vh] md:h-screen border-b md:border-b-0 md:border-r border-neutral-900 z-10 bg-[#020202] p-8 lg:p-16">
-    <div class="absolute top-6 left-6 text-neutral-700 text-[10px] tracking-widest z-30">VISUAL_DATA // PROMO_POSTER</div>
+  <div class="left-panel">
+    <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
     
-    <div class="relative w-full h-full group">
-       <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#8EDB35] z-20 transition-all duration-300 group-hover:w-8 group-hover:h-8"></div>
-       <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#8EDB35] z-20 transition-all duration-300 group-hover:w-8 group-hover:h-8"></div>
+    <div class="img-container">
+       <div class="corner-tl"></div>
+       <div class="corner-br"></div>
        
        <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" 
             alt="Never Extinguished Promo" 
-            class="absolute inset-0 w-full h-full object-contain filter grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 p-2 md:p-6" />
+            class="main-img" />
     </div>
   </div>
 
-  <div class="w-full md:w-1/2 mt-[45vh] md:mt-0 md:ml-[50%] min-h-screen z-20 relative bg-[#050505] p-8 lg:p-16 xl:p-24 flex flex-col shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">
+  <div class="right-panel">
     
-    <header class="mb-12">
-      <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] flex items-center gap-2 mb-6">
-         <div class="w-1.5 h-1.5 bg-[#8EDB35] animate-pulse"></div>
+    <header style="margin-bottom: 3rem;">
+      <div class="file-label">
+         <div class="pulse-dot"></div>
          FILE_DECRYPTED // 001
       </div>
-      <h1 class="text-white text-5xl lg:text-7xl font-extrabold tracking-tight uppercase leading-[1.1] mb-2 break-words">
+      <h1 class="title-main">
         未曾熄灭的
       </h1>
-      <h2 class="text-neutral-500 text-lg lg:text-xl tracking-[0.2em] uppercase">NEVER EXTINGUISHED</h2>
+      <h2 class="title-sub">NEVER EXTINGUISHED</h2>
     </header>
 
-    <div class="grid grid-cols-2 xl:grid-cols-3 gap-y-8 gap-x-4 border-y border-neutral-900 py-8 mb-12 bg-[#050505]/30">
+    <div class="meta-grid">
       <div>
-        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">TIMESTAMP</div>
-        <div class="text-neutral-200 text-sm">2026</div>
+        <div class="meta-item-label">TIMESTAMP</div>
+        <div class="meta-item-value">2026</div>
       </div>
       <div>
-        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">CATEGORY</div>
-        <div class="text-[#8EDB35] text-sm">Serious Game / VR</div>
+        <div class="meta-item-label">CATEGORY</div>
+        <div class="meta-item-value green">Serious Game / VR</div>
       </div>
-      <div class="col-span-2 xl:col-span-1">
-        <div class="text-neutral-600 text-[9px] tracking-widest mb-1.5">ENGINE</div>
-        <div class="text-neutral-200 text-sm">Unity / Meta XR</div>
+      <div class="meta-full-width">
+        <div class="meta-item-label">ENGINE</div>
+        <div class="meta-item-value">Unity / Meta XR</div>
       </div>
     </div>
 
-    <section class="space-y-12">
-      <div>
-        <h3 class="text-white text-sm tracking-[0.2em] font-bold border-l-2 border-[#8EDB35] pl-3 mb-4">I. EXPERIENCE_DESIGN</h3>
-        <p class="text-[15px] leading-[1.8] text-neutral-400 text-justify">
+    <section>
+      <div class="section">
+        <h3 class="section-title">I. EXPERIENCE_DESIGN</h3>
+        <p class="section-text">
           这是一场基于虚拟现实（VR）的严肃游戏实验。通过剥离传统的娱乐性游戏机制，本作将玩家置入一个高度沉浸且充满压迫感的叙事空间中，探讨记忆、废墟与个体精神状态在极端环境下的挣扎与重构。
         </p>
       </div>
       
-      <div>
-        <h3 class="text-white text-sm tracking-[0.2em] font-bold border-l-2 border-[#8EDB35] pl-3 mb-4">II. ENVIRONMENT_ARCHITECTURE</h3>
-        <p class="text-[15px] leading-[1.8] text-neutral-400 text-justify">
-          在场景架构上，彻底抛弃了明亮饱和的视觉糖水，转而采用阴郁、冷峻的材质表现。通过 Unity 渲染管线与光影压榨，塑造出一种介于“真实物理法则”与“心理潜意识幻境”之间的临界感（Liminality）。
+      <div class="section">
+        <h3 class="section-title">II. ENVIRONMENT_ARCHITECTURE</h3>
+        <p class="section-text">
+          在场景架构上，彻底抛弃了明亮饱和的视觉糖水，转而采用阴郁、冷峻的材质表现。通过 Unity 渲染管线与光影压榨，塑造出一种介于"真实物理法则"与"心理潜意识幻境"之间的临界感（Liminality）。
         </p>
       </div>
     </section>
 
-    <section class="mt-16">
-      <h3 class="text-neutral-600 text-[10px] tracking-[0.2em] border-b border-neutral-900 pb-3 mb-6">ATTACHMENT // ENVIRONMENT_SCANS</h3>
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-         <div class="bg-[#0a0a0a] border border-neutral-900 p-2 group w-full">
+    <section class="attachment-section">
+      <h3 class="attachment-title">ATTACHMENT // ENVIRONMENT_SCANS</h3>
+      <div class="image-grid">
+         <div class="image-item">
             <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" 
-                 class="w-full aspect-[4/3] object-cover filter grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500" />
+                 alt="Environment Scan 1" />
          </div>
-         <div class="bg-[#0a0a0a] border border-neutral-900 p-2 group w-full">
+         <div class="image-item">
             <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" 
-                 class="w-full aspect-[4/3] object-cover filter grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500" />
+                 alt="Environment Scan 2" />
          </div>
       </div>
     </section>
 
-    <div class="mt-auto pt-16 pb-8 text-neutral-800 text-[10px] tracking-widest border-t border-neutral-900">
+    <div class="footer">
       [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
     </div>
   </div>

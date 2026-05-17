@@ -60,7 +60,7 @@ import '../styles/global.css';
   const ctx = canvas.getContext('2d', { alpha: false })!; 
   const GREEN = '#8EDB35';
   const BG_COLOR = '#0a0a0a';
-  const SPEED_FACTOR = 0.03; 
+  const SPEED_FACTOR = 0.02; 
   
   const cardW = 600; const cardH = 337; 
   const GRID_SIZE_X = 650; const GRID_SIZE_Y = 390;
@@ -72,13 +72,6 @@ import '../styles/global.css';
     imgObj?: HTMLImageElement;
   };
 
-  // ==========================================
-  // ！！！解答问题 1 & 2：完美对应的数据结构！！！
-  // 以后你真实的 OSS 链接就按这种“封面-视频”一对一的格式填入。
-  // 现在为了你在本地能测试播放，我把三个视频链接暂时写成了 test1.mp4, test2.mp4, test3.mp4
-  // (你可以把 public 里的 test.mp4 复制两份改个名，就能看到完美不串台的效果了)
-  // ==========================================
-  // ！！！你的真实云端数字档案库 ！！！
   const projects: Project[] = [
     { 
       title: "LIMINAL-临近边缘的幻想.MP4", 
@@ -112,7 +105,7 @@ import '../styles/global.css';
     },
     { 
       title: "那洲村AR小游戏DEMO演示.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png", // TODO: 未来替换为你在 OSS 的封面图链接
+      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%B0%8F%E6%B8%B8%E6%88%8FDemo%E6%BC%94%E7%A4%BA.mp4" 
     }
   ];
@@ -124,13 +117,91 @@ import '../styles/global.css';
 
   let width = window.innerWidth; let height = window.innerHeight;
   let cameraX = 0; let cameraY = 0;
+  
+  // 统一物理层：无论是移动端还是PC，核心引擎只认这两个标准位移驱动器值
+  let driveX = 0; 
+  let driveY = 0;
+  
   const mouse = { x: width / 2, y: height / 2 };
   let hoveredNodeCoord: any = null; 
 
   function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
   window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  
+  // PC端依旧保留完美的鼠标监听
+  window.addEventListener('mousemove', (e) => { 
+    mouse.x = e.clientX; 
+    mouse.y = e.clientY; 
+    driveX = mouse.x - width / 2;
+    driveY = mouse.y - height / 2;
+  });
   resize();
+
+  // ========================================================
+  // 🌌 核心移动端硬件点火模块：陀螺仪自适应标定算法
+  // ========================================================
+  let isMobile = false;
+  let hasGyroPermission = false;
+  let initialBeta = 0;
+  let initialGamma = 0;
+  let hasCalibrated = false;
+
+  // 检测是不是移动设备
+  if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    isMobile = true;
+  }
+
+  function handleOrientation(event: DeviceOrientationEvent) {
+    if (overlay.style.opacity === '1') return; // 弹窗开启时锁死底盘模拟
+
+    const beta = event.beta || 0;   // 前后倾斜 (-180 到 180)
+    const gamma = event.gamma || 0; // 左右倾斜 (-90 到 90)
+
+    // 💡 物理标定黑魔法：捕获点火瞬间的用户握持姿态作为绝对黄金基准面
+    if (!hasCalibrated) {
+      initialBeta = beta;
+      initialGamma = gamma;
+      hasCalibrated = true;
+    }
+
+    // 计算设备当前的倾斜差值
+    let deltaBeta = beta - initialBeta;
+    let deltaGamma = gamma - initialGamma;
+
+    // 边界安全限幅，防止暴走
+    deltaBeta = Math.max(-30, Math.min(30, deltaBeta));
+    deltaGamma = Math.max(-30, Math.min(30, deltaGamma));
+
+    // 映射进动力学驱动，系数 15.0 能调出完美的重力物理阻尼感
+    driveX = deltaGamma * 15.0;
+    driveY = deltaBeta * 15.0;
+
+    // 移动端由于没有真实物理光标，我们强制让交叉虚线瞄准中央最核心的触发判定点
+    mouse.x = width / 2 + driveX;
+    mouse.y = height / 2 + driveY;
+  }
+
+  // 触发权限申请的极度安全中枢
+  function initGyroscope() {
+    if (!isMobile || hasGyroPermission) return;
+
+    const DeviceOrientation = (window as any).DeviceOrientationEvent;
+    if (DeviceOrientation && typeof DeviceOrientation.requestPermission === 'function') {
+      // iOS 权限强登舰艇
+      DeviceOrientation.requestPermission()
+        .then((permissionState: string) => {
+          if (permissionState === 'granted') {
+            hasGyroPermission = true;
+            window.addEventListener('deviceorientation', handleOrientation);
+          }
+        })
+        .catch(console.error);
+    } else {
+      // 安卓或常规浏览器直接挂载
+      hasGyroPermission = true;
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+  }
 
   const overlay = document.getElementById('video-overlay')!;
 
@@ -139,10 +210,9 @@ import '../styles/global.css';
     ctx.fillRect(0, 0, width, height);
 
     if (overlay.style.opacity !== '1') {
-      const dx = mouse.x - width / 2;
-      const dy = mouse.y - height / 2;
-      cameraX -= dx * SPEED_FACTOR;
-      cameraY -= dy * SPEED_FACTOR;
+      // 🏎️ 物理平移合并：无论硬件来源，统一读取标定后的驱动极
+      cameraX -= driveX * SPEED_FACTOR;
+      cameraY -= driveY * SPEED_FACTOR;
     }
 
     const startX = Math.floor((-cameraX - width) / GRID_SIZE_X);
@@ -155,11 +225,6 @@ import '../styles/global.css';
     for (let ix = startX; ix <= endX; ix++) {
       for (let iy = startY; iy <= endY; iy++) {
         
-        // ==========================================
-        // ！！！解答问题 3：GLSL 伪随机哈希散落算法！！！
-        // 抛弃明显的线性循环，利用 sin 震荡把坐标转化为彻底无序但固定的索引
-        // 这样你的作品就会像星空一样毫无规律地打乱分布！
-        // ==========================================
         const hash = Math.abs(Math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453);
         const projectIndex = Math.floor(hash) % projects.length;
         
@@ -203,10 +268,22 @@ import '../styles/global.css';
         }
       }
     }
+    
+    // 📱 移动端无光标补偿：由于手机没有硬件十字瞄准线，我们手动在画布中央画一个精细的动态镭射准星
+    if (isMobile) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(142, 219, 83, 0.3)';
+      ctx.lineWidth = 1;
+      // 绘制画幅中央的精密极客定位环
+      ctx.beginPath();
+      ctx.arc(width / 2, height / 2, 8, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     requestAnimationFrame(animate);
   }
 
-  // 延迟启动，确保字体加载完毕再绘制文本，避免回退字体被烙印到 Canvas
   if (window.fontsReadyPromise) {
     window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; animate(); });
   } else if (document.fonts && document.fonts.ready) {
@@ -225,37 +302,27 @@ import '../styles/global.css';
   const timeDisplay = document.getElementById('time-display')!;
   const overlayTitle = document.getElementById('overlay-title')!;
 
-  // ==========================================
-  // ！！！终极放映终端交互逻辑 (智能特征排除防穿透版) ！！！
-  // ==========================================
+  // ========================================================
+  // 🛠️ 融合判定终端交互（支持移动端 Click / Touch 统一触发）
+  // ========================================================
   window.addEventListener('mousedown', (e) => {
+    // 💡 顺手点火：当用户首次点击页面的任意一处时，全自动合法地申请并激活手机陀螺仪！
+    initGyroscope();
+
     const target = e.target as HTMLElement;
-
-    // ！！！核心黑魔法：智能识别 UI 并给悬浮球让路 ！！！
-    // 只要你点击的元素（或它的父级）是链接、按钮，或者带有光标变手 (cursor-pointer) 的样式
-    // 物理引擎立刻终止，把点击权 100% 还给你的悬浮球！
     const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
-    
-    if (isUIInteraction) {
-      return; // 乖乖让路，忽略视频弹出
-    }
-
-    // 如果视频终端已经打开，忽略底盘点击
+    if (isUIInteraction) return;
     if (overlay.style.opacity === '1') return;
 
     if (hoveredNodeCoord && hoveredNodeCoord.project) {
       const project = hoveredNodeCoord.project;
       overlayTitle.innerText = project.title;
-      
       video.src = project.videoSrc;
-      
       overlay.style.pointerEvents = 'auto';
       overlay.style.opacity = '1';
-      
       playHint.style.opacity = '0';
       video.play().catch(err => {
         playHint.style.opacity = '1';
-        console.log("Auto-play requires interaction");
       });
     }
   });
@@ -291,25 +358,14 @@ import '../styles/global.css';
     video.currentTime = pos * video.duration;
   });
 
-  video.addEventListener('play', () => {
-    playHint.style.opacity = '0';
-  });
-
-  video.addEventListener('pause', () => {
-    playHint.style.opacity = '1';
-  });
+  video.addEventListener('play', () => { playHint.style.opacity = '0'; });
+  video.addEventListener('pause', () => { playHint.style.opacity = '1'; });
 
   window.addEventListener('keydown', (e) => {
     if (overlay.style.opacity !== '1') return;
     const target = e.target;
     if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable)) return;
-
-    if (e.code === 'Space') {
-      e.preventDefault();
-      togglePlay();
-      return;
-    }
-
+    if (e.code === 'Space') { e.preventDefault(); togglePlay(); return; }
     if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
       e.preventDefault();
       if (!isNaN(video.duration) && video.duration > 0) {
