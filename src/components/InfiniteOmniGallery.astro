@@ -62,8 +62,39 @@ import '../styles/global.css';
   const BG_COLOR = '#0a0a0a';
   const SPEED_FACTOR = 0.02; 
   
-  const cardW = 600; const cardH = 337; 
-  const GRID_SIZE_X = 650; const GRID_SIZE_Y = 390;
+  // 1. 基础尺寸定义（以桌面端为黄金标准）
+  const BASE_CARD_W = 600; 
+  const BASE_CARD_H = 337; 
+  const BASE_GRID_X = 650; 
+  const BASE_GRID_Y = 390;
+
+  // 2. 动态自适应计算变量
+  let cardW = BASE_CARD_W;
+  let cardH = BASE_CARD_H;
+  let GRID_SIZE_X = BASE_GRID_X;
+  let GRID_SIZE_Y = BASE_GRID_Y;
+
+  // 3. 精准响应式阻尼函数：在尺寸改变时同步刷新 Canvas 内部几何体
+  function updateResponsiveSizes() {
+    let currentWidth = window.innerWidth;
+    
+    if (currentWidth < 768) {
+      // 📱 移动端自适应逻辑：让卡片宽度始终等于“手机屏幕宽度的 75%”
+      // 这样既能看清画廊交错的层次，又不会显得卡片巨大、局促
+      const mobileScale = (currentWidth * 0.75) / BASE_CARD_W;
+      
+      cardW = BASE_CARD_W * mobileScale;
+      cardH = BASE_CARD_H * mobileScale;
+      GRID_SIZE_X = BASE_GRID_X * mobileScale;
+      GRID_SIZE_Y = BASE_GRID_Y * mobileScale;
+    } else {
+      // 💻 桌面端还原：死死锁定原本的 600px 极客规格
+      cardW = BASE_CARD_W;
+      cardH = BASE_CARD_H;
+      GRID_SIZE_X = BASE_GRID_X;
+      GRID_SIZE_Y = BASE_GRID_Y;
+    }
+  }
 
   type Project = {
     title: string;
@@ -125,7 +156,16 @@ import '../styles/global.css';
   const mouse = { x: width / 2, y: height / 2 };
   let hoveredNodeCoord: any = null; 
 
-  function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+  function resize() { 
+    width = window.innerWidth; 
+    height = window.innerHeight; 
+    canvas.width = width; 
+    canvas.height = height; 
+    
+    // 🚨 每次视口改变，立刻重新计算内部卡片的缩放比例
+    updateResponsiveSizes(); 
+  }
+  
   window.addEventListener('resize', resize);
   
   // PC端依旧保留完美的鼠标监听
