@@ -14,13 +14,13 @@
   <script src="/scripts/font-loader.js" is:inline></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700;800&display=swap');
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Noto Sans SC Local', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
       background-color: #050505;
@@ -30,7 +30,7 @@
       overflow-y: auto;
       user-select: none;
     }
-    
+
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #050505; }
     ::-webkit-scrollbar-thumb { background: #333; }
@@ -45,7 +45,7 @@
       pointer-events: none;
       z-index: 0;
     }
-    
+
     .home-btn {
       position: fixed;
       top: 2rem;
@@ -66,26 +66,39 @@
       box-shadow: 0 0 15px rgba(142, 219, 53, 0.1);
       text-decoration: none;
     }
-    
+
     .home-btn:hover {
       background: #8EDB35;
       color: black;
       box-shadow: 0 0 25px rgba(142, 219, 53, 0.5);
     }
-    
+
     .home-btn svg {
       transition: transform 0.3s;
     }
-    
+
     .home-btn:hover svg {
       transform: translateX(-0.25rem);
     }
-    
+
+    .project-stack {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .project-entry {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
     .left-panel {
       position: relative;
       width: 100%;
       min-height: 50vh;
-      max-height: 60vh;
       border-bottom: 1px solid #171717;
       z-index: 10;
       background: #020202;
@@ -93,7 +106,7 @@
       display: flex;
       flex-direction: column;
     }
-    
+
     .left-panel-label {
       position: absolute;
       top: 1.5rem;
@@ -103,18 +116,22 @@
       letter-spacing: 0.4em;
       z-index: 30;
     }
-    
+
     .img-container {
       position: relative;
       width: 100%;
-      flex: 1;
-      min-height: 0;
+      aspect-ratio: 16 / 9;
+      flex: none;
+      margin-top: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      border: 1px solid #171717;
+      background: #050505;
+      cursor: zoom-in;
     }
-    
+
     .corner-tl {
       position: absolute;
       top: 0;
@@ -126,7 +143,7 @@
       z-index: 20;
       transition: all 0.3s;
     }
-    
+
     .corner-br {
       position: absolute;
       bottom: 0;
@@ -138,38 +155,164 @@
       z-index: 20;
       transition: all 0.3s;
     }
-    
+
     .img-container:hover .corner-tl,
     .img-container:hover .corner-br {
       width: 2rem;
       height: 2rem;
     }
-    
+
     .main-img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center;
       filter: grayscale(0.2);
       transition: all 0.7s;
       display: block;
     }
-    
+
     .img-container:hover .main-img {
       filter: grayscale(0);
     }
-    
+
+    .visual-caption {
+      color: #525252;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      line-height: 1.7;
+      margin-top: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #171717;
+    }
+
+    .visual-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .visual-meta-item {
+      min-width: 0;
+    }
+
+    .visual-meta-label {
+      color: #404040;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      margin-bottom: 0.35rem;
+    }
+
+    .visual-meta-value {
+      color: #d4d4d4;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: break-word;
+    }
+
+    .thumb-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .thumb-item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border: 1px solid #171717;
+      background: #0a0a0a;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .thumb-strip-wide .thumb-item {
+      aspect-ratio: 16 / 9;
+    }
+
+    .project-entry-liminal .thumb-strip {
+      margin-top: 5.55rem;
+    }
+
+    .project-entry-never .thumb-item {
+      aspect-ratio: 16 / 10;
+    }
+
+    .project-entry-never .thumb-strip {
+      margin-top: 1.85rem;
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(0.55);
+      transition: filter 0.35s, transform 0.35s;
+    }
+
+    .thumb-item:hover img {
+      filter: grayscale(0);
+      transform: scale(1.04);
+    }
+
+    .thumb-index {
+      position: absolute;
+      left: 0.5rem;
+      bottom: 0.45rem;
+      color: #8EDB35;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 10px #050505;
+    }
+
+    .archive-rail {
+      margin-top: auto;
+      padding-top: 2rem;
+    }
+
+    .archive-rail-line {
+      height: 1px;
+      background: linear-gradient(90deg, #8EDB35, #171717 45%, transparent);
+      margin-bottom: 1rem;
+    }
+
+    .archive-rail-text {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #404040;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+    }
+
+    .preview-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 79;
+      pointer-events: none;
+      background: rgba(5, 5, 5, 0);
+      opacity: 0;
+      transition: opacity 0.28s ease, background 0.28s ease;
+    }
+
+    .preview-backdrop.active {
+      opacity: 1;
+      background: rgba(5, 5, 5, 0.68);
+    }
+
     .right-panel {
       width: 100%;
       min-height: 50vh;
       z-index: 20;
       position: relative;
       background: #050505;
-      padding: 1.5rem;
+      padding: 3.5rem 1.5rem 1.5rem;
       display: flex;
       flex-direction: column;
     }
-    
+
     .file-label {
       color: #8EDB35;
       font-size: 10px;
@@ -179,19 +322,19 @@
       gap: 0.5rem;
       margin-bottom: 1.5rem;
     }
-    
+
     .pulse-dot {
       width: 0.375rem;
       height: 0.375rem;
       background: #8EDB35;
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
-    
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
-    
+
     .title-main {
       color: white;
       font-size: 2.25rem;
@@ -202,14 +345,14 @@
       margin-bottom: 0.5rem;
       word-break: break-word;
     }
-    
+
     .title-sub {
       color: #737373;
       font-size: 0.875rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
     }
-    
+
     .meta-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -220,27 +363,27 @@
       margin: 2rem 0;
       background: rgba(5, 5, 5, 0.3);
     }
-    
+
     .meta-item-label {
       color: #525252;
       font-size: 9px;
       letter-spacing: 0.3em;
       margin-bottom: 0.375rem;
     }
-    
+
     .meta-item-value {
       color: #e5e5e5;
       font-size: 0.875rem;
     }
-    
+
     .meta-item-value.green {
       color: #8EDB35;
     }
-    
+
     .section {
       margin-bottom: 3rem;
     }
-    
+
     .section-title {
       color: white;
       font-size: 0.875rem;
@@ -250,7 +393,7 @@
       padding-left: 0.75rem;
       margin-bottom: 1rem;
     }
-    
+
     .section-text {
       font-size: 14px;
       line-height: 1.75;
@@ -259,44 +402,7 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
-    
-    .attachment-section {
-      margin-top: 4rem;
-    }
-    
-    .attachment-title {
-      color: #525252;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      border-bottom: 1px solid #171717;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .image-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-    
-    .image-item {
-      background: #0a0a0a;
-      border: 1px solid #171717;
-      padding: 0.5rem;
-    }
-    
-    .image-item img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      filter: grayscale(0.5);
-      transition: all 0.5s;
-    }
-    
-    .image-item:hover img {
-      filter: grayscale(0);
-    }
-    
+
     .footer {
       margin-top: auto;
       padding-top: 4rem;
@@ -306,92 +412,89 @@
       letter-spacing: 0.3em;
       border-top: 1px solid #171717;
     }
-    
+
     /* 桌面端响应式 */
     @media (min-width: 768px) {
-      body {
+      .project-entry {
         display: flex;
         flex-direction: row;
+        align-items: stretch;
       }
-      
+
       .left-panel {
-        position: sticky;
-        top: 0;
+        position: relative;
         width: 40%;
-        height: 100vh;
+        height: auto;
         min-height: 100vh;
         border-bottom: none;
         border-right: 1px solid #171717;
         padding: 3rem;
         flex-shrink: 0;
       }
-      
+
       .main-img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
-      
+
       .right-panel {
         width: 60%;
         margin-left: 0;
         margin-top: 0;
         min-height: 100vh;
-        padding: 3rem;
+        padding: 5rem 3rem 3rem;
       }
-      
+
       .title-main {
         font-size: 3.5rem;
       }
-      
+
       .title-sub {
         font-size: 1rem;
       }
-      
-      
+
+
       .section-text {
         font-size: 15px;
         line-height: 1.8;
         text-align: left;
       }
-      
-      .image-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-      }
+
     }
-    
+
     @media (min-width: 1024px) {
       .left-panel {
         padding: 4rem;
       }
-      
+
       .right-panel {
-        padding: 4rem 5rem;
+        padding: 6rem 5rem 4rem;
       }
-      
+
       .title-main {
         font-size: 4.5rem;
       }
-      
+
       .title-sub {
         font-size: 1.125rem;
       }
-      
+
       .meta-grid {
         grid-template-columns: repeat(3, 1fr);
       }
-      
+
       .meta-full-width {
         grid-column: span 3;
       }
     }
-    
+
     @media (min-width: 1280px) {
       .right-panel {
-        padding: 5rem 6rem;
+        padding: 6rem 6rem 5rem;
       }
     }
+
   </style>
 </head>
 <body>
@@ -404,81 +507,426 @@
     </svg>
   </a>
 
-  <div class="left-panel">
-    <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
-    
-    <div class="img-container">
-       <div class="corner-tl"></div>
-       <div class="corner-br"></div>
-       
-       <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" 
-            alt="Never Extinguished Promo" 
-            class="main-img" />
-    </div>
-  </div>
+  <main class="project-stack">
+    <article class="project-entry project-entry-never">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
-  <div class="right-panel">
-    
-    <header style="margin-bottom: 3rem;">
-      <div class="file-label">
-         <div class="pulse-dot"></div>
-         FILE_DECRYPTED // 001
-      </div>
-      <h1 class="title-main">
-        未曾熄灭的
-      </h1>
-      <h2 class="title-sub">NEVER EXTINGUISHED</h2>
-    </header>
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
 
-    <div class="meta-grid">
-      <div>
-        <div class="meta-item-label">TIMESTAMP</div>
-        <div class="meta-item-value">2026</div>
-      </div>
-      <div>
-        <div class="meta-item-label">CATEGORY</div>
-        <div class="meta-item-value green">Serious Game / VR</div>
-      </div>
-      <div class="meta-full-width">
-        <div class="meta-item-label">ENGINE</div>
-        <div class="meta-item-value">Unity / Meta XR</div>
-      </div>
-    </div>
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp"
+                alt="Never Extinguished Promo"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
 
-    <section>
-      <div class="section">
-        <h3 class="section-title">I. EXPERIENCE_DESIGN</h3>
-        <p class="section-text">
-          这是一场基于虚拟现实（VR）的严肃游戏实验。通过剥离传统的娱乐性游戏机制，本作将玩家置入一个高度沉浸且充满压迫感的叙事空间中，探讨记忆、废墟与个体精神状态在极端环境下的挣扎与重构。
-        </p>
-      </div>
-      
-      <div class="section">
-        <h3 class="section-title">II. ENVIRONMENT_ARCHITECTURE</h3>
-        <p class="section-text">
-          在场景架构上，彻底抛弃了明亮饱和的视觉糖水，转而采用阴郁、冷峻的材质表现。通过 Unity 渲染管线与光影压榨，塑造出一种介于"真实物理法则"与"心理潜意识幻境"之间的临界感（Liminality）。
-        </p>
-      </div>
-    </section>
+        <div class="visual-caption"></div>
 
-    <section class="attachment-section">
-      <h3 class="attachment-title">ATTACHMENT // ENVIRONMENT_SCANS</h3>
-      <div class="image-grid">
-         <div class="image-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" 
-                 alt="Environment Scan 1" />
-         </div>
-         <div class="image-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" 
-                 alt="Environment Scan 2" />
-         </div>
-      </div>
-    </section>
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">ART THERAPY</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">APPLICATION PROGRAM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NOSTALGIA / ASH</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">BEIJING</div>
+          </div>
+        </div>
 
-    <div class="footer">
-      [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
-    </div>
-  </div>
+        <div class="thumb-strip">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF3%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF4%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>001 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 001
+          </div>
+          <h1 class="title-main">
+            未曾熄灭的
+          </h1>
+          <h2 class="title-sub">NEVER EXTINGUISHED</h2>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Serious Game / VR</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">ENGINE</div>
+            <div class="meta-item-value">Unity / Meta XR</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              《未曾熄灭的》 是一款面向东北下岗潮中老年亲历者的VR严肃游戏。该游戏旨在通过沉浸式交互叙事与虚拟现实技术，探索对群体性历史创伤的视觉补偿机制
+游戏以1:1还原的90年代末东北中型车间为场景，玩家可通过手势识别与自然交互，亲身参与如操纵车床、整理零件、盖印章等“修复性工作”。
+随着交互的完成，昏暗的车间逐渐被点亮，象征从“失落”走向“和解”。
+            </p>
+          </div>
+
+          <div class="section">
+            <h3 class="section-title">II. INNOVATION POINT</h3>
+            <p class="section-text">
+              该项目融合怀旧疗法、游戏化设计与适老化交互，尝试为特定历史创伤群体提供一条温和、直观的心理疗愈路径。
+              后续我将持续完善这个游戏，并邀请更多的东北下岗潮亲历者参与测试，以确保它真正触及并帮助到需要的人群。
+            </p>
+          </div>
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+
+    <article class="project-entry project-entry-liminal">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png"
+                alt="Liminal-The Fantasy at the Edge"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">CONTEMPORARY ART</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">AUDIO-VISUAL CONTENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">CALM / ANXIETY</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE01.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE02.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE03.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE04.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>002 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 002
+          </div>
+          <h1 class="title-main">
+            Liminal
+          </h1>
+          <h2 class="title-main">临近边缘的幻想</h2>
+          <h3 class="title-sub">Liminal-The Fantasy at the Edge </h3>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Experimental Films</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">SOFTWARE TOOLS</div>
+            <div class="meta-item-value">Blender / Filmora</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              虚构与真实的界限是什么？ 这似乎是一个去时代化的命题。 从千万年前人类第一次仰望星空起，虚构便已存在于这个世界。 而现在，这个古老的问题产生了新的境况： 如果说古代的虚构源于对未知的想象，那么当代的虚构则源于算法的增殖。从互联网的诞生到AI的出现，在短短几十年内，算法驱动的虚构体量已超过了既往文明的总和。 虚构曾是现实的镜像；现在，算法使镜像脱离实体，进行着指数级的自我复制。 虚构与真实的界限正变得愈发模糊。在这个算法可以批量生产虚构的时代，我们要从哪里找到仅存的真实？ 当临界点到来，当虚构溢出屏幕，当现实充斥虚构。 寻找真实，或适应虚构——这并非选择，而是一种演化状态。 我们应该如何迎接这样的世界？我希望能通过这个短片启发你产生一些对于这个问题的思考。
+            </p>
+          </div>
+
+
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <div class="preview-backdrop" aria-hidden="true"></div>
+
+  <script is:inline>
+    // @ts-nocheck
+    const previewBackdrop = document.querySelector('.preview-backdrop');
+    const previewTargets = document.querySelectorAll('[data-hover-preview]');
+    let activePreview = null;
+    let activeTarget = null;
+    let activeAnimation = null;
+    let closeTimer = null;
+    let previewState = 'idle';
+
+    const previewTiming = {
+      duration: 560,
+      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      fill: 'forwards',
+    };
+
+    const getContainRect = (image, maxWidth, maxHeight) => {
+      const ratio = image.naturalWidth && image.naturalHeight
+        ? image.naturalWidth / image.naturalHeight
+        : image.getBoundingClientRect().width / image.getBoundingClientRect().height;
+
+      let width = maxWidth;
+      let height = width / ratio;
+
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * ratio;
+      }
+
+      return {
+        width,
+        height,
+        left: (window.innerWidth - width) / 2,
+        top: (window.innerHeight - height) / 2,
+      };
+    };
+
+    const applyPreviewRect = (image, rect, objectFit) => {
+      image.style.left = `${rect.left}px`;
+      image.style.top = `${rect.top}px`;
+      image.style.width = `${rect.width}px`;
+      image.style.height = `${rect.height}px`;
+      image.style.objectFit = objectFit;
+    };
+
+    const rectFromElement = (element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    };
+
+    const cancelActiveAnimationAtCurrentFrame = () => {
+      if (!activePreview || !activeAnimation) return null;
+
+      const currentRect = rectFromElement(activePreview);
+      activeAnimation.cancel();
+      activeAnimation = null;
+      applyPreviewRect(activePreview, currentRect, activePreview.style.objectFit || 'contain');
+      activePreview.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+      return currentRect;
+    };
+
+    const animatePreviewRect = (image, fromRect, toRect, options = {}) => {
+      applyPreviewRect(image, toRect, options.toFit || image.style.objectFit || 'contain');
+      image.style.transformOrigin = 'top left';
+
+      const fromTransform = `translate3d(${fromRect.left - toRect.left}px, ${fromRect.top - toRect.top}px, 0) scale(${fromRect.width / toRect.width}, ${fromRect.height / toRect.height})`;
+
+      const animation = image.animate(
+        [
+          {
+            transform: fromTransform,
+            opacity: options.fromOpacity ?? 1,
+          },
+          {
+            transform: 'translate3d(0, 0, 0) scale(1, 1)',
+            opacity: options.toOpacity ?? 1,
+          },
+        ],
+        previewTiming
+      );
+
+      activeAnimation = animation;
+
+      animation.finished
+        .then(() => {
+          if (activeAnimation !== animation || activePreview !== image) return;
+          applyPreviewRect(image, toRect, options.toFit || image.style.objectFit || 'contain');
+          image.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+          image.style.opacity = `${options.toOpacity ?? 1}`;
+          activeAnimation = null;
+          previewState = options.removeOnFinish ? 'idle' : options.state || previewState;
+
+          if (options.removeOnFinish) {
+            removePreview();
+          }
+        })
+        .catch(() => {});
+
+      return animation;
+    };
+
+    const removePreview = () => {
+      if (activeAnimation) {
+        activeAnimation.cancel();
+        activeAnimation = null;
+      }
+
+      if (!activePreview) return;
+      activePreview.remove();
+      activePreview = null;
+      activeTarget = null;
+      previewState = 'idle';
+      previewBackdrop.classList.remove('active');
+    };
+
+    const showPreview = (event) => {
+      const image = event.currentTarget;
+      const sourceRect = image.getBoundingClientRect();
+      const targetRect = getContainRect(image, window.innerWidth * 0.78, window.innerHeight * 0.78);
+
+      window.clearTimeout(closeTimer);
+
+      if (activePreview && activeTarget === image && previewState !== 'closing') {
+        return;
+      }
+
+      removePreview();
+
+      const clone = image.cloneNode(false);
+      activePreview = clone;
+      activeTarget = image;
+
+      clone.removeAttribute('data-hover-preview');
+      clone.style.position = 'fixed';
+      clone.style.zIndex = '80';
+      clone.style.margin = '0';
+      clone.style.border = '1px solid rgba(142, 219, 53, 0.48)';
+      clone.style.background = '#050505';
+      clone.style.boxShadow = '0 0 40px rgba(0, 0, 0, 0.85), 0 0 32px rgba(142, 219, 53, 0.14)';
+      clone.style.pointerEvents = 'none';
+      clone.style.transform = 'translateZ(0)';
+      clone.style.transformOrigin = 'top left';
+      clone.style.transition = 'none';
+      clone.style.animation = 'none';
+      clone.style.filter = 'none';
+      clone.style.willChange = 'transform, opacity';
+      clone.style.opacity = '0.98';
+
+      applyPreviewRect(clone, sourceRect, getComputedStyle(image).objectFit || 'cover');
+      document.body.appendChild(clone);
+      previewBackdrop.classList.add('active');
+      previewState = 'opening';
+      animatePreviewRect(clone, sourceRect, targetRect, {
+        fromOpacity: 0.98,
+        toOpacity: 1,
+        toFit: 'contain',
+        state: 'open',
+      });
+    };
+
+    const hidePreview = (event) => {
+      if (!activePreview || event.currentTarget !== activeTarget) return;
+      if (previewState === 'closing') return;
+
+      const sourceRect = activeTarget.getBoundingClientRect();
+      const clone = activePreview;
+      const currentRect = cancelActiveAnimationAtCurrentFrame() || rectFromElement(clone);
+
+      previewBackdrop.classList.remove('active');
+      previewState = 'closing';
+      animatePreviewRect(clone, currentRect, sourceRect, {
+        fromOpacity: Number.parseFloat(getComputedStyle(clone).opacity) || 1,
+        toOpacity: 0,
+        toFit: getComputedStyle(activeTarget).objectFit || 'cover',
+        removeOnFinish: true,
+        state: 'idle',
+      });
+    };
+
+    previewTargets.forEach((image) => {
+      image.addEventListener('mouseenter', showPreview);
+      image.addEventListener('mouseleave', hidePreview);
+      image.addEventListener('focus', showPreview);
+      image.addEventListener('blur', hidePreview);
+    });
+  </script>
 
 </body>
 </html>
