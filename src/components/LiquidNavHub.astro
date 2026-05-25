@@ -55,14 +55,18 @@
   // 全局尺寸同步
   let width = window.innerWidth;
   let height = window.innerHeight;
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    layoutPills();
   }
-  window.addEventListener('resize', resize);
-  resize();
 
   const GREEN = '#8EDB35';
   
@@ -71,53 +75,92 @@
     { text: "Watch the videos of the works / 视频", href: "/omni" },
     { text: "View the pictures of the works / 图片", href: "/dual" },
     { text: "Get to know me / 关于我", href: "/about" },
-    { text: "Contact me / 联系我", href: "/contact" }
+    { text: "Contact me / 联系我", href: "/contact" },
+    { text: "Explore project details / 项目详情", href: "/project-detail" }
   ];
 
   interface Pill {
     id: number;
     text: string;
     href: string;
+    baseX: number;
+    baseY: number;
     x: number;
     y: number;
     w: number;
     h: number;
-    vx: number;
-    vy: number;
+    phase: number;
     locked: boolean;
   }
 
   const pills: Pill[] = [];
-  const items = [...templates, ...templates]; 
+  const items = templates;
+
+  function getPillTargets() {
+    if (width < 768) {
+      const centerX = width / 2;
+      const startY = height * 0.22;
+      const gap = Math.min(96, Math.max(72, height * 0.105));
+      return items.map((_, index) => ({
+        cx: centerX,
+        cy: startY + index * gap,
+      }));
+    }
+
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radiusX = Math.min(width * 0.28, 430);
+    const radiusY = Math.min(height * 0.24, 230);
+
+    return [
+      { cx: centerX, cy: centerY },
+      { cx: centerX - radiusX, cy: centerY - radiusY },
+      { cx: centerX + radiusX, cy: centerY - radiusY },
+      { cx: centerX - radiusX, cy: centerY + radiusY },
+      { cx: centerX + radiusX, cy: centerY + radiusY },
+    ];
+  }
+
+  function layoutPills() {
+    if (!pills.length) return;
+    const targets = getPillTargets();
+    pills.forEach((pill, index) => {
+      const target = targets[index] || targets[0];
+      pill.baseX = Math.max(24, Math.min(target.cx - pill.w / 2, width - pill.w - 24));
+      pill.baseY = Math.max(72, Math.min(target.cy - pill.h / 2, height - pill.h - 56));
+      pill.x = pill.baseX;
+      pill.y = pill.baseY;
+    });
+  }
 
   function createPills() {
     ctx.font = 'bold 20px "Space Mono"';
     ctx.font = `bold 20px ${FONT_STACK}`;
     items.forEach((item, index) => {
-    const textWidth = ctx.measureText(item.text).width;
-    const w = textWidth + 80;  
-    const h = 60;              
+      const textWidth = ctx.measureText(item.text).width;
+      const w = Math.min(textWidth + 80, width - 48);
+      const h = 60;
 
-    const x = Math.random() * (width - w - 100) + 50;
-    const y = Math.random() * (height - h - 100) + 50;
-    
-    const angle = Math.random() * Math.PI * 2;
-    const speed = 0.8 + Math.random() * 0.5;
-
-    pills.push({
-      id: index,
-      text: item.text,
-      href: item.href,
-      x: x,
-      y: y,
-      w: w,
-      h: h,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      locked: false
+      pills.push({
+        id: index,
+        text: item.text,
+        href: item.href,
+        baseX: 0,
+        baseY: 0,
+        x: 0,
+        y: 0,
+        w,
+        h,
+        phase: index * 1.35,
+        locked: false
+      });
     });
-  });
+
+    layoutPills();
   }
+
+  window.addEventListener('resize', resize);
+  resize();
 
   const mouse = { x: width / 2, y: height / 2 };
   let bubbleX = width / 2;
@@ -146,6 +189,7 @@
   const BREAK_DIST = 220; 
 
   function animate() {
+    const time = performance.now() * 0.001;
     // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = 'rgba(10, 10, 10, 0.75)';
@@ -156,6 +200,9 @@
       bubbleY += (mouse.y - bubbleY) * 0.15;
 
       pills.forEach(p => {
+        p.x = p.baseX + Math.sin(time * 1.1 + p.phase) * 3;
+        p.y = p.baseY + Math.cos(time * 1.05 + p.phase) * 2;
+
         const cx = p.x + p.w / 2;
         const cy = p.y + p.h / 2;
         const dist = Math.hypot(mouse.x - cx, mouse.y - cy);
@@ -177,9 +224,6 @@
       const distToCenter = Math.hypot(mouse.x - targetCx, mouse.y - targetCy);
       if (distToCenter > BREAK_DIST) {
         lockedPill.locked = false;
-        const angle = Math.atan2(mouse.y - targetCy, mouse.x - targetCx);
-        lockedPill.vx = -Math.cos(angle) * 2.5;
-        lockedPill.vy = -Math.sin(angle) * 2.5;
         lockedPill = null;
       }
     }
@@ -213,26 +257,31 @@
 
     pills.forEach(p => {
       if (!p.locked) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x <= 20 || p.x + p.w >= width - 20) { p.vx *= -1; p.x = Math.max(20, Math.min(p.x, width - p.w - 20)); }
-        if (p.y <= 20 || p.y + p.h >= height - 20) { p.vy *= -1; p.y = Math.max(20, Math.min(p.y, height - p.h - 20)); }
+        p.x = p.baseX + Math.sin(time * 1.1 + p.phase) * 3;
+        p.y = p.baseY + Math.cos(time * 1.05 + p.phase) * 2;
       }
 
       ctx.save();
       const cx = p.x + p.w / 2;
       const cy = p.y + p.h / 2;
+      const breath = 0.5 + Math.sin(time * 1.6 + p.phase) * 0.5;
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
         ctx.font = `900 20px ${FONT_STACK}`;
         ctx.fillText(p.text, cx, cy);
       } else {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(p.x, p.y, p.w, p.h);
+        const radius = 18;
+        ctx.strokeStyle = `rgba(142, 219, 53, ${0.45 + breath * 0.45})`;
+        ctx.lineWidth = 1.25 + breath * 1.25;
+        ctx.shadowColor = GREEN;
+        ctx.shadowBlur = 12 + breath * 22;
+        ctx.beginPath();
+        ctx.roundRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1, radius);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
 
-        ctx.fillStyle = '#e5e5e5'; 
+        ctx.fillStyle = `rgba(229, 229, 229, ${0.82 + breath * 0.18})`;
         ctx.font = `bold 20px ${FONT_STACK}`;
         ctx.fillText(p.text, cx, cy);
       }

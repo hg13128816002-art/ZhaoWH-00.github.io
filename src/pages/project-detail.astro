@@ -1,6 +1,9 @@
 ---
 // src/pages/project-detail.astro
 // 修复版：移除 Tailwind CDN，使用原生 CSS
+import '../styles/global.css';
+import PureTransition from '../components/PureTransition.astro';
+import FloatingButton from '../components/FloatingButton.astro';
 ---
 
 <html lang="zh-CN">
@@ -44,41 +47,6 @@
                         linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
       pointer-events: none;
       z-index: 0;
-    }
-
-    .home-btn {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 50;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      border: 1px solid rgba(142, 219, 53, 0.3);
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #8EDB35;
-      transition: all 0.3s;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(142, 219, 53, 0.1);
-      text-decoration: none;
-    }
-
-    .home-btn:hover {
-      background: #8EDB35;
-      color: black;
-      box-shadow: 0 0 25px rgba(142, 219, 53, 0.5);
-    }
-
-    .home-btn svg {
-      transition: transform 0.3s;
-    }
-
-    .home-btn:hover svg {
-      transform: translateX(-0.25rem);
     }
 
     .project-stack {
@@ -243,6 +211,14 @@
       margin-top: 1.85rem;
     }
 
+    .project-entry-magnetic .thumb-strip {
+      margin-top: 2.175rem;
+    }
+
+    .project-entry-ar .thumb-strip {
+      margin-top: 0.5rem;
+    }
+
     .thumb-item img {
       width: 100%;
       height: 100%;
@@ -269,13 +245,13 @@
 
     .archive-rail {
       margin-top: auto;
-      padding-top: 2rem;
+      padding-bottom: 3.0625rem;
     }
 
     .archive-rail-line {
       height: 1px;
       background: linear-gradient(90deg, #8EDB35, #171717 45%, transparent);
-      margin-bottom: 1rem;
+      margin-bottom: 3.9375rem;
     }
 
     .archive-rail-text {
@@ -499,13 +475,9 @@
 </head>
 <body>
 
-  <div class="grid-bg"></div>
+  <PureTransition />
 
-  <a href="/" class="home-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="square" stroke-linejoin="miter" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-    </svg>
-  </a>
+  <div class="grid-bg"></div>
 
   <main class="project-stack">
     <article class="project-entry project-entry-never">
@@ -732,6 +704,226 @@
         </div>
       </div>
     </article>
+
+    <article class="project-entry project-entry-magnetic">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp"
+                alt="starE Promo Poster"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">DATA VISUALIZATION</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">PHYSICAL WORKS</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">CALM / RATIONAL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P8.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P1.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P2.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P3.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>003 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 003
+          </div>
+          <h1 class="title-main">
+            starE
+          </h1>
+          <h2 class="title-main">/任尔EWSN风？</h2>
+          <h3 class="title-sub">Magnetic field- Chinese Internet</h3>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2025</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">INSTALLATION ART</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">TOOLS</div>
+            <div class="meta-item-value">Raspberry Pi 4b</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              在艺术创作中融入对社会问题的探讨，是我创作的核心特点之一：随着互联网在我们日常生活中起着越来越重要的作用，互联网的讨论环境似乎每况愈下，“网络二极管”现象的爆发就是其最普遍的体现之一。我们对这一现象的成因进行了调查，最终得以稍微的窥探其中的原因。为了使观众能够直观的意识到“网络二极管”是怎样形成的，我们创造性的以“磁场”来进行比喻：围绕着磁极产生的磁场，正如围绕着意见领袖产生的舆论场一般。这个比喻恰当且富有科幻的浪漫，我们围绕着这个比喻创作了两件装置艺术作品：《starE》&《任尔EWSN风？》
+
+            </p>
+          </div>
+
+
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+
+    <article class="project-entry project-entry-ar">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png"
+                alt="Nazo Village AR Guide Demo Promo Poster"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">DIGITAL EMPOWERMENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">APPLICATION PROGRAM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE01.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE02.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE03.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE04.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>004 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 004
+          </div>
+          <h1 class="title-main">
+            画意那洲·文化寻根
+          </h1>
+          <h2 class="title-main">AR导览游戏Demo</h2>
+          <h3 class="title-sub">AR Guided Tour Game Demo</h3>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">206</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Guided Tour Game / AR</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">SOFTWARE TOOLS</div>
+            <div class="meta-item-value">Unity / Tripo</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              我为三创赛参赛项目：《画意那洲·文化寻根——艺术古村文旅赋能计划》制作了一个AR导览游戏Demo；在景区导览中融入AR技术，是现在各个景区进行数字化转型的重要方式之一。我们通过这个AR导览游戏鼓励参观的游客像玩RPG时收集地图中的宝箱一样收集我们藏在景区里的“拼图碎片”，通过这样的方式，我们可以增加游客在景区里停留的时间，同时还能通过引导游客寻找“碎片”来避免游客漏掉景区中的某些游览区域。
+
+            </p>
+          </div>
+
+
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
   </main>
 
   <div class="preview-backdrop" aria-hidden="true"></div>
@@ -927,6 +1119,8 @@
       image.addEventListener('blur', hidePreview);
     });
   </script>
+
+  <FloatingButton />
 
 </body>
 </html>

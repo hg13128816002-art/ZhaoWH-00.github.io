@@ -1,20 +1,54 @@
 ---
 // src/components/FloatingButton.astro
-// 全局悬浮返回球：直达导航枢纽，带有极其细腻的玻璃质感与先锋绿呼吸灯
+// 全局悬浮导航球：展开后可跳转到除当前页外的主要页面
+
+const normalizePath = (path: string) => {
+  if (path === '/') return '/';
+  return path.replace(/\/$/, '');
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+const navItems = [
+  { href: '/', label: 'HOME', zh: '首页' },
+  { href: '/hub', label: 'NAV_HUB', zh: '导航页' },
+  { href: '/omni', label: 'VIDEOS', zh: '视频' },
+  { href: '/dual', label: 'PICTURES', zh: '图片' },
+  { href: '/project-detail', label: 'PROJECTS', zh: '项目详情' },
+  { href: '/about', label: 'ABOUT', zh: '关于我' },
+  { href: '/contact', label: 'CONTACT', zh: '联系我' },
+].filter((item) => normalizePath(item.href) !== currentPath);
 ---
 
-<div class="fixed bottom-8 right-8 z-[9999] pointer-events-auto select-none">
-  <a 
-    href="/hub" 
-    class="group flex items-center gap-3 p-3 bg-[#0a0a0a]/80 backdrop-blur-md border border-neutral-800 hover:border-[#8EDB35]/50 transition-all duration-300 rounded-full shadow-2xl"
-  >
-    <div class="relative flex items-center justify-center w-5 h-5">
-      <div class="absolute inset-0 bg-[#8EDB35] rounded-full opacity-50 group-hover:opacity-100 group-hover:scale-150 transition-all duration-300 blur-[5px]"></div>
-      <div class="relative w-2.5 h-2.5 bg-[#8EDB35] rounded-full shadow-[0_0_10px_#8EDB35] group-hover:scale-125 transition-transform duration-300"></div>
-    </div>
+<div class="group fixed bottom-8 right-8 z-[10040] pointer-events-auto select-none">
+  <div class="absolute bottom-full right-0 h-4 w-56 pointer-events-auto" aria-hidden="true"></div>
 
-    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-[#8EDB35] font-mono text-xs font-bold tracking-widest group-hover:px-1">
-      // NAV_HUB 回到导航页
+  <nav
+    class="absolute bottom-full right-0 mb-4 flex w-56 origin-bottom-right scale-95 flex-col gap-2 opacity-0 pointer-events-none translate-y-3 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0"
+    aria-label="Quick navigation"
+  >
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        class="box-border flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-full border border-neutral-800 bg-[#0a0a0a]/85 px-4 py-3 text-[10px] font-bold tracking-[0.22em] text-neutral-300 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-[#8EDB35]/70 hover:text-[#8EDB35] hover:shadow-[0_0_22px_rgba(142,219,53,0.18)] focus:border-[#8EDB35]/70 focus:text-[#8EDB35] focus:outline-none"
+      >
+        <span class="font-mono">// {item.label}</span>
+        <span class="font-mono text-[#8EDB35]">{item.zh}</span>
+      </a>
+    ))}
+  </nav>
+
+  <button
+    type="button"
+    class="flex items-center gap-3 rounded-full border border-neutral-800 bg-[#0a0a0a]/80 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-[#8EDB35]/60 focus:border-[#8EDB35]/60 focus:outline-none"
+    aria-label="Open quick navigation"
+  >
+    <span class="relative flex h-5 w-5 items-center justify-center">
+      <span class="absolute inset-0 rounded-full bg-[#8EDB35] opacity-50 blur-[5px] transition-all duration-300 group-hover:scale-150 group-hover:opacity-100 group-focus-within:scale-150 group-focus-within:opacity-100"></span>
+      <span class="relative h-2.5 w-2.5 rounded-full bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] transition-transform duration-300 group-hover:scale-125 group-focus-within:scale-125"></span>
     </span>
-  </a>
+
+    <span class="max-w-0 overflow-hidden whitespace-nowrap font-mono text-xs font-bold tracking-widest text-[#8EDB35] transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:px-1 group-focus-within:max-w-xs group-focus-within:px-1">
+      // QUICK_NAV 快速导航
+    </span>
+  </button>
 </div>

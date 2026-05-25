@@ -1,6 +1,6 @@
 ---
 // src/components/InfiniteOmniGallery.astro
-// 最终形态：GLSL级伪随机散落算法 + 完美对应的数据结构
+// 最终形态：GLSL级伪随机散落算法 + 移动端显性物理点火面板 + 绝对防穿透护盾
 import '../styles/global.css'; 
 ---
 
@@ -11,6 +11,16 @@ import '../styles/global.css';
   <div class="absolute top-8 left-8 z-20 pointer-events-none">
     <div class="text-[#8EDB35] text-[10px] tracking-[0.5em] font-bold">OMNIDIRECTIONAL // VIDEO_ARCHIVE_NODE</div>
     <div class="text-neutral-600 text-[10px] mt-2 tracking-widest">GRID_RATIO: CUSTOM_XY // CHAOTIC_SCATTERING</div>
+  </div>
+
+  <div id="gyro-init-overlay" class="fixed inset-0 z-[10030] bg-[#050505]/95 backdrop-blur-md flex-col items-center justify-center font-mono transition-opacity duration-300" style="display: none;">
+    <div class="text-[#8EDB35] text-sm md:text-base tracking-[0.2em] mb-10 text-center px-6 leading-loose">
+      [ 倾斜手机以使用陀螺仪操作此页面 ]<br/>
+      <span class="text-neutral-500 text-[10px] mt-2 block tracking-widest">TILT DEVICE TO NAVIGATE</span>
+    </div>
+    <button id="gyro-ok-btn" class="border border-[#8EDB35] bg-[#0a0a0a] text-[#8EDB35] px-12 py-3 hover:bg-[#8EDB35] hover:text-black transition-colors tracking-widest font-bold text-sm cursor-pointer shadow-[0_0_15px_rgba(142,219,53,0.2)]">
+      OK
+    </button>
   </div>
 
   <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
@@ -74,21 +84,17 @@ import '../styles/global.css';
   let GRID_SIZE_X = BASE_GRID_X;
   let GRID_SIZE_Y = BASE_GRID_Y;
 
-  // 3. 精准响应式阻尼函数：在尺寸改变时同步刷新 Canvas 内部几何体
+  // 3. 精准响应式阻尼函数
   function updateResponsiveSizes() {
     let currentWidth = window.innerWidth;
     
     if (currentWidth < 768) {
-      // 📱 移动端自适应逻辑：让卡片宽度始终等于“手机屏幕宽度的 75%”
-      // 这样既能看清画廊交错的层次，又不会显得卡片巨大、局促
       const mobileScale = (currentWidth * 0.75) / BASE_CARD_W;
-      
       cardW = BASE_CARD_W * mobileScale;
       cardH = BASE_CARD_H * mobileScale;
       GRID_SIZE_X = BASE_GRID_X * mobileScale;
       GRID_SIZE_Y = BASE_GRID_Y * mobileScale;
     } else {
-      // 💻 桌面端还原：死死锁定原本的 600px 极客规格
       cardW = BASE_CARD_W;
       cardH = BASE_CARD_H;
       GRID_SIZE_X = BASE_GRID_X;
@@ -161,8 +167,6 @@ import '../styles/global.css';
     height = window.innerHeight; 
     canvas.width = width; 
     canvas.height = height; 
-    
-    // 🚨 每次视口改变，立刻重新计算内部卡片的缩放比例
     updateResponsiveSizes(); 
   }
   
@@ -178,56 +182,53 @@ import '../styles/global.css';
   resize();
 
   // ========================================================
-  // 🌌 核心移动端硬件点火模块：陀螺仪自适应标定算法
+  // 🌌 核心移动端硬件点火模块
   // ========================================================
-  let isMobile = false;
+  let isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
   let hasGyroPermission = false;
   let initialBeta = 0;
   let initialGamma = 0;
   let hasCalibrated = false;
 
-  // 检测是不是移动设备
-  if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-    isMobile = true;
+  const gyroOverlay = document.getElementById('gyro-init-overlay')!;
+  const gyroOkBtn = document.getElementById('gyro-ok-btn')!;
+
+  // 💡 如果是移动端，一进页面直接弹出显性 UI 提示层
+  if (isMobile) {
+    gyroOverlay.style.display = 'flex';
   }
 
   function handleOrientation(event: DeviceOrientationEvent) {
     if (overlay.style.opacity === '1') return; // 弹窗开启时锁死底盘模拟
 
-    const beta = event.beta || 0;   // 前后倾斜 (-180 到 180)
-    const gamma = event.gamma || 0; // 左右倾斜 (-90 到 90)
+    const beta = event.beta || 0;   // 前后倾斜
+    const gamma = event.gamma || 0; // 左右倾斜
 
-    // 💡 物理标定黑魔法：捕获点火瞬间的用户握持姿态作为绝对黄金基准面
+    // 💡 只有在用户点击 OK 的那一瞬间，才会进行物理归零标定
     if (!hasCalibrated) {
       initialBeta = beta;
       initialGamma = gamma;
       hasCalibrated = true;
     }
 
-    // 计算设备当前的倾斜差值
     let deltaBeta = beta - initialBeta;
     let deltaGamma = gamma - initialGamma;
 
-    // 边界安全限幅，防止暴走
     deltaBeta = Math.max(-30, Math.min(30, deltaBeta));
     deltaGamma = Math.max(-30, Math.min(30, deltaGamma));
 
-    // 映射进动力学驱动，系数 15.0 能调出完美的重力物理阻尼感
     driveX = deltaGamma * 15.0;
     driveY = deltaBeta * 15.0;
 
-    // 移动端由于没有真实物理光标，我们强制让交叉虚线瞄准中央最核心的触发判定点
     mouse.x = width / 2 + driveX;
     mouse.y = height / 2 + driveY;
   }
 
-  // 触发权限申请的极度安全中枢
   function initGyroscope() {
     if (!isMobile || hasGyroPermission) return;
 
     const DeviceOrientation = (window as any).DeviceOrientationEvent;
     if (DeviceOrientation && typeof DeviceOrientation.requestPermission === 'function') {
-      // iOS 权限强登舰艇
       DeviceOrientation.requestPermission()
         .then((permissionState: string) => {
           if (permissionState === 'granted') {
@@ -237,11 +238,29 @@ import '../styles/global.css';
         })
         .catch(console.error);
     } else {
-      // 安卓或常规浏览器直接挂载
       hasGyroPermission = true;
       window.addEventListener('deviceorientation', handleOrientation);
     }
   }
+
+  // 🛡️ OK 按钮专属事件：只点火，不穿透
+  gyroOkBtn.addEventListener('click', (e) => {
+    // 拦截 1：阻止事件冒泡传播给外层的 window.mousedown
+    e.stopPropagation(); 
+    
+    initGyroscope();
+    hasCalibrated = false; // 保证按下的那一刻就是绝对的中心视角
+    
+    // 平滑隐去提示层
+    gyroOverlay.style.opacity = '0';
+    setTimeout(() => {
+      gyroOverlay.style.display = 'none';
+    }, 300);
+  });
+  
+  // 防止在按钮上按下鼠标/手指时就发生穿透
+  gyroOkBtn.addEventListener('mousedown', (e) => e.stopPropagation());
+  gyroOkBtn.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
 
   const overlay = document.getElementById('video-overlay')!;
 
@@ -250,7 +269,6 @@ import '../styles/global.css';
     ctx.fillRect(0, 0, width, height);
 
     if (overlay.style.opacity !== '1') {
-      // 🏎️ 物理平移合并：无论硬件来源，统一读取标定后的驱动极
       cameraX -= driveX * SPEED_FACTOR;
       cameraY -= driveY * SPEED_FACTOR;
     }
@@ -309,12 +327,10 @@ import '../styles/global.css';
       }
     }
     
-    // 📱 移动端无光标补偿：由于手机没有硬件十字瞄准线，我们手动在画布中央画一个精细的动态镭射准星
     if (isMobile) {
       ctx.save();
       ctx.strokeStyle = 'rgba(142, 219, 83, 0.3)';
       ctx.lineWidth = 1;
-      // 绘制画幅中央的精密极客定位环
       ctx.beginPath();
       ctx.arc(width / 2, height / 2, 8, 0, Math.PI * 2);
       ctx.stroke();
@@ -343,11 +359,11 @@ import '../styles/global.css';
   const overlayTitle = document.getElementById('overlay-title')!;
 
   // ========================================================
-  // 🛠️ 融合判定终端交互（支持移动端 Click / Touch 统一触发）
+  // 🛠️ 纯净底层交互引擎：绝对防穿透
   // ========================================================
   window.addEventListener('mousedown', (e) => {
-    // 💡 顺手点火：当用户首次点击页面的任意一处时，全自动合法地申请并激活手机陀螺仪！
-    initGyroscope();
+    // 拦截 2：底层终极护盾。只要提示面板还没彻底消失，全局无视任何点击动作！
+    if (gyroOverlay.style.display !== 'none') return;
 
     const target = e.target as HTMLElement;
     const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
