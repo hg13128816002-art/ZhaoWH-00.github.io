@@ -49,41 +49,6 @@ import FloatingButton from '../components/FloatingButton.astro';
       z-index: 0;
     }
 
-    .home-btn {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 50;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      border: 1px solid rgba(142, 219, 53, 0.3);
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #8EDB35;
-      transition: all 0.3s;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(142, 219, 53, 0.1);
-      text-decoration: none;
-    }
-
-    .home-btn:hover {
-      background: #8EDB35;
-      color: black;
-      box-shadow: 0 0 25px rgba(142, 219, 53, 0.5);
-    }
-
-    .home-btn svg {
-      transition: transform 0.3s;
-    }
-
-    .home-btn:hover svg {
-      transform: translateX(-0.25rem);
-    }
-
     .project-stack {
       position: relative;
       z-index: 1;
@@ -513,12 +478,6 @@ import FloatingButton from '../components/FloatingButton.astro';
   <PureTransition />
 
   <div class="grid-bg"></div>
-
-  <a href="/" class="home-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="square" stroke-linejoin="miter" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-    </svg>
-  </a>
 
   <main class="project-stack">
     <article class="project-entry project-entry-never">
@@ -1160,6 +1119,8 @@ import FloatingButton from '../components/FloatingButton.astro';
       image.addEventListener('blur', hidePreview);
     });
   </script>
+
+  <FloatingButton />
 
 </body>
 </html>
