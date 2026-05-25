@@ -53,12 +53,12 @@
   }
 
   // 全局尺寸同步
-  let width = window.innerWidth;
-  let height = window.innerHeight;
+  let width = window.visualViewport?.width || window.innerWidth;
+  let height = window.visualViewport?.height || window.innerHeight;
   let dpr = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = window.visualViewport?.width || window.innerWidth;
+    height = window.visualViewport?.height || window.innerHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
@@ -99,7 +99,7 @@
   const items = templates;
 
   function isMobileLayout() {
-    return width < 768;
+    return width < 768 || window.matchMedia('(pointer: coarse)').matches;
   }
 
   function clamp(value: number, min: number, max: number) {
@@ -198,6 +198,7 @@
   }
 
   window.addEventListener('resize', resize);
+  window.visualViewport?.addEventListener('resize', resize);
   resize();
 
   const mouse = { x: width / 2, y: height / 2 };
