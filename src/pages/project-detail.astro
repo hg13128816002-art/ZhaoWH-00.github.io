@@ -61,6 +61,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      --thumb-offset: 2rem;
     }
 
     .left-panel {
@@ -183,7 +184,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.75rem;
-      margin-top: 2rem;
+      margin-top: var(--thumb-offset);
     }
 
     .thumb-item {
@@ -199,24 +200,8 @@ import FloatingButton from '../components/FloatingButton.astro';
       aspect-ratio: 16 / 9;
     }
 
-    .project-entry-liminal .thumb-strip {
-      margin-top: 5.55rem;
-    }
-
     .project-entry-never .thumb-item {
       aspect-ratio: 16 / 10;
-    }
-
-    .project-entry-never .thumb-strip {
-      margin-top: 1.85rem;
-    }
-
-    .project-entry-magnetic .thumb-strip {
-      margin-top: 2.175rem;
-    }
-
-    .project-entry-ar .thumb-strip {
-      margin-top: 0.5rem;
     }
 
     .thumb-item img {
@@ -930,6 +915,44 @@ import FloatingButton from '../components/FloatingButton.astro';
 
   <script is:inline>
     // @ts-nocheck
+    const syncProjectEntryThumbs = () => {
+      const desktopQuery = window.matchMedia('(min-width: 768px)');
+
+      document.querySelectorAll('.project-entry').forEach((entry) => {
+        const thumbStrip = entry.querySelector('.thumb-strip');
+        const rightIntro = entry.querySelector('.right-panel section .section:last-of-type .section-text')
+          || entry.querySelector('.right-panel section');
+
+        if (!thumbStrip || !rightIntro) return;
+
+        if (!desktopQuery.matches) {
+          entry.style.removeProperty('--thumb-offset');
+          return;
+        }
+
+        entry.style.setProperty('--thumb-offset', '0px');
+
+        const entryRect = entry.getBoundingClientRect();
+        const thumbRect = thumbStrip.getBoundingClientRect();
+        const introRect = rightIntro.getBoundingClientRect();
+        const targetBottom = introRect.bottom - entryRect.top;
+        const naturalThumbTop = thumbRect.top - entryRect.top;
+        const desiredOffset = targetBottom - naturalThumbTop - thumbRect.height;
+        const minimumOffset = 8;
+
+        entry.style.setProperty('--thumb-offset', `${Math.max(minimumOffset, desiredOffset)}px`);
+      });
+    };
+
+    window.addEventListener('load', syncProjectEntryThumbs);
+    window.addEventListener('resize', syncProjectEntryThumbs);
+
+    if (document.fonts) {
+      document.fonts.ready.then(syncProjectEntryThumbs);
+    }
+
+    requestAnimationFrame(syncProjectEntryThumbs);
+
     const previewBackdrop = document.querySelector('.preview-backdrop');
     const previewTargets = document.querySelectorAll('[data-hover-preview]');
     let activePreview = null;
