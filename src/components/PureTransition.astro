@@ -3,7 +3,7 @@
 // 终极先锋版跨页转场：错落矩阵切片 (Staggered Slices) + 激光边缘 + 系统级标识
 ---
 
-<div id="diy-transition-gate" class="fixed inset-0 z-[10005] flex w-screen h-screen pointer-events-none select-none overflow-hidden">
+<div id="diy-transition-gate" class="fixed inset-0 z-[10080] flex w-screen h-screen pointer-events-none select-none overflow-hidden">
   
   <div class="slice relative w-1/5 h-full bg-[#050505] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] origin-bottom">
      <div class="absolute bottom-0 w-full h-[2px] bg-[#8EDB35] shadow-[0_0_15px_#8EDB35]"></div>
@@ -28,8 +28,10 @@
 </div>
 
 <script>
+  const gate = document.getElementById('diy-transition-gate');
   const slices = document.querySelectorAll('.slice');
   const logo = document.getElementById('transition-logo');
+  let isTransitioning = false;
 
   // 1. 【进场动效】：新页面骨架挂载完毕，阵列带错落感向上顺滑开启
   window.addEventListener('pageshow', () => {
@@ -38,11 +40,17 @@
         slice.style.transform = 'translateY(-100%)';
       });
       if (logo) logo.style.opacity = '0';
+      if (gate) gate.style.pointerEvents = 'none';
+      isTransitioning = false;
     });
   });
 
   // 2. 【退场动效】：接收全局跃迁指令，阵列从天而降
   (window as any).triggerPureTransition = function(targetUrl: string) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    if (gate) gate.style.pointerEvents = 'auto';
+
     // 强行移除之前向上抽离的形变，使其恢复至 translateY(0)，即顺滑降下覆盖全屏
     slices.forEach((slice: any) => {
       slice.style.transform = 'translateY(0)';
@@ -60,7 +68,7 @@
   // 3. 【全站智能自动拦截】
   document.addEventListener('click', (e) => {
     const link = (e.target as HTMLElement).closest('a');
-    if (link && link.href && link.href.startsWith(window.location.origin) && !link.target) {
+    if (link && link.href && link.href.startsWith(window.location.origin) && !link.target && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
       e.preventDefault();
       (window as any).triggerPureTransition(link.href);
     }
