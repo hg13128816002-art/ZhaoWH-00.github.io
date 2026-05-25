@@ -12,6 +12,8 @@
     loop 
     muted 
     playsinline 
+    webkit-playsinline
+    preload="auto"
     class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
   ></video>
 
@@ -41,15 +43,28 @@
   // 强制点火引擎
   const bgVideo = document.getElementById('bg-video') as HTMLVideoElement;
   if (bgVideo) {
-    bgVideo.muted = true; 
-    const playPromise = bgVideo.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        window.addEventListener('mousemove', () => {
-          bgVideo.play().catch(() => {});
-        }, { once: true });
-      });
-    }
+    bgVideo.muted = true;
+    bgVideo.defaultMuted = true;
+    bgVideo.playsInline = true;
+    bgVideo.autoplay = true;
+
+    const tryPlayBackgroundVideo = () => {
+      bgVideo.muted = true;
+      const playPromise = bgVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    };
+
+    tryPlayBackgroundVideo();
+    window.addEventListener('pageshow', tryPlayBackgroundVideo);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) tryPlayBackgroundVideo();
+    });
+    bgVideo.addEventListener('loadeddata', tryPlayBackgroundVideo, { once: true });
+    bgVideo.addEventListener('canplay', tryPlayBackgroundVideo, { once: true });
+    window.setTimeout(tryPlayBackgroundVideo, 250);
+    window.setTimeout(tryPlayBackgroundVideo, 900);
   }
 
   // 全局尺寸同步
