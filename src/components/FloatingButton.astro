@@ -19,11 +19,12 @@ const navItems = [
 ].filter((item) => normalizePath(item.href) !== currentPath);
 ---
 
-<div class="group fixed bottom-8 right-8 z-[10040] pointer-events-auto select-none">
+<div class="floating-nav group fixed bottom-8 right-8 z-[10040] pointer-events-auto select-none" data-floating-nav data-open="false">
   <div class="absolute bottom-full right-0 h-4 w-56 pointer-events-auto" aria-hidden="true"></div>
 
   <nav
-    class="absolute bottom-full right-0 mb-4 flex w-56 origin-bottom-right scale-95 flex-col gap-2 opacity-0 pointer-events-none translate-y-3 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0"
+    id="floating-nav-menu"
+    class="floating-menu absolute bottom-full right-0 mb-4 flex w-56 origin-bottom-right scale-95 flex-col gap-2 opacity-0 pointer-events-none translate-y-3 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-focus-within:scale-100 group-focus-within:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0"
     aria-label="Quick navigation"
   >
     {navItems.map((item) => (
@@ -39,16 +40,78 @@ const navItems = [
 
   <button
     type="button"
+    data-floating-toggle
     class="flex items-center gap-3 rounded-full border border-neutral-800 bg-[#0a0a0a]/80 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-[#8EDB35]/60 focus:border-[#8EDB35]/60 focus:outline-none"
     aria-label="Open quick navigation"
+    aria-controls="floating-nav-menu"
+    aria-expanded="false"
   >
     <span class="relative flex h-5 w-5 items-center justify-center">
-      <span class="absolute inset-0 rounded-full bg-[#8EDB35] opacity-50 blur-[5px] transition-all duration-300 group-hover:scale-150 group-hover:opacity-100 group-focus-within:scale-150 group-focus-within:opacity-100"></span>
-      <span class="relative h-2.5 w-2.5 rounded-full bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] transition-transform duration-300 group-hover:scale-125 group-focus-within:scale-125"></span>
+      <span class="floating-glow absolute inset-0 rounded-full bg-[#8EDB35] opacity-50 blur-[5px] transition-all duration-300 group-hover:scale-150 group-hover:opacity-100 group-focus-within:scale-150 group-focus-within:opacity-100"></span>
+      <span class="floating-dot relative h-2.5 w-2.5 rounded-full bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] transition-transform duration-300 group-hover:scale-125 group-focus-within:scale-125"></span>
     </span>
 
-    <span class="max-w-0 overflow-hidden whitespace-nowrap font-mono text-xs font-bold tracking-widest text-[#8EDB35] transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:px-1 group-focus-within:max-w-xs group-focus-within:px-1">
+    <span class="floating-label max-w-0 overflow-hidden whitespace-nowrap font-mono text-xs font-bold tracking-widest text-[#8EDB35] transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:px-1 group-focus-within:max-w-xs group-focus-within:px-1">
       // QUICK_NAV 快速导航
     </span>
   </button>
 </div>
+
+<style>
+  .floating-nav[data-open='true'] .floating-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .floating-nav[data-open='true'] .floating-glow {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+
+  .floating-nav[data-open='true'] .floating-dot {
+    transform: scale(1.25);
+  }
+
+  .floating-nav[data-open='true'] .floating-label {
+    max-width: 20rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('[data-floating-nav]').forEach((navRoot) => {
+    const toggle = navRoot.querySelector('[data-floating-toggle]');
+    const menuLinks = navRoot.querySelectorAll('a');
+
+    if (!toggle) return;
+
+    const setOpen = (nextOpen) => {
+      navRoot.dataset.open = nextOpen ? 'true' : 'false';
+      toggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+    };
+
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(navRoot.dataset.open !== 'true');
+    });
+
+    menuLinks.forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!navRoot.contains(event.target)) {
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    });
+  });
+</script>

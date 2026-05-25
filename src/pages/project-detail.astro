@@ -1,7 +1,6 @@
 ---
 // src/pages/project-detail.astro
 // 修复版：移除 Tailwind CDN，使用原生 CSS
-import '../styles/global.css';
 import PureTransition from '../components/PureTransition.astro';
 import FloatingButton from '../components/FloatingButton.astro';
 ---
@@ -49,6 +48,41 @@ import FloatingButton from '../components/FloatingButton.astro';
       z-index: 0;
     }
 
+    .home-btn {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 50;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: 1px solid rgba(142, 219, 53, 0.3);
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8EDB35;
+      transition: all 0.3s;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(142, 219, 53, 0.1);
+      text-decoration: none;
+    }
+
+    .home-btn:hover {
+      background: #8EDB35;
+      color: black;
+      box-shadow: 0 0 25px rgba(142, 219, 53, 0.5);
+    }
+
+    .home-btn svg {
+      transition: transform 0.3s;
+    }
+
+    .home-btn:hover svg {
+      transform: translateX(-0.25rem);
+    }
+
     .project-stack {
       position: relative;
       z-index: 1;
@@ -61,7 +95,6 @@ import FloatingButton from '../components/FloatingButton.astro';
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      --thumb-offset: 2rem;
     }
 
     .left-panel {
@@ -184,7 +217,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.75rem;
-      margin-top: var(--thumb-offset);
+      margin-top: 2rem;
     }
 
     .thumb-item {
@@ -200,8 +233,24 @@ import FloatingButton from '../components/FloatingButton.astro';
       aspect-ratio: 16 / 9;
     }
 
+    .project-entry-liminal .thumb-strip {
+      margin-top: 5.55rem;
+    }
+
     .project-entry-never .thumb-item {
       aspect-ratio: 16 / 10;
+    }
+
+    .project-entry-never .thumb-strip {
+      margin-top: 1.85rem;
+    }
+
+    .project-entry-magnetic .thumb-strip {
+      margin-top: 2.175rem;
+    }
+
+    .project-entry-ar .thumb-strip {
+      margin-top: 0.5rem;
     }
 
     .thumb-item img {
@@ -463,6 +512,12 @@ import FloatingButton from '../components/FloatingButton.astro';
   <PureTransition />
 
   <div class="grid-bg"></div>
+
+  <a href="/" class="home-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="square" stroke-linejoin="miter" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+  </a>
 
   <main class="project-stack">
     <article class="project-entry project-entry-never">
@@ -915,44 +970,6 @@ import FloatingButton from '../components/FloatingButton.astro';
 
   <script is:inline>
     // @ts-nocheck
-    const syncProjectEntryThumbs = () => {
-      const desktopQuery = window.matchMedia('(min-width: 768px)');
-
-      document.querySelectorAll('.project-entry').forEach((entry) => {
-        const thumbStrip = entry.querySelector('.thumb-strip');
-        const rightIntro = entry.querySelector('.right-panel section .section:last-of-type .section-text')
-          || entry.querySelector('.right-panel section');
-
-        if (!thumbStrip || !rightIntro) return;
-
-        if (!desktopQuery.matches) {
-          entry.style.removeProperty('--thumb-offset');
-          return;
-        }
-
-        entry.style.setProperty('--thumb-offset', '0px');
-
-        const entryRect = entry.getBoundingClientRect();
-        const thumbRect = thumbStrip.getBoundingClientRect();
-        const introRect = rightIntro.getBoundingClientRect();
-        const targetBottom = introRect.bottom - entryRect.top;
-        const naturalThumbTop = thumbRect.top - entryRect.top;
-        const desiredOffset = targetBottom - naturalThumbTop - thumbRect.height;
-        const minimumOffset = 8;
-
-        entry.style.setProperty('--thumb-offset', `${Math.max(minimumOffset, desiredOffset)}px`);
-      });
-    };
-
-    window.addEventListener('load', syncProjectEntryThumbs);
-    window.addEventListener('resize', syncProjectEntryThumbs);
-
-    if (document.fonts) {
-      document.fonts.ready.then(syncProjectEntryThumbs);
-    }
-
-    requestAnimationFrame(syncProjectEntryThumbs);
-
     const previewBackdrop = document.querySelector('.preview-backdrop');
     const previewTargets = document.querySelectorAll('[data-hover-preview]');
     let activePreview = null;
@@ -1142,8 +1159,6 @@ import FloatingButton from '../components/FloatingButton.astro';
       image.addEventListener('blur', hidePreview);
     });
   </script>
-
-  <FloatingButton />
 
 </body>
 </html>

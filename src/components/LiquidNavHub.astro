@@ -72,23 +72,25 @@
   
   const FONT_STACK = '"Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif';
   const templates = [
-    { text: "Watch the videos of the works / 视频", href: "/omni" },
-    { text: "View the pictures of the works / 图片", href: "/dual" },
-    { text: "Get to know me / 关于我", href: "/about" },
-    { text: "Contact me / 联系我", href: "/contact" },
-    { text: "Explore project details / 项目详情", href: "/project-detail" }
+    { text: "Watch the videos of the works / 视频", mobileText: "VIDEOS / 视频", href: "/omni" },
+    { text: "View the pictures of the works / 图片", mobileText: "PICTURES / 图片", href: "/dual" },
+    { text: "Get to know me / 关于我", mobileText: "ABOUT / 关于我", href: "/about" },
+    { text: "Contact me / 联系我", mobileText: "CONTACT / 联系我", href: "/contact" },
+    { text: "Explore project details / 项目详情", mobileText: "PROJECTS / 项目", href: "/project-detail" }
   ];
 
   interface Pill {
     id: number;
     text: string;
     href: string;
+    mobileText: string;
     baseX: number;
     baseY: number;
     x: number;
     y: number;
     w: number;
     h: number;
+    fontSize: number;
     phase: number;
     locked: boolean;
   }
@@ -96,14 +98,47 @@
   const pills: Pill[] = [];
   const items = templates;
 
+  function isMobileLayout() {
+    return width < 768;
+  }
+
+  function clamp(value: number, min: number, max: number) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function getPillText(pill: Pill | typeof templates[number]) {
+    return isMobileLayout() ? pill.mobileText : pill.text;
+  }
+
+  function updatePillMetrics() {
+    const mobile = isMobileLayout();
+    pills.forEach((pill) => {
+      pill.fontSize = mobile ? clamp(width * 0.038, 13, 16) : 20;
+      ctx.font = `bold ${pill.fontSize}px ${FONT_STACK}`;
+
+      const labelWidth = ctx.measureText(getPillText(pill)).width;
+      const mobileMaxWidth = Math.max(160, width - 32);
+      const mobileMinWidth = Math.min(220, mobileMaxWidth);
+      pill.w = mobile
+        ? Math.min(Math.max(labelWidth + 48, mobileMinWidth), Math.min(360, mobileMaxWidth))
+        : Math.min(labelWidth + 80, width - 48);
+      pill.h = mobile
+        ? clamp(height * 0.07, 48, 58)
+        : 60;
+    });
+  }
+
   function getPillTargets() {
-    if (width < 768) {
+    if (isMobileLayout()) {
       const centerX = width / 2;
-      const startY = height * 0.22;
-      const gap = Math.min(96, Math.max(72, height * 0.105));
+      const topSafe = clamp(height * 0.18, 112, 156);
+      const bottomSafe = 92;
+      const availableHeight = Math.max(280, height - topSafe - bottomSafe);
+      const gap = items.length > 1 ? availableHeight / (items.length - 1) : 0;
+
       return items.map((_, index) => ({
         cx: centerX,
-        cy: startY + index * gap,
+        cy: topSafe + index * gap,
       }));
     }
 
@@ -123,34 +158,37 @@
 
   function layoutPills() {
     if (!pills.length) return;
+    updatePillMetrics();
+
     const targets = getPillTargets();
+    const mobile = isMobileLayout();
+    const sideInset = mobile ? 16 : 24;
+    const topInset = mobile ? 104 : 72;
+    const bottomInset = mobile ? 32 : 56;
+
     pills.forEach((pill, index) => {
       const target = targets[index] || targets[0];
-      pill.baseX = Math.max(24, Math.min(target.cx - pill.w / 2, width - pill.w - 24));
-      pill.baseY = Math.max(72, Math.min(target.cy - pill.h / 2, height - pill.h - 56));
+      pill.baseX = Math.max(sideInset, Math.min(target.cx - pill.w / 2, width - pill.w - sideInset));
+      pill.baseY = Math.max(topInset, Math.min(target.cy - pill.h / 2, height - pill.h - bottomInset));
       pill.x = pill.baseX;
       pill.y = pill.baseY;
     });
   }
 
   function createPills() {
-    ctx.font = 'bold 20px "Space Mono"';
-    ctx.font = `bold 20px ${FONT_STACK}`;
     items.forEach((item, index) => {
-      const textWidth = ctx.measureText(item.text).width;
-      const w = Math.min(textWidth + 80, width - 48);
-      const h = 60;
-
       pills.push({
         id: index,
         text: item.text,
+        mobileText: item.mobileText,
         href: item.href,
         baseX: 0,
         baseY: 0,
         x: 0,
         y: 0,
-        w,
-        h,
+        w: 0,
+        h: 0,
+        fontSize: 20,
         phase: index * 1.35,
         locked: false
       });
@@ -172,18 +210,29 @@
     mouse.y = e.clientY;
   });
 
-  canvas.addEventListener('click', () => {
-  if (lockedPill) {
-    // 呼叫咱们的高阶矩阵切片幕布降下！
+  canvas.addEventListener('pointerup', (event) => {
+    const hitPill = pills.find((pill) => (
+      event.clientX >= pill.x
+      && event.clientX <= pill.x + pill.w
+      && event.clientY >= pill.y
+      && event.clientY <= pill.y + pill.h
+    ));
+
+    if (hitPill) {
+      navigateTo(hitPill.href);
+    } else if (lockedPill) {
+      navigateTo(lockedPill.href);
+    }
+  });
+
+  function navigateTo(href: string) {
     const triggerPureTransition = (window as any).triggerPureTransition;
     if (typeof triggerPureTransition === 'function') {
-      triggerPureTransition(lockedPill.href);
+      triggerPureTransition(href);
     } else {
-      // 极度安全的底层兜底
-      window.location.href = lockedPill.href;
+      window.location.href = href;
     }
   }
-});
 
   const LOCK_DIST = 120;   
   const BREAK_DIST = 220; 
@@ -268,10 +317,10 @@
 
       if (p.locked) {
         ctx.fillStyle = '#000000';
-        ctx.font = `900 20px ${FONT_STACK}`;
-        ctx.fillText(p.text, cx, cy);
+        ctx.font = `900 ${p.fontSize}px ${FONT_STACK}`;
+        ctx.fillText(getPillText(p), cx, cy);
       } else {
-        const radius = 18;
+        const radius = isMobileLayout() ? 14 : 18;
         ctx.strokeStyle = `rgba(142, 219, 53, ${0.45 + breath * 0.45})`;
         ctx.lineWidth = 1.25 + breath * 1.25;
         ctx.shadowColor = GREEN;
@@ -282,8 +331,8 @@
         ctx.shadowBlur = 0;
 
         ctx.fillStyle = `rgba(229, 229, 229, ${0.82 + breath * 0.18})`;
-        ctx.font = `bold 20px ${FONT_STACK}`;
-        ctx.fillText(p.text, cx, cy);
+        ctx.font = `bold ${p.fontSize}px ${FONT_STACK}`;
+        ctx.fillText(getPillText(p), cx, cy);
       }
       ctx.restore();
     });
