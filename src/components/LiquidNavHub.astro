@@ -72,11 +72,11 @@
   
   const FONT_STACK = '"Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif';
   const templates = [
+    { text: "Explore project details / 项目详情", mobileText: "PROJECTS / 项目", href: "/project-detail" },
     { text: "Watch the videos of the works / 视频", mobileText: "VIDEOS / 视频", href: "/omni" },
     { text: "View the pictures of the works / 图片", mobileText: "PICTURES / 图片", href: "/dual" },
     { text: "Get to know me / 关于我", mobileText: "ABOUT / 关于我", href: "/about" },
-    { text: "Contact me / 联系我", mobileText: "CONTACT / 联系我", href: "/contact" },
-    { text: "Explore project details / 项目详情", mobileText: "PROJECTS / 项目", href: "/project-detail" }
+    { text: "Contact me / 联系我", mobileText: "CONTACT / 联系我", href: "/contact" }
   ];
 
   interface Pill {
@@ -117,13 +117,13 @@
       ctx.font = `bold ${pill.fontSize}px ${FONT_STACK}`;
 
       const labelWidth = ctx.measureText(getPillText(pill)).width;
-      const mobileMaxWidth = Math.max(160, width - 32);
-      const mobileMinWidth = Math.min(220, mobileMaxWidth);
+      const mobileMaxWidth = Math.max(160, width - 64);
+      const mobileMinWidth = Math.min(212, mobileMaxWidth);
       pill.w = mobile
-        ? Math.min(Math.max(labelWidth + 48, mobileMinWidth), Math.min(360, mobileMaxWidth))
+        ? Math.min(Math.max(labelWidth + 52, mobileMinWidth), Math.min(340, mobileMaxWidth))
         : Math.min(labelWidth + 80, width - 48);
       pill.h = mobile
-        ? clamp(height * 0.07, 48, 58)
+        ? clamp(height * 0.058, 46, 54)
         : 60;
     });
   }
@@ -131,14 +131,16 @@
   function getPillTargets() {
     if (isMobileLayout()) {
       const centerX = width / 2;
-      const topSafe = clamp(height * 0.18, 112, 156);
-      const bottomSafe = 92;
-      const availableHeight = Math.max(280, height - topSafe - bottomSafe);
-      const gap = items.length > 1 ? availableHeight / (items.length - 1) : 0;
+      const pillHeight = pills[0]?.h || 50;
+      const gap = clamp(height * 0.035, 22, 32);
+      const groupHeight = items.length * pillHeight + (items.length - 1) * gap;
+      const minTop = clamp(height * 0.2, 132, 172);
+      const maxTop = Math.max(minTop, height - groupHeight - 112);
+      const startY = clamp((height - groupHeight) / 2 + pillHeight / 2 + height * 0.035, minTop, maxTop);
 
       return items.map((_, index) => ({
         cx: centerX,
-        cy: topSafe + index * gap,
+        cy: startY + index * (pillHeight + gap),
       }));
     }
 
@@ -240,12 +242,20 @@
 
   function animate() {
     const time = performance.now() * 0.001;
+    const mobile = isMobileLayout();
     // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = 'rgba(10, 10, 10, 0.75)';
     ctx.fillRect(0, 0, width, height);
 
-    if (!lockedPill) {
+    if (mobile) {
+      lockedPill = null;
+      pills.forEach(p => {
+        p.locked = false;
+        p.x = p.baseX + Math.sin(time * 1.1 + p.phase) * 1.2;
+        p.y = p.baseY + Math.cos(time * 1.05 + p.phase) * 0.8;
+      });
+    } else if (!lockedPill) {
       bubbleX += (mouse.x - bubbleX) * 0.15;
       bubbleY += (mouse.y - bubbleY) * 0.15;
 
@@ -280,7 +290,17 @@
 
     ctx.save();
     ctx.fillStyle = GREEN;
-    if (!lockedPill) {
+    if (mobile) {
+      ctx.globalAlpha = 0.12;
+      pills.forEach(p => {
+        const cx = p.x + p.w / 2;
+        const cy = p.y + p.h / 2;
+        const pulse = 0.5 + Math.sin(time * 1.4 + p.phase) * 0.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 10 + pulse * 7, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else if (!lockedPill) {
       ctx.beginPath();
       ctx.arc(bubbleX, bubbleY, 65, 0, Math.PI * 2);
       ctx.fill();
@@ -306,7 +326,7 @@
     ctx.textAlign = 'center';
 
     pills.forEach(p => {
-      if (!p.locked) {
+      if (!p.locked && !mobile) {
         p.x = p.baseX + Math.sin(time * 1.1 + p.phase) * 3;
         p.y = p.baseY + Math.cos(time * 1.05 + p.phase) * 2;
       }
@@ -316,16 +336,16 @@
       const cy = p.y + p.h / 2;
       const breath = 0.5 + Math.sin(time * 1.6 + p.phase) * 0.5;
 
-      if (p.locked) {
+      if (p.locked && !mobile) {
         ctx.fillStyle = '#000000';
         ctx.font = `900 ${p.fontSize}px ${FONT_STACK}`;
         ctx.fillText(getPillText(p), cx, cy);
       } else {
-        const radius = isMobileLayout() ? 14 : 18;
+        const radius = mobile ? 15 : 18;
         ctx.strokeStyle = `rgba(142, 219, 53, ${0.45 + breath * 0.45})`;
-        ctx.lineWidth = 1.25 + breath * 1.25;
+        ctx.lineWidth = mobile ? 1.2 + breath * 1.1 : 1.25 + breath * 1.25;
         ctx.shadowColor = GREEN;
-        ctx.shadowBlur = 12 + breath * 22;
+        ctx.shadowBlur = mobile ? 9 + breath * 14 : 12 + breath * 22;
         ctx.beginPath();
         ctx.roundRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1, radius);
         ctx.stroke();
@@ -338,7 +358,7 @@
       ctx.restore();
     });
 
-    if (!lockedPill) {
+    if (!lockedPill && !mobile) {
       ctx.fillStyle = '#0a0a0a';
       ctx.beginPath();
       ctx.arc(bubbleX, bubbleY, 4, 0, Math.PI * 2);
