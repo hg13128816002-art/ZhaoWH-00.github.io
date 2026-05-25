@@ -207,25 +207,50 @@
   let bubbleX = width / 2;
   let bubbleY = height / 2;
   let lockedPill: Pill | null = null;
+  let pressedPill: Pill | null = null;
+  let pressFeedbackUntil = 0;
   
   window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
   });
 
+  function getHitPill(clientX: number, clientY: number) {
+    return pills.find((pill) => (
+      clientX >= pill.x
+      && clientX <= pill.x + pill.w
+      && clientY >= pill.y
+      && clientY <= pill.y + pill.h
+    )) || null;
+  }
+
+  canvas.addEventListener('pointerdown', (event) => {
+    const hitPill = getHitPill(event.clientX, event.clientY);
+    if (!hitPill || !isMobileLayout()) return;
+
+    pressedPill = hitPill;
+    pressFeedbackUntil = performance.now() + 220;
+  });
+
   canvas.addEventListener('pointerup', (event) => {
-    const hitPill = pills.find((pill) => (
-      event.clientX >= pill.x
-      && event.clientX <= pill.x + pill.w
-      && event.clientY >= pill.y
-      && event.clientY <= pill.y + pill.h
-    ));
+    const hitPill = getHitPill(event.clientX, event.clientY);
 
     if (hitPill) {
-      navigateTo(hitPill.href);
+      if (isMobileLayout()) {
+        pressedPill = hitPill;
+        pressFeedbackUntil = performance.now() + 220;
+        window.setTimeout(() => navigateTo(hitPill.href), 120);
+      } else {
+        navigateTo(hitPill.href);
+      }
     } else if (lockedPill) {
       navigateTo(lockedPill.href);
     }
+  });
+
+  canvas.addEventListener('pointercancel', () => {
+    pressedPill = null;
+    pressFeedbackUntil = 0;
   });
 
   function navigateTo(href: string) {
@@ -241,8 +266,12 @@
   const BREAK_DIST = 220; 
 
   function animate() {
-    const time = performance.now() * 0.001;
+    const now = performance.now();
+    const time = now * 0.001;
     const mobile = isMobileLayout();
+    if (pressedPill && now > pressFeedbackUntil) {
+      pressedPill = null;
+    }
     // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = 'rgba(10, 10, 10, 0.75)';
@@ -335,8 +364,21 @@
       const cx = p.x + p.w / 2;
       const cy = p.y + p.h / 2;
       const breath = 0.5 + Math.sin(time * 1.6 + p.phase) * 0.5;
+      const isPressed = mobile && pressedPill === p;
 
-      if (p.locked && !mobile) {
+      if (isPressed) {
+        ctx.fillStyle = GREEN;
+        ctx.shadowColor = GREEN;
+        ctx.shadowBlur = 26;
+        ctx.beginPath();
+        ctx.roundRect(p.x - 3, p.y - 3, p.w + 6, p.h + 6, 18);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#050505';
+        ctx.font = `900 ${p.fontSize}px ${FONT_STACK}`;
+        ctx.fillText(getPillText(p), cx, cy);
+      } else if (p.locked && !mobile) {
         ctx.fillStyle = '#000000';
         ctx.font = `900 ${p.fontSize}px ${FONT_STACK}`;
         ctx.fillText(getPillText(p), cx, cy);
