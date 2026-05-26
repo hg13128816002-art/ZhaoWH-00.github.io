@@ -62,6 +62,8 @@ import FloatingButton from '../components/FloatingButton.astro';
       display: flex;
       flex-direction: column;
       --thumb-offset: 2rem;
+      --footer-top-gap: 4rem;
+      --footer-bottom-gap: 2rem;
     }
 
     .left-panel {
@@ -230,13 +232,13 @@ import FloatingButton from '../components/FloatingButton.astro';
 
     .archive-rail {
       margin-top: auto;
-      padding-bottom: 3.0625rem;
+      padding-bottom: var(--footer-bottom-gap);
     }
 
     .archive-rail-line {
       height: 1px;
       background: linear-gradient(90deg, #8EDB35, #171717 45%, transparent);
-      margin-bottom: 3.9375rem;
+      margin-bottom: calc(var(--footer-top-gap) - 1px);
     }
 
     .archive-rail-text {
@@ -245,6 +247,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       gap: 1rem;
       color: #404040;
       font-size: 10px;
+      line-height: 1.2;
       letter-spacing: 0.24em;
     }
 
@@ -369,10 +372,11 @@ import FloatingButton from '../components/FloatingButton.astro';
 
     .footer {
       margin-top: auto;
-      padding-top: 4rem;
-      padding-bottom: 2rem;
+      padding-top: var(--footer-top-gap);
+      padding-bottom: var(--footer-bottom-gap);
       color: #262626;
       font-size: 10px;
+      line-height: 1.2;
       letter-spacing: 0.3em;
       border-top: 1px solid #171717;
     }
@@ -918,18 +922,27 @@ import FloatingButton from '../components/FloatingButton.astro';
 
   <script is:inline>
     // @ts-nocheck
-    const syncProjectEntryThumbs = () => {
+    const syncProjectEntryLayout = () => {
       const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
       document.querySelectorAll('.project-entry').forEach((entry) => {
         const thumbStrip = entry.querySelector('.thumb-strip');
         const targetText = entry.querySelector('.right-panel section .section:last-of-type .section-text')
           || entry.querySelector('.right-panel section .section-text:last-of-type');
+        const footer = entry.querySelector('.footer');
+
+        if (footer) {
+          const footerStyle = getComputedStyle(footer);
+          entry.style.setProperty('--footer-top-gap', footerStyle.paddingTop);
+          entry.style.setProperty('--footer-bottom-gap', footerStyle.paddingBottom);
+        }
 
         if (!thumbStrip || !targetText) return;
 
         if (!isDesktop) {
           entry.style.removeProperty('--thumb-offset');
+          entry.style.removeProperty('--footer-top-gap');
+          entry.style.removeProperty('--footer-bottom-gap');
           return;
         }
 
@@ -946,26 +959,32 @@ import FloatingButton from '../components/FloatingButton.astro';
       });
     };
 
-    const scheduleProjectEntryThumbSync = () => {
+    const scheduleProjectEntryLayoutSync = () => {
       requestAnimationFrame(() => {
-        syncProjectEntryThumbs();
-        requestAnimationFrame(syncProjectEntryThumbs);
+        syncProjectEntryLayout();
+        requestAnimationFrame(syncProjectEntryLayout);
       });
     };
 
-    window.addEventListener('load', scheduleProjectEntryThumbSync);
-    window.addEventListener('resize', scheduleProjectEntryThumbSync);
+    window.addEventListener('load', scheduleProjectEntryLayoutSync);
+    window.addEventListener('resize', scheduleProjectEntryLayoutSync);
+    window.visualViewport?.addEventListener('resize', scheduleProjectEntryLayoutSync);
 
     if (document.fonts) {
-      document.fonts.ready.then(scheduleProjectEntryThumbSync);
+      document.fonts.ready.then(scheduleProjectEntryLayoutSync);
     }
 
-    const projectResizeObserver = new ResizeObserver(scheduleProjectEntryThumbSync);
-    document.querySelectorAll('.project-entry .right-panel, .project-entry .thumb-strip').forEach((element) => {
+    const projectResizeObserver = new ResizeObserver(scheduleProjectEntryLayoutSync);
+    document.querySelectorAll('.project-entry .right-panel, .project-entry .left-panel, .project-entry .thumb-strip').forEach((element) => {
       projectResizeObserver.observe(element);
     });
 
-    scheduleProjectEntryThumbSync();
+    document.querySelectorAll('.project-entry img').forEach((image) => {
+      if (image.complete) return;
+      image.addEventListener('load', scheduleProjectEntryLayoutSync, { once: true });
+    });
+
+    scheduleProjectEntryLayoutSync();
 
     const previewBackdrop = document.querySelector('.preview-backdrop');
     const previewTargets = document.querySelectorAll('[data-hover-preview]');
