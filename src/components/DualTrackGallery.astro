@@ -6,7 +6,7 @@ import '../styles/global.css';
 
 <style>
   .font-mono, #filename-display {
-    font-family: "Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif !important;
+    font-family: var(--font-mono-cn) !important;
   }
 </style>
 
@@ -68,7 +68,7 @@ import '../styles/global.css';
   let currentSpeedMultiplier = 1.0; 
   const GREEN = '#8EDB35';
 
-  const FONT_STACK = '"Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif';
+  const FONT_STACK = '"Noto Sans SC Local", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif';
 
   // ================= 2. 真实数据源 (32份机密档案) =================
   const projects = [

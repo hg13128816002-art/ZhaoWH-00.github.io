@@ -10,7 +10,7 @@ import PureTransition from '../components/PureTransition.astro';
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&display=swap');
   
   .font-mono {
-    font-family: "Space Mono", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif !important;
+    font-family: var(--font-mono-cn) !important;
   }
 </style>
 
@@ -63,7 +63,7 @@ import PureTransition from '../components/PureTransition.astro';
   <canvas id="omni-universe" class="absolute inset-0 block w-full h-full z-10 pointer-events-none"></canvas>
 
   <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center">
-    <div class="flex flex-col items-center justify-center gap-2 select-none" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    <div class="flex flex-col items-center justify-center gap-2 select-none" style="font-family: var(--font-sans-cn);">
       <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">MAKE</h1>
       <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">SOMETHING</h1>
       <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">DIFFERENT.</h1>

@@ -9,19 +9,29 @@
 	如果你希望我代为下载并放入 `public/fonts/`，我可以帮你做（需确认许可）。
 */
 
+:root {
+  --font-sans-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Source Han Sans CN', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC', 'WenQuanYi Micro Hei', 'Segoe UI', Arial, sans-serif;
+  --font-mono-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
 html {
-  font-family: 'Noto Sans SC Local', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
+  font-family: var(--font-sans-cn) !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-synthesis-weight: none;
 }
 
-body {
+body,
+button,
+input,
+textarea,
+select {
   font-family: inherit;
 }
 
 .font-mono {
-  font-family: 'Noto Sans SC Local', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+  font-family: var(--font-mono-cn) !important;
 }
 
 html:not(.fonts-loaded) body {
@@ -39,9 +49,33 @@ html:not(.fonts-loaded) body {
 @font-face {
 	font-family: 'Noto Sans SC Local';
 	src: url('/fonts/NotoSansSC-Bold.woff2') format('woff2');
+	font-weight: 500;
+	font-style: normal;
+	font-display: block;
+}
+
+@font-face {
+	font-family: 'Noto Sans SC Local';
+	src: url('/fonts/NotoSansSC-Bold.woff2') format('woff2');
+	font-weight: 600;
+	font-style: normal;
+	font-display: block;
+}
+
+@font-face {
+	font-family: 'Noto Sans SC Local';
+	src: url('/fonts/NotoSansSC-Bold.woff2') format('woff2');
 	font-weight: 700;
 	font-style: normal;
 	font-display: block;
+}
+
+@font-face {
+  font-family: 'Noto Sans SC Local';
+  src: url('/fonts/NotoSansSC-Black.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: block;
 }
 
 @font-face {
