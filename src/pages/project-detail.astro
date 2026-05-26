@@ -232,13 +232,18 @@ import FloatingButton from '../components/FloatingButton.astro';
 
     .archive-rail {
       margin-top: auto;
+      position: relative;
+      padding-top: var(--footer-top-gap);
       padding-bottom: var(--footer-bottom-gap);
     }
 
     .archive-rail-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 1px;
       background: linear-gradient(90deg, #8EDB35, #171717 45%, transparent);
-      margin-bottom: calc(var(--footer-top-gap) - 1px);
     }
 
     .archive-rail-text {
@@ -372,6 +377,7 @@ import FloatingButton from '../components/FloatingButton.astro';
 
     .footer {
       margin-top: auto;
+      position: relative;
       padding-top: var(--footer-top-gap);
       padding-bottom: var(--footer-bottom-gap);
       color: #262626;
@@ -458,6 +464,10 @@ import FloatingButton from '../components/FloatingButton.astro';
     }
 
     @media (min-width: 1280px) {
+      .left-panel {
+        padding-bottom: 5rem;
+      }
+
       .right-panel {
         padding: 6rem 6rem 5rem;
       }
