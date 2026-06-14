@@ -12,14 +12,23 @@
 :root {
   --font-sans-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Source Han Sans CN', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC', 'WenQuanYi Micro Hei', 'Segoe UI', Arial, sans-serif;
   --font-mono-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --site-frame-inset: clamp(0.5rem, 1.1vw, 0.95rem);
+  --site-frame-radius: clamp(0.5rem, 1vw, 0.9rem);
+  --site-frame-line: rgba(142, 219, 53, 0.34);
+  --site-scrollbar-line: rgba(142, 219, 53, 0.76);
+  --site-scrollbar-line-hover: rgba(142, 219, 53, 1);
 }
 
 html {
   font-family: var(--font-sans-cn) !important;
+  max-width: 100%;
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-synthesis-weight: none;
+  scrollbar-color: var(--site-scrollbar-line) transparent;
+  scrollbar-width: thin;
 }
 
 body,
@@ -30,12 +39,68 @@ select {
   font-family: inherit;
 }
 
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 .font-mono {
   font-family: var(--font-mono-cn) !important;
 }
 
 html:not(.fonts-loaded) body {
   visibility: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+}
+
+body::before {
+  inset: var(--site-frame-inset);
+  z-index: 10030;
+  border: 1px solid var(--site-frame-line);
+  border-radius: var(--site-frame-radius);
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 3.5rem;
+  background-color: transparent;
+  border: 1px solid var(--site-scrollbar-line);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  border-color: var(--site-scrollbar-line-hover);
+  box-shadow: none;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --site-frame-inset: 0.45rem;
+    --site-frame-radius: 0.55rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
 }
 
 @font-face {

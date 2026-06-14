@@ -2,8 +2,8 @@
 // src/pages/contact.astro
 // 像素级交互打磨版：恢复 violent 波形震荡反馈 + 移除 Telegram 节点 + 稳定排版 + 完美多端自适应
 import '../styles/global.css';
-import FloatingButton from '../components/FloatingButton.astro';
 import PureTransition from '../components/PureTransition.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 const headerText = '嗨！很高兴你能看到这里，如果你对我的作品有任何想法或合作意向，请联系我！';
 ---
 
@@ -24,17 +24,15 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
     }
   </style>
 </head>
-<body class="min-h-screen w-screen bg-[#0a0a0a] text-neutral-100 flex flex-col justify-between p-6 md:p-12 relative overflow-x-hidden select-none box-border">
+<body class="min-h-screen w-screen bg-[#0a0a0a] text-neutral-100 flex flex-col justify-between px-6 pb-6 pt-6 md:px-12 md:pb-12 md:pt-10 relative overflow-x-hidden select-none box-border">
   <PureTransition />
+  <SiteHeader />
 
-  <div class="flex justify-between items-start z-20 w-full">
+  <div class="flex justify-start items-start z-20 w-full">
     <div>
       <div class="text-[#8EDB35] text-[10px] md:text-xs tracking-[0.4em] font-bold">// TELEMETRY_ACTIVE</div>
       <div class="text-neutral-500 text-[9px] md:text-xs mt-1 tracking-widest">OSCILLOSCOPE_ONLINE</div>
     </div>
-    <a href="/hub" class="text-[#8EDB35] hover:underline text-[10px] md:text-xs tracking-widest font-bold">
-      [ CLOSE_CHANNEL ]
-    </a>
   </div>
 
   <div id="developer-header" class="z-30 w-full mt-6 md:mt-12 text-center text-[#8EDB35] font-bold text-base md:text-2xl leading-relaxed px-2 max-w-4xl mx-auto">
@@ -110,8 +108,6 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
 
   </div>
 
-  <FloatingButton />
-  
   <script>
     const canvas = document.getElementById('oscilloscope-canvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')!;

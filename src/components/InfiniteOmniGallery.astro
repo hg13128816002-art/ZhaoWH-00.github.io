@@ -103,6 +103,8 @@ import '../styles/global.css';
   }
 
   type Project = {
+    slug: string;
+    aliases?: string[];
     title: string;
     posterSrc: string;
     videoSrc: string;
@@ -111,36 +113,46 @@ import '../styles/global.css';
 
   const projects: Project[] = [
     { 
+      slug: "liminal",
       title: "LIMINAL-临近边缘的幻想.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png",
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" 
     },
     { 
+      slug: "never-extinguished",
+      aliases: ["never"],
       title: "VR严肃游戏《未曾熄灭的》PV.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BD%9C%E5%93%81%E6%B5%B7%E6%8A%A5.jpg", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8BPV.mp4" 
     },
     { 
+      slug: "stare",
+      aliases: ["stare-ewsn"],
       title: "STARE.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/starE%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/starE.mp4" 
     },
     { 
+      slug: "ewsn",
+      aliases: ["ren-er-ewsn"],
       title: "任尔EWSN风？.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F.mp4" 
     },
     { 
+      slug: "land-temple",
       title: "清迈良园土地庙微改造.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" 
     },
     { 
+      slug: "yuan",
       title: "缘.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" 
     },
     { 
+      slug: "nazhou-ar",
       title: "那洲村AR小游戏DEMO演示.MP4", 
       posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png", 
       videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%B0%8F%E6%B8%B8%E6%88%8FDemo%E6%BC%94%E7%A4%BA.mp4" 
@@ -358,6 +370,84 @@ import '../styles/global.css';
   const timeDisplay = document.getElementById('time-display')!;
   const overlayTitle = document.getElementById('overlay-title')!;
 
+  function getProjectBySlug(slug: string) {
+    const normalized = decodeURIComponent(slug.replace(/^#/, '')).trim().toLowerCase();
+    if (!normalized) return null;
+    return projects.find((project) => (
+      project.slug === normalized || project.aliases?.includes(normalized)
+    )) || null;
+  }
+
+  function getProjectIndexAtCell(ix: number, iy: number) {
+    const hash = Math.abs(Math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453);
+    return Math.floor(hash) % projects.length;
+  }
+
+  function findNearestProjectCell(project: Project) {
+    const projectIndex = projects.indexOf(project);
+    let bestCell = { ix: 0, iy: 0 };
+    let bestScore = Number.POSITIVE_INFINITY;
+
+    for (let ix = -18; ix <= 18; ix++) {
+      for (let iy = -18; iy <= 18; iy++) {
+        if (getProjectIndexAtCell(ix, iy) !== projectIndex) continue;
+        const score = Math.hypot(ix, iy) + Math.abs(iy) * 0.08;
+        if (score < bestScore) {
+          bestScore = score;
+          bestCell = { ix, iy };
+        }
+      }
+    }
+
+    return bestCell;
+  }
+
+  function focusProjectCard(project: Project) {
+    const cell = findNearestProjectCell(project);
+    driveX = 0;
+    driveY = 0;
+    cameraX = -cell.ix * GRID_SIZE_X;
+    cameraY = -cell.iy * GRID_SIZE_Y;
+    mouse.x = width / 2;
+    mouse.y = height / 2;
+    hoveredNodeCoord = { ...cell, project };
+  }
+
+  function openVideoProject(project: Project, allowMutedFallback = false) {
+    overlayTitle.innerText = project.title;
+    progressBar.style.width = '0%';
+    timeDisplay.innerText = '00:00 / 00:00';
+    video.pause();
+    video.removeAttribute('muted');
+    video.muted = false;
+    video.src = project.videoSrc;
+    video.setAttribute('playsinline', '');
+    overlay.style.pointerEvents = 'auto';
+    overlay.style.opacity = '1';
+    playHint.style.opacity = '0';
+
+    video.play().catch(() => {
+      if (!allowMutedFallback) {
+        playHint.style.opacity = '1';
+        return;
+      }
+
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.play().catch(() => {
+        playHint.style.opacity = '1';
+      });
+    });
+  }
+
+  function openProjectFromHash() {
+    const project = getProjectBySlug(window.location.hash);
+    if (!project) return;
+    if (gyroOverlay) gyroOverlay.style.display = 'none';
+    focusProjectCard(project);
+    window.setTimeout(() => openVideoProject(project, true), 220);
+  }
+
   // ========================================================
   // 🛠️ 纯净底层交互引擎：绝对防穿透
   // ========================================================
@@ -370,18 +460,11 @@ import '../styles/global.css';
     if (isUIInteraction) return;
     if (overlay.style.opacity === '1') return;
 
-    if (hoveredNodeCoord && hoveredNodeCoord.project) {
-      const project = hoveredNodeCoord.project;
-      overlayTitle.innerText = project.title;
-      video.src = project.videoSrc;
-      overlay.style.pointerEvents = 'auto';
-      overlay.style.opacity = '1';
-      playHint.style.opacity = '0';
-      video.play().catch(err => {
-        playHint.style.opacity = '1';
-      });
-    }
+    if (hoveredNodeCoord && hoveredNodeCoord.project) openVideoProject(hoveredNodeCoord.project);
   });
+
+  window.addEventListener('hashchange', openProjectFromHash);
+  window.setTimeout(openProjectFromHash, 220);
 
   btnClose.addEventListener('click', (e) => {
     e.stopPropagation();

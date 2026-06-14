@@ -2,8 +2,8 @@
 // src/pages/dual.astro
 import '../styles/global.css';
 import DualTrackGallery from '../components/DualTrackGallery.astro';
-import FloatingButton from '../components/FloatingButton.astro';
 import PureTransition from '../components/PureTransition.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 ---
 
 <html lang="en">
@@ -18,7 +18,7 @@ import PureTransition from '../components/PureTransition.astro';
 </head>
 <body class="w-screen h-screen overflow-hidden bg-[#0a0a0a]">
   <PureTransition />
+  <SiteHeader />
   <DualTrackGallery />
-  <FloatingButton />
 </body>
 </html>

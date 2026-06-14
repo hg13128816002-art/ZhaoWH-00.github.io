@@ -1,0 +1,223 @@
+---
+// src/components/SiteHeader.astro
+// 全站常驻导航：参考作品集站点的直观顶部导航结构。
+
+const normalizePath = (path: string) => {
+  if (path === '/') return '/';
+  return path.replace(/\/$/, '');
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+const navItems = [
+  { href: '/', label: 'HOME', match: '/' },
+  { href: '/project-detail', label: 'PROJECTS', match: '/project-detail' },
+  { href: '/omni', label: 'VIDEOS', match: '/omni' },
+  { href: '/dual', label: 'PICTURES', match: '/dual' },
+  { href: '/profile', label: 'PROFILE', match: '/profile' },
+  { href: '/contact', label: 'CONTACT', match: '/contact' },
+];
+
+const isActive = (item: typeof navItems[number]) => {
+  return currentPath === item.match;
+};
+
+const shouldStayVisibleAtTop = currentPath === '/omni' || currentPath === '/dual' || currentPath === '/contact';
+const shouldHideAtTop = !shouldStayVisibleAtTop;
+const startsVisible = !shouldHideAtTop;
+---
+
+<header
+  class="site-header"
+  data-hide-at-top={shouldHideAtTop ? 'true' : 'false'}
+  data-visible={startsVisible ? 'true' : 'false'}
+  aria-hidden={startsVisible ? 'false' : 'true'}
+  aria-label="Primary navigation"
+  style={startsVisible ? 'opacity: 1; visibility: visible; transform: translate3d(0, 0, 0);' : undefined}
+>
+  <nav class="site-nav" aria-label="Main sections">
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        data-nav-match={item.match}
+        class:list={['site-nav-link', { 'is-active': isActive(item) }]}
+        aria-current={isActive(item) ? 'page' : undefined}
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script is:inline>
+  (() => {
+    const syncSiteHeaderActiveState = () => {
+      const links = Array.from(document.querySelectorAll('.site-nav-link'));
+      const activeMatch = window.location.pathname.replace(/\/$/, '') || '/';
+
+      links.forEach((link) => {
+        const isActive = link.dataset.navMatch === activeMatch;
+        link.classList.toggle('is-active', isActive);
+        if (isActive) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    };
+
+    let hideTimer = 0;
+    const setHeaderVisibility = (header, isVisible) => {
+      const nav = header.querySelector('.site-nav');
+      window.clearTimeout(hideTimer);
+
+      header.dataset.visible = isVisible ? 'true' : 'false';
+      header.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+      header.style.opacity = isVisible ? '1' : '0';
+      header.style.transform = isVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, calc(-100% - 0.75rem), 0)';
+      if (nav) {
+        nav.style.pointerEvents = isVisible ? 'auto' : 'none';
+      }
+
+      if (isVisible) {
+        header.style.visibility = 'visible';
+        return;
+      }
+
+      hideTimer = window.setTimeout(() => {
+        if (header.dataset.visible === 'false') {
+          header.style.visibility = 'hidden';
+        }
+      }, 260);
+    };
+
+    const syncSiteHeaderVisibility = () => {
+      const header = document.querySelector('.site-header');
+      if (!header) return;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      const isVisible = header.dataset.hideAtTop !== 'true' || scrollTop > 28;
+      setHeaderVisibility(header, isVisible);
+    };
+
+    let frameId = 0;
+    const syncSiteHeader = () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        syncSiteHeaderActiveState();
+        syncSiteHeaderVisibility();
+      });
+    };
+
+    syncSiteHeaderActiveState();
+    syncSiteHeaderVisibility();
+    window.addEventListener('hashchange', syncSiteHeader);
+    window.addEventListener('popstate', syncSiteHeader);
+    window.addEventListener('scroll', syncSiteHeader, { passive: true });
+    window.addEventListener('resize', syncSiteHeader, { passive: true });
+    window.addEventListener('pageshow', syncSiteHeader);
+  })();
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.65rem, 3.1vh, 2.15rem) clamp(1rem, 3vw, 2.5rem) 1rem;
+    pointer-events: none;
+    font-family: "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, var(--font-sans-cn), sans-serif;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, calc(-100% - 0.75rem), 0);
+    transition: opacity 220ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0ms linear 260ms;
+  }
+
+  .site-header[data-visible="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+    transition-delay: 0ms;
+  }
+
+  .site-header[data-visible="true"] .site-nav {
+    pointer-events: auto;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12rem;
+    max-width: calc(100vw - 2rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    border: 1px solid rgba(142, 219, 53, 0.34);
+    border-radius: 12px;
+    background: rgba(8, 8, 8, 0.62);
+    padding: 0.38rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav-link {
+    display: flex;
+    min-height: 2.65rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.58rem 1rem;
+    color: rgba(245, 245, 245, 0.78);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: clamp(0.96rem, 1.16vw, 1.08rem);
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .site-nav-link:hover,
+  .site-nav-link:focus-visible,
+  .site-nav-link.is-active {
+    color: #050505;
+    border-color: rgba(142, 219, 53, 0.78);
+    background: #8EDB35;
+    box-shadow: 0 0 22px rgba(142, 219, 53, 0.22);
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 760px) {
+    .site-header {
+      padding: 1.05rem 0.75rem 0.75rem;
+    }
+
+    .site-nav {
+      width: auto;
+      max-width: 100%;
+      justify-content: flex-start;
+      padding: 0.32rem;
+      border-radius: 11px;
+    }
+
+    .site-nav-link {
+      min-height: 2.18rem;
+      padding: 0.48rem 0.74rem;
+      border-radius: 7px;
+      font-size: 0.9rem;
+    }
+  }
+</style>

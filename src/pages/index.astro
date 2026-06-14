@@ -4,6 +4,7 @@
 import '../styles/global.css';
 import Preloader from '../components/Preloader.astro';
 import PureTransition from '../components/PureTransition.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 ---
 
 <style>
@@ -11,6 +12,34 @@ import PureTransition from '../components/PureTransition.astro';
   
   .font-mono {
     font-family: var(--font-mono-cn) !important;
+  }
+
+  #home-hero {
+    contain: paint;
+  }
+
+  #hardware-cursor {
+    z-index: 10060;
+  }
+
+  .hero-title-stack {
+    font-family: var(--font-sans-cn);
+    transform: translateY(clamp(-2.9rem, -5.2vh, -1.7rem));
+  }
+
+  .hero-dot {
+    animation: heroDotBlink 1.05s steps(2, start) infinite;
+    display: inline-block;
+  }
+
+  @keyframes heroDotBlink {
+    0%, 48% {
+      opacity: 1;
+    }
+
+    49%, 100% {
+      opacity: 0;
+    }
   }
 </style>
 
@@ -24,10 +53,21 @@ import PureTransition from '../components/PureTransition.astro';
   <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
   <script src="/scripts/font-loader.js" is:inline></script>
+  <script type="importmap" is:inline>
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
-<body class="w-screen h-screen bg-[#050505] overflow-hidden select-none relative cursor-none" style="margin: 0; padding: 0; background-color: #050505;">
+<body class="w-full min-h-screen bg-[#050505] overflow-x-hidden select-none relative cursor-none" style="margin: 0; padding: 0; background-color: #050505;">
   <PureTransition />
-<Preloader />
+  <SiteHeader />
+  <Preloader />
+
+  <section id="home-hero" class="relative w-full h-screen overflow-hidden">
   <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex flex-col justify-center opacity-25">
     <div class="w-[280vw] -translate-x-[80vw] rotate-[-24deg] flex flex-col gap-2 select-none">
       <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
@@ -63,26 +103,322 @@ import PureTransition from '../components/PureTransition.astro';
   <canvas id="omni-universe" class="absolute inset-0 block w-full h-full z-10 pointer-events-none"></canvas>
 
   <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center">
-    <div class="flex flex-col items-center justify-center gap-2 select-none" style="font-family: var(--font-sans-cn);">
+    <div class="hero-title-stack flex flex-col items-center justify-center gap-2 select-none">
       <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">MAKE</h1>
       <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">SOMETHING</h1>
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">DIFFERENT.</h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">DIFFERENT<span class="hero-dot">.</span></h1>
     </div>
 
       <div class="absolute bottom-8 inset-x-0 z-20 px-5 text-center pointer-events-none md:bottom-10">
       <span class="block whitespace-nowrap text-neutral-600 text-[clamp(0.72rem,3.1vw,1.125rem)] md:text-2xl tracking-[0.16em] md:tracking-[0.4em] animate-pulse font-mono">
-        [ 点击任意处开始探索我的创意世界 ]
+        [ SCROLL FOR CREATIVE CHRONOLOGY ]
       </span>
     </div>
   </div>
 
-  <div id="hardware-cursor" class="fixed top-0 left-0 pointer-events-none z-40 flex items-center justify-center -translate-x-1/2 -translate-y-1/2">
+  <div id="warp-flash" class="absolute inset-0 bg-[#8EDB35] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  </section>
+
+  <div id="hardware-cursor" class="fixed top-0 left-0 h-6 w-6 pointer-events-none z-[10060] flex items-center justify-center -translate-x-1/2 -translate-y-1/2">
     <div class="absolute w-2 h-2 bg-[#8EDB35] rounded-full shadow-[0_0_12px_#8EDB35]"></div>
     <div class="absolute w-6 h-[1px] bg-[#8EDB35]/70"></div>
     <div class="absolute h-6 w-[1px] bg-[#8EDB35]/70"></div>
   </div>
 
-  <div id="warp-flash" class="absolute inset-0 bg-[#8EDB35] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  <main class="home-sections">
+    <section class="home-section chronology-section" aria-labelledby="creative-chronology-title">
+      <div class="chronology-pin">
+        <div class="chronology-copy">
+          <div class="section-kicker">01 / CREATIVE CHRONOLOGY</div>
+          <div class="section-head">
+            <h2 id="creative-chronology-title">TIMELINE</h2>
+          </div>
+          <div class="chronology-progress">
+            <span data-timeline-current>00</span>
+            <i></i>
+            <span>12</span>
+          </div>
+        </div>
+
+        <div class="chronology-map" aria-label="创作编年时间轴">
+          <div class="chronology-world" data-timeline-world>
+            <svg class="chronology-svg" viewBox="0 0 1000 2140" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                class="chronology-path is-ghost"
+                d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
+              />
+              <path
+                class="chronology-path is-live"
+                data-timeline-path
+                d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
+              />
+            </svg>
+            <span class="timeline-head" data-timeline-head aria-hidden="true"></span>
+
+            <a class="timeline-node node-1" href="/profile" data-timeline-node data-x="460" data-y="140">
+              <span>2007.01.06 / LIFE</span>
+              <strong>出生</strong>
+              <em>故事从这里开始。</em>
+            </a>
+            <a class="timeline-node node-2 has-media" href="/dual" data-timeline-node data-x="590" data-y="300">
+              <span>2020.03 / LIFE</span>
+              <strong>萌生艺术与设计的想法</strong>
+              <em>第一次认真把未来和创作联系在一起。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B9%85%E7%94%B5%E5%AD%90%E7%BB%98%E7%94%BB%E4%BD%9C%E5%93%81.webp" alt="我的第一幅电子绘画作品">
+            </a>
+            <a class="timeline-node node-3" href="/profile" data-timeline-node data-x="440" data-y="460">
+              <span>2021.08 / LIFE</span>
+              <strong>正式走上艺术道路</strong>
+              <em>与家人协商之后，选择把艺术作为真正要走的方向。</em>
+            </a>
+            <a class="timeline-node node-4 has-media" href="/dual" data-timeline-node data-x="615" data-y="640">
+              <span>2022-2025 / LIFE + WORKS</span>
+              <strong>深圳市盐田高级中学美术班</strong>
+              <em>初步接触设计，并完成一些早期视觉作品。</em>
+              <span class="timeline-media-pair">
+                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" alt="人生是旷野，不是轨道公益海报">
+                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" alt="群体性孤独公益海报">
+              </span>
+            </a>
+            <a class="timeline-node node-5" href="/profile" data-timeline-node data-x="470" data-y="820">
+              <span>2025.09 / LIFE</span>
+              <strong>进入北京师范大学珠海校区</strong>
+              <em>开始艺术设计学专业的学习。</em>
+            </a>
+            <a class="timeline-node node-6 has-media" href="/omni#yuan" data-timeline-node data-x="595" data-y="980">
+              <span>2025.11 / WORK</span>
+              <strong>纪录片《缘》</strong>
+              <em>影像练习与叙事氛围的阶段性尝试。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘短片封面">
+            </a>
+            <a class="timeline-node node-7 has-media" href="/project-detail#stare-ewsn" data-timeline-node data-x="430" data-y="1140">
+              <span>2025.12 / WORK</span>
+              <strong>《starE》/《任尔 EWSN 风？》</strong>
+              <em>围绕网络舆论场与磁场隐喻展开的装置艺术。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品">
+            </a>
+            <a class="timeline-node node-8 has-media" href="/project-detail#liminal" data-timeline-node data-x="610" data-y="1300">
+              <span>2026.01 / WORK</span>
+              <strong>《Liminal-临近边缘的幻想》</strong>
+              <em>关于算法、虚构与真实边界的实验短片。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面">
+            </a>
+            <a class="timeline-node node-9 has-media" href="/project-detail#never-extinguished" data-timeline-node data-x="470" data-y="1460">
+              <span>2026.01 / WORK</span>
+              <strong>VR 游戏《Never Extinguished》</strong>
+              <em>以东北下岗潮为背景的 VR 严肃游戏原型。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="Never Extinguished 宣传海报">
+            </a>
+            <a class="timeline-node node-10 has-media" href="/project-detail#nazhou-ar" data-timeline-node data-x="620" data-y="1620">
+              <span>2026.04 / WORK</span>
+              <strong>AR 游戏 Demo《画意那洲·文化寻根》</strong>
+              <em>把景区导览转化为带有探索循环的 AR 体验。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="画意那洲 AR 导览 Demo 封面">
+            </a>
+            <a class="timeline-node node-11 has-media" href="/project-detail#miao-generator" data-timeline-node data-x="450" data-y="1780">
+              <span>2026.06 / WORK</span>
+              <strong>交互网页《施洞苗绣纹样生成器》</strong>
+              <em>以非遗纹样为素材的数字共创与交互生成实验。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面">
+            </a>
+            <a class="timeline-node node-12 has-media" href="/project-detail#shadow-shell" data-timeline-node data-x="585" data-y="1940">
+              <span>2026.06 / WORK</span>
+              <strong>建筑设计《Shadow Shell》</strong>
+              <em>围绕光影、遮蔽与临时结构展开的建筑模型实验。</em>
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp" alt="Shadow Shell 建筑模型">
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section works-section" aria-labelledby="home-works-title">
+      <div class="works-pin">
+        <div class="works-control">
+          <h2 id="home-works-title"><span aria-hidden="true"></span>WORKS CATEGORY</h2>
+          <div class="works-category-list" aria-label="作品分类">
+            <button class="works-category is-active" type="button" data-work-category="digital">
+              <span>1:</span> 数字艺术
+            </button>
+            <button class="works-category" type="button" data-work-category="film">
+              <span>2:</span> 短片
+            </button>
+            <button class="works-category" type="button" data-work-category="photo">
+              <span>3:</span> 摄影作品
+            </button>
+            <button class="works-category" type="button" data-work-category="other">
+              <span>4:</span> 其他
+            </button>
+          </div>
+          <div class="works-progress" aria-live="polite">
+            <span data-work-current>01</span>
+            <i></i>
+            <span data-work-total>10</span>
+          </div>
+        </div>
+
+        <div class="works-stage" aria-label="首页作品预览叠层">
+          <article class="works-layer is-active" data-work-card data-work-category="digital" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="未曾熄灭的作品海报">
+            <div class="works-layer-copy">
+              <span>VR 严肃游戏 / 2026</span>
+              <h3>未曾熄灭的</h3>
+              <p>以 90 年代末东北车间为沉浸式场景，把历史创伤、怀旧疗法和自然交互整合进一套可体验的游戏叙事。</p>
+              <a href="/project-detail#never-extinguished">查看项目</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="那洲村 AR 导览游戏 Demo">
+            <div class="works-layer-copy">
+              <span>AR 导览游戏 / 2026</span>
+              <h3>画意那洲·文化寻根</h3>
+              <p>把景区导览转译为收集碎片的探索循环，让游客在移动和寻找中进入地方文化叙事。</p>
+              <a href="/project-detail#nazhou-ar">查看项目</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面">
+            <div class="works-layer-copy">
+              <span>交互网页 / 2026</span>
+              <h3>施洞苗绣纹样生成器</h3>
+              <p>围绕施洞苗绣传统图腾展开的数字共创网页，用户可以组合纹样、调节构图与色板，并获得 AI 纹样评审反馈。</p>
+              <a href="/project-detail#miao-generator">查看项目</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品">
+            <div class="works-layer-copy">
+              <span>装置艺术 / 2025</span>
+              <h3>starE / 任尔 EWSN 风？</h3>
+              <p>以磁场隐喻网络舆论场，把抽象的公共讨论结构转化为可被观看和感知的实体装置。</p>
+              <a href="/project-detail#stare-ewsn">查看项目</a>
+            </div>
+          </article>
+
+          <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" preload="metadata" muted playsinline></video>
+            <button class="works-play" type="button" aria-label="播放 Liminal">CLICK TO PLAY</button>
+            <div class="works-layer-copy">
+              <span>实验短片 / 2026</span>
+              <h3>Liminal 临近边缘的幻想</h3>
+              <p>围绕算法、虚构和真实边界展开的影像实验，讨论当代视觉经验中不断增殖的“非真实”。</p>
+              <a href="/project-detail#liminal">查看项目</a>
+            </div>
+          </article>
+
+          <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘 短片封面">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" preload="metadata" muted playsinline></video>
+            <button class="works-play" type="button" aria-label="播放缘">CLICK TO PLAY</button>
+            <div class="works-layer-copy">
+              <span>影像练习</span>
+              <h3>缘</h3>
+              <p>从片段、节奏和情绪出发的短片作品，作为影像语言与叙事氛围的阶段性练习。</p>
+              <a href="/omni#yuan">进入视频页</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="photo" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E5%90%88%E6%88%90%E7%9A%84%E6%B2%89%E9%BB%98%E3%80%8B%20%28Synthetic%20Silence%29.webp" alt="《合成的沉默》摄影作品">
+            <div class="works-layer-copy">
+              <span>摄影作品</span>
+              <h3 class="works-title-split">
+                <span class="works-title-cn">合成的沉默</span>
+                <span class="works-title-en">Synthetic Silence</span>
+              </h3>
+              <p>白色的三角几何体富有着一种无机质的情绪，在雨后湿润的、充满生活痕迹的砖块上，它们显得格格不入又极其安静。</p>
+              <a href="/dual">进入图片页</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" alt="自画像">
+            <div class="works-layer-copy">
+              <span>图像档案</span>
+              <h3>自画像</h3>
+              <p>以个人形象作为观察对象，尝试在静态图像中保留一种冷静、凝视和自我拆解的气质。</p>
+              <a href="/dual">进入图片页</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" alt="风景写生">
+            <div class="works-layer-copy">
+              <span>图像档案</span>
+              <h3>风景写生</h3>
+              <p>从自然景观和现场观察中提取结构、色块与空间关系，为后续视觉系统积累素材。</p>
+              <a href="/dual">进入图片页</a>
+            </div>
+          </article>
+
+          <article class="works-layer is-video" data-work-card data-work-category="other" data-work-kind="video">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png" alt="清迈良园土地庙微改造封面">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" preload="metadata" muted playsinline></video>
+            <button class="works-play" type="button" aria-label="播放清迈良园土地庙微改造">CLICK TO PLAY</button>
+            <div class="works-layer-copy">
+              <span>空间改造记录</span>
+              <h3>清迈良园土地庙微改造</h3>
+              <p>围绕小尺度公共空间的更新实践，记录场地、材料和地方信仰之间的关系。</p>
+              <a href="/omni#land-temple">进入视频页</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section profile-section" aria-labelledby="home-profile-title">
+      <div class="profile-layout">
+        <div class="profile-copy">
+          <div class="profile-copy-main">
+            <div class="section-kicker">03 / PROFILE</div>
+            <div class="profile-heading">
+              <h2 id="home-profile-title">PROFILE</h2>
+            </div>
+            <p class="profile-lead">我是赵文浩，北京师范大学珠海校区未来设计学院 25 级本科生。</p>
+            <p>我关注实验艺术、人机交互和游戏化叙事，习惯从议题研究出发，把想法转化为可被观看、操作和进入的作品。</p>
+            <div class="profile-brief-list">
+              <span>实验艺术</span>
+              <span>人机交互</span>
+              <span>游戏设计</span>
+            </div>
+            <div class="profile-detail-grid">
+              <div>
+                <span>METHOD</span>
+                <p>议题研究 / 原型实验 / 体验叙事</p>
+              </div>
+              <div>
+                <span>TOOLS</span>
+                <p>Unity / Web / 影像 / 装置</p>
+              </div>
+            </div>
+          </div>
+          <div class="profile-mini">
+            <div>
+              <span>LEARNING</span>
+              <strong>Unity / Vibe Coding</strong>
+            </div>
+            <div>
+              <span>BASE</span>
+              <strong>未来设计学院</strong>
+            </div>
+            <div>
+              <span>MORE</span>
+              <a class="profile-mini-link" href="/profile">VIEW PROFILE</a>
+            </div>
+          </div>
+        </div>
+        <div class="profile-visual">
+          <div class="profile-model-panel" aria-label="Lunar lander 3D model">
+            <canvas id="profile-model-canvas" aria-hidden="true"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
     // ================= 终极全域 Canvas 粒子引擎 =================
@@ -296,34 +632,2325 @@ import PureTransition from '../components/PureTransition.astro';
       renderUniverse();
     }
 
-   // ================= 全局跃迁协议 =================
-const flash = document.getElementById('warp-flash')!;
+    const chronologySection = document.querySelector('.chronology-section') as HTMLElement | null;
+    const timelineMap = document.querySelector('.chronology-map') as HTMLElement | null;
+    const timelineWorld = document.querySelector('[data-timeline-world]') as HTMLElement | null;
+    const timelinePath = document.querySelector('[data-timeline-path]') as SVGPathElement | null;
+    const timelineGhostPath = document.querySelector('.chronology-path.is-ghost') as SVGPathElement | null;
+    const timelineHead = document.querySelector('[data-timeline-head]') as HTMLElement | null;
+    const timelineNodes = Array.from(document.querySelectorAll('[data-timeline-node]')) as HTMLElement[];
+    const timelineCurrent = document.querySelector('[data-timeline-current]') as HTMLElement | null;
+    let timelineNodeStops = [] as number[];
+    let timelineScrollRaf: number | undefined;
+    let timelineSpringRaf: number | undefined;
+    let timelineSpringTime = 0;
+    let targetTimelineProgress = 0;
+    let visualTimelineProgress = 0;
+    let timelineVelocity = 0;
+    let lastTimelineScrollY = -1;
+    let lockedTimelineStopIndex = -1;
+    let lockedTimelineDirection = 0;
+    let isTimelineLockReady = false;
+    let visibleTimelineCardIndex = -1;
+    let releasedTimelineStopIndex = -1;
+    let releasedTimelineDirection = 0;
+    let timelineScrollAnimationRaf: number | undefined;
+    let timelineScrollAnimationTimeout: number | undefined;
+    let timelineCameraFocusRatio = 0.54;
+    let timelineVisibleCardSide: 'left' | 'right' = 'right';
+    let hasTimelineCameraFocus = false;
+    let timelineCameraRaf: number | undefined;
+    let timelineCameraTime = 0;
+    let hasTimelineCameraTransform = false;
+    let timelineCameraX = 0;
+    let timelineCameraY = 0;
+    let timelineCameraScale = 1;
+    let timelineCameraTargetX = 0;
+    let timelineCameraTargetY = 0;
+    let timelineCameraTargetScale = 1;
+    let timelineCameraVelocityX = 0;
+    let timelineCameraVelocityY = 0;
+    let timelineCameraVelocityScale = 0;
 
-function enterHub() {
-  // 检查咱们的 DIY 物理闸门接口是否成功挂载在全局 window 上
-  if (typeof (window as any).triggerPureTransition === 'function') {
-    // 呼叫物理闸门以 400ms 极速降下覆盖全屏，随后由引擎自动平滑重定向
-    (window as any).triggerPureTransition('/hub');
-  } else {
-    // 极其稳妥的底层兜底：万一遇到极速连点或组件未载入，走原生跳转保证不卡死
-    flash.style.opacity = '1';
-    setTimeout(() => { window.location.href = '/hub'; }, 200);
-  }
-}
+    function getTimelineSectionTop() {
+      if (!chronologySection) return 0;
+      return chronologySection.getBoundingClientRect().top + window.scrollY;
+    }
 
-// 事件监听保持绝对原样，点击任意处或敲击回车瞬间呼叫重组
-window.addEventListener('click', enterHub);
-window.addEventListener('keydown', (e) => { 
-  if (e.key === 'Enter') enterHub(); 
-});
+    function getTimelineTravelDistance() {
+      if (!chronologySection) return 1;
+      return Math.max(1, chronologySection.offsetHeight - window.innerHeight);
+    }
+
+    function setupTimelineGeometry() {
+      if (!timelinePath || !timelineNodes.length) return;
+      const points = timelineNodes.map((node) => ({
+        node,
+        x: Number(node.dataset.x || 0),
+        y: Number(node.dataset.y || 0)
+      }));
+      const start = { x: 500, y: -20 };
+      const end = { x: 520, y: 2140 };
+      const pathD = `M ${start.x} ${start.y} ${points.map((point) => `L ${point.x} ${point.y}`).join(' ')} L ${end.x} ${end.y}`;
+      timelinePath.setAttribute('d', pathD);
+      timelineGhostPath?.setAttribute('d', pathD);
+
+      const pathPoints = [start, ...points, end];
+      const segmentLengths = pathPoints.slice(1).map((point, index) => {
+        const previous = pathPoints[index];
+        return Math.hypot(point.x - previous.x, point.y - previous.y);
+      });
+      const totalLength = segmentLengths.reduce((sum, length) => sum + length, 0);
+      let accumulated = 0;
+
+      timelineNodeStops = points.map((point, index) => {
+        accumulated += segmentLengths[index];
+        const threshold = totalLength ? accumulated / totalLength : 0;
+        const previous = pathPoints[index];
+        const next = pathPoints[index + 2];
+        const protrudesRight = point.x >= (previous.x + next.x) / 2;
+        point.node.dataset.threshold = String(threshold);
+        point.node.dataset.cardSide = protrudesRight ? 'right' : 'left';
+        return threshold;
+      }).filter((stop) => stop > 0 && stop < 1).sort((a, b) => a - b);
+    }
+
+    function mapTimelineScrollProgress(rawProgress: number, direction = 0) {
+      const raw = Math.min(Math.max(rawProgress, 0), 1);
+      return raw;
+    }
+
+    function setTimelineTarget(progress: number, immediate = false) {
+      targetTimelineProgress = Math.min(Math.max(progress, 0), 1);
+
+      if (immediate || window.innerWidth < 900) {
+        visualTimelineProgress = targetTimelineProgress;
+        timelineVelocity = 0;
+        setTimelineProgress(visualTimelineProgress);
+        return;
+      }
+
+      if (Math.abs(targetTimelineProgress - visualTimelineProgress) < 0.0002 && Math.abs(timelineVelocity) < 0.0002) {
+        return;
+      }
+
+      if (!timelineSpringRaf) {
+        timelineSpringTime = performance.now();
+        timelineSpringRaf = window.requestAnimationFrame(updateTimelineSpring);
+      }
+    }
+
+    function updateTimelineSpring(timestamp: number) {
+      const deltaTime = Math.min(0.032, Math.max(0.001, (timestamp - timelineSpringTime) / 1000));
+      timelineSpringTime = timestamp;
+
+      const displacement = targetTimelineProgress - visualTimelineProgress;
+      const tension = 190;
+      const damping = 15.5;
+
+      timelineVelocity += displacement * tension * deltaTime;
+      timelineVelocity *= Math.exp(-damping * deltaTime);
+      visualTimelineProgress += timelineVelocity * deltaTime;
+
+      if (Math.abs(displacement) < 0.00035 && Math.abs(timelineVelocity) < 0.00045) {
+        visualTimelineProgress = targetTimelineProgress;
+        timelineVelocity = 0;
+        setTimelineProgress(visualTimelineProgress);
+        timelineSpringRaf = undefined;
+        return;
+      }
+
+      setTimelineProgress(visualTimelineProgress);
+      timelineSpringRaf = window.requestAnimationFrame(updateTimelineSpring);
+    }
+
+    function setTimelineProgress(progress: number) {
+      if (!chronologySection) return;
+      const clamped = Math.min(Math.max(progress, 0), 1);
+      chronologySection.style.setProperty('--timeline-progress', String(clamped));
+      syncTimelineCamera(clamped);
+
+      let activeCount = 0;
+      timelineNodes.forEach((node) => {
+        const threshold = Number(node.dataset.threshold || 0);
+        const isActive = clamped + 0.002 >= threshold;
+        node.classList.toggle('is-active', isActive);
+        node.classList.remove('is-current');
+        node.classList.remove('is-timeline-locked');
+        if (isActive) activeCount += 1;
+      });
+
+      if (visibleTimelineCardIndex >= 0) {
+        timelineNodes[visibleTimelineCardIndex]?.classList.add('is-current', 'is-active');
+        activeCount = Math.max(activeCount, visibleTimelineCardIndex + 1);
+      }
+
+      if (lockedTimelineStopIndex >= 0 && isTimelineLockReady) {
+        timelineNodes[lockedTimelineStopIndex]?.classList.add('is-timeline-locked');
+      } else if (lockedTimelineStopIndex >= 0 && visibleTimelineCardIndex < 0) {
+        activeCount = Math.min(activeCount, lockedTimelineStopIndex);
+      }
+
+      if (timelineCurrent) timelineCurrent.textContent = String(activeCount).padStart(2, '0');
+    }
+
+    function smoothTimelineStep(edgeStart: number, edgeEnd: number, value: number) {
+      const range = Math.max(edgeEnd - edgeStart, 0.0001);
+      const t = Math.min(Math.max((value - edgeStart) / range, 0), 1);
+      return t * t * (3 - 2 * t);
+    }
+
+    function easeTimelineMotion(t: number) {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function hideTimelineVisibleCard() {
+      timelineNodes.forEach((node) => {
+        node.classList.remove('is-current');
+        node.classList.remove('is-timeline-locked');
+      });
+      visibleTimelineCardIndex = -1;
+    }
+
+    function clearTimelineLockClass() {
+      timelineNodes.forEach((node) => {
+        node.classList.remove('is-timeline-locked');
+      });
+    }
+
+    function revealTimelineLockedNode(index: number) {
+      isTimelineLockReady = lockedTimelineStopIndex === index;
+      if (!isTimelineLockReady) return;
+      visibleTimelineCardIndex = index;
+      const side = timelineNodes[index]?.dataset.cardSide;
+      timelineVisibleCardSide = side === 'left' ? 'left' : 'right';
+      setTimelineTarget(timelineNodeStops[index]);
+      setTimelineProgress(timelineNodeStops[index]);
+    }
+
+    function animateTimelineScrollTo(targetY: number, duration = 360, onComplete?: () => void) {
+      if (timelineScrollAnimationRaf) {
+        window.cancelAnimationFrame(timelineScrollAnimationRaf);
+        timelineScrollAnimationRaf = undefined;
+      }
+      if (timelineScrollAnimationTimeout) {
+        window.clearTimeout(timelineScrollAnimationTimeout);
+        timelineScrollAnimationTimeout = undefined;
+      }
+
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      const startedAt = performance.now();
+      let completed = false;
+
+      const finish = () => {
+        if (completed) return;
+        completed = true;
+        if (timelineScrollAnimationRaf) {
+          window.cancelAnimationFrame(timelineScrollAnimationRaf);
+          timelineScrollAnimationRaf = undefined;
+        }
+        if (timelineScrollAnimationTimeout) {
+          window.clearTimeout(timelineScrollAnimationTimeout);
+          timelineScrollAnimationTimeout = undefined;
+        }
+        window.scrollTo({ top: targetY, behavior: 'auto' });
+        requestTimelineScrollSync();
+        onComplete?.();
+      };
+
+      const tick = (timestamp: number) => {
+        if (completed) return;
+        const elapsed = timestamp - startedAt;
+        const t = Math.min(Math.max(elapsed / duration, 0), 1);
+        const eased = easeTimelineMotion(t);
+        window.scrollTo({ top: startY + distance * eased, behavior: 'auto' });
+        requestTimelineScrollSync();
+
+        if (t < 1) {
+          timelineScrollAnimationRaf = window.requestAnimationFrame(tick);
+          return;
+        }
+
+        finish();
+      };
+
+      timelineScrollAnimationTimeout = window.setTimeout(finish, duration + 120);
+      timelineScrollAnimationRaf = window.requestAnimationFrame(tick);
+    }
+
+    function lockTimelineNode(index: number, direction: number) {
+      lockedTimelineStopIndex = index;
+      lockedTimelineDirection = direction;
+      isTimelineLockReady = false;
+      hideTimelineVisibleCard();
+      setTimelineTarget(timelineNodeStops[index]);
+    }
+
+    function releaseTimelineNode(direction: number) {
+      if (lockedTimelineStopIndex < 0) return;
+      const releasedIndex = lockedTimelineStopIndex;
+      lockedTimelineStopIndex = -1;
+      lockedTimelineDirection = 0;
+      isTimelineLockReady = false;
+      releasedTimelineStopIndex = releasedIndex;
+      releasedTimelineDirection = direction;
+      clearTimelineLockClass();
+    }
+
+    function getTimelineCameraState(progress: number, currentStopIndex: number) {
+      return { progress, stopIndex: currentStopIndex };
+    }
+
+    function applyTimelineCameraTransform() {
+      if (!chronologySection) return;
+      chronologySection.style.setProperty('--timeline-camera-x', `${timelineCameraX}px`);
+      chronologySection.style.setProperty('--timeline-camera-y', `${timelineCameraY}px`);
+      chronologySection.style.setProperty('--timeline-camera-scale', String(timelineCameraScale));
+      chronologySection.style.setProperty('--timeline-grid-x', `${timelineCameraX * 0.08}px`);
+      chronologySection.style.setProperty('--timeline-grid-y', `${timelineCameraY * 0.08}px`);
+    }
+
+    function setTimelineCameraTarget(x: number, y: number, scale: number) {
+      timelineCameraTargetX = x;
+      timelineCameraTargetY = y;
+      timelineCameraTargetScale = scale;
+
+      if (!hasTimelineCameraTransform) {
+        hasTimelineCameraTransform = true;
+        timelineCameraX = x;
+        timelineCameraY = y;
+        timelineCameraScale = scale;
+        applyTimelineCameraTransform();
+        return;
+      }
+
+      if (!timelineCameraRaf) {
+        timelineCameraTime = performance.now();
+        timelineCameraRaf = window.requestAnimationFrame(updateTimelineCameraSpring);
+      }
+    }
+
+    function updateTimelineCameraSpring(timestamp: number) {
+      const deltaTime = Math.min(0.032, Math.max(0.001, (timestamp - timelineCameraTime) / 1000));
+      timelineCameraTime = timestamp;
+
+      const tension = 105;
+      const damping = 24;
+      const scaleTension = 105;
+      const scaleDamping = 22;
+      const displacementX = timelineCameraTargetX - timelineCameraX;
+      const displacementY = timelineCameraTargetY - timelineCameraY;
+      const displacementScale = timelineCameraTargetScale - timelineCameraScale;
+
+      timelineCameraVelocityX += displacementX * tension * deltaTime;
+      timelineCameraVelocityY += displacementY * tension * deltaTime;
+      timelineCameraVelocityScale += displacementScale * scaleTension * deltaTime;
+      timelineCameraVelocityX *= Math.exp(-damping * deltaTime);
+      timelineCameraVelocityY *= Math.exp(-damping * deltaTime);
+      timelineCameraVelocityScale *= Math.exp(-scaleDamping * deltaTime);
+      const maxCameraVelocity = 820;
+      if (Math.abs(timelineCameraVelocityX) > maxCameraVelocity) {
+        timelineCameraVelocityX = Math.sign(timelineCameraVelocityX) * maxCameraVelocity;
+      }
+      if (Math.abs(timelineCameraVelocityY) > maxCameraVelocity) {
+        timelineCameraVelocityY = Math.sign(timelineCameraVelocityY) * maxCameraVelocity;
+      }
+      timelineCameraX += timelineCameraVelocityX * deltaTime;
+      timelineCameraY += timelineCameraVelocityY * deltaTime;
+      timelineCameraScale += timelineCameraVelocityScale * deltaTime;
+
+      applyTimelineCameraTransform();
+
+      const isSettled =
+        Math.abs(displacementX) < 0.12 &&
+        Math.abs(displacementY) < 0.12 &&
+        Math.abs(displacementScale) < 0.0004 &&
+        Math.abs(timelineCameraVelocityX) < 0.12 &&
+        Math.abs(timelineCameraVelocityY) < 0.12 &&
+        Math.abs(timelineCameraVelocityScale) < 0.0004;
+
+      if (isSettled) {
+        timelineCameraX = timelineCameraTargetX;
+        timelineCameraY = timelineCameraTargetY;
+        timelineCameraScale = timelineCameraTargetScale;
+        applyTimelineCameraTransform();
+        timelineCameraRaf = undefined;
+        return;
+      }
+
+      timelineCameraRaf = window.requestAnimationFrame(updateTimelineCameraSpring);
+    }
+
+    function syncTimelineCamera(progress: number) {
+      if (!chronologySection || !timelineMap || !timelineWorld || !timelinePath || window.innerWidth < 900) return;
+      const pathLength = timelinePath.getTotalLength();
+      const headPoint = timelinePath.getPointAtLength(pathLength * progress);
+      const mapRect = timelineMap.getBoundingClientRect();
+      const scale = window.innerWidth >= 1440 ? 1.72 : 1.55;
+      const currentStopIndex = timelineNodeStops.reduce((activeIndex, stop, index) => (
+        progress + 0.002 >= stop ? index : activeIndex
+      ), -1);
+      const cameraState = getTimelineCameraState(progress, currentStopIndex);
+      const cameraPoint = timelinePath.getPointAtLength(pathLength * cameraState.progress);
+      const targetFocusXRatio = timelineVisibleCardSide === 'right' ? 0.44 : 0.64;
+      if (!hasTimelineCameraFocus) {
+        timelineCameraFocusRatio = targetFocusXRatio;
+        hasTimelineCameraFocus = true;
+      } else {
+        timelineCameraFocusRatio += (targetFocusXRatio - timelineCameraFocusRatio) * 0.16;
+      }
+      const focusXRatio = timelineCameraFocusRatio;
+      const focusX = window.innerWidth * focusXRatio - mapRect.left;
+      const focusY = window.innerHeight * 0.66 - mapRect.top;
+      const worldX = cameraPoint.x;
+      const worldY = cameraPoint.y;
+
+      if (timelineHead) {
+        timelineHead.style.left = `${headPoint.x}px`;
+        timelineHead.style.top = `${headPoint.y}px`;
+      }
+
+      timelinePath.style.strokeDasharray = `${pathLength}`;
+      timelinePath.style.strokeDashoffset = `${pathLength * (1 - progress)}`;
+
+      timelineNodes.forEach((node) => {
+        const threshold = Number(node.dataset.threshold || 0);
+        const nodePoint = timelinePath.getPointAtLength(pathLength * threshold);
+        node.style.setProperty('--node-x', `${nodePoint.x}px`);
+        node.style.setProperty('--node-y', `${nodePoint.y}px`);
+      });
+
+      setTimelineCameraTarget(focusX - worldX * scale, focusY - worldY * scale, scale);
+    }
+
+    function syncTimelineToScroll() {
+      if (!chronologySection || window.innerWidth < 900) return;
+      const rawProgress = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
+      if (
+        releasedTimelineStopIndex >= 0 &&
+        Math.abs(rawProgress - timelineNodeStops[releasedTimelineStopIndex]) > 0.025
+      ) {
+        releasedTimelineStopIndex = -1;
+        releasedTimelineDirection = 0;
+      }
+
+      const progress = lockedTimelineStopIndex >= 0
+        ? timelineNodeStops[lockedTimelineStopIndex]
+        : mapTimelineScrollProgress(rawProgress);
+      setTimelineTarget(progress);
+    }
+
+    function requestTimelineScrollSync() {
+      if (timelineScrollRaf) return;
+      timelineScrollRaf = window.requestAnimationFrame(() => {
+        timelineScrollRaf = undefined;
+        syncTimelineToScroll();
+      });
+    }
+
+    function handleTimelineWheel(event: WheelEvent) {
+      if (!chronologySection || window.innerWidth < 900) return;
+      const sectionTop = getTimelineSectionTop();
+      const sectionBottom = sectionTop + chronologySection.offsetHeight - window.innerHeight;
+      const scrollY = window.scrollY;
+      const rawDelta = normalizeWheelDelta(event);
+      const isInsideTimeline = scrollY >= sectionTop - 2 && scrollY <= sectionBottom + 2;
+      const isLeavingUp = scrollY <= sectionTop + 2 && rawDelta < 0;
+      const isLeavingDown = scrollY >= sectionBottom - 2 && rawDelta > 0;
+
+      if (!isInsideTimeline || isLeavingUp || isLeavingDown || Math.abs(rawDelta) < 1) return;
+
+      event.preventDefault();
+      const direction = Math.sign(rawDelta);
+      const travelDistance = getTimelineTravelDistance();
+      const currentRawProgress = (scrollY - sectionTop) / travelDistance;
+
+      if (lockedTimelineStopIndex >= 0) {
+        if (!isTimelineLockReady) {
+          const lockedStop = timelineNodeStops[lockedTimelineStopIndex];
+          const lockedStopY = sectionTop + travelDistance * lockedStop;
+          if (Math.abs(scrollY - lockedStopY) <= 3 || Math.abs(currentRawProgress - lockedStop) <= 0.003) {
+            revealTimelineLockedNode(lockedTimelineStopIndex);
+          } else {
+            setTimelineTarget(lockedStop);
+            if (!timelineScrollAnimationRaf) {
+              animateTimelineScrollTo(lockedStopY, 280, () => {
+                window.scrollTo({ top: lockedStopY, behavior: 'auto' });
+                revealTimelineLockedNode(lockedTimelineStopIndex);
+                requestTimelineScrollSync();
+              });
+            }
+          }
+          return;
+        }
+
+        const stopIndex = lockedTimelineStopIndex;
+        const releaseDirection = direction;
+        const stopY = sectionTop + travelDistance * timelineNodeStops[stopIndex];
+        setTimelineTarget(timelineNodeStops[lockedTimelineStopIndex]);
+        releaseTimelineNode(releaseDirection);
+        animateTimelineScrollTo(
+          Math.min(Math.max(stopY + releaseDirection * Math.max(32, window.innerHeight * 0.055), sectionTop), sectionBottom),
+          420,
+          () => {
+            requestTimelineScrollSync();
+          }
+        );
+
+        return;
+      }
+
+      if (releasedTimelineStopIndex >= 0 && timelineScrollAnimationRaf) {
+        return;
+      }
+
+      const maxStep = Math.max(30, Math.min(window.innerHeight * 0.07, 58));
+      const cappedDelta = direction * Math.min(Math.abs(rawDelta), maxStep);
+      let nextY = Math.min(Math.max(scrollY + cappedDelta, sectionTop), sectionBottom);
+      let stopToLock = -1;
+
+      timelineNodeStops.forEach((stop, index) => {
+        if (stopToLock >= 0) return;
+        const isRecentlyReleasedStop = releasedTimelineStopIndex === index;
+        if (
+          isRecentlyReleasedStop &&
+          (releasedTimelineDirection === direction || Math.abs(currentRawProgress - stop) < 0.04)
+        ) return;
+
+        const stopY = sectionTop + travelDistance * stop;
+        const crossesDown = direction > 0 && scrollY < stopY && nextY >= stopY;
+        const crossesUp = direction < 0 && scrollY > stopY && nextY <= stopY;
+        const arrivalWindow = Math.max(64, window.innerHeight * 0.08);
+        const approachesDown = direction > 0 && scrollY < stopY && stopY - scrollY <= arrivalWindow;
+        const approachesUp = direction < 0 && scrollY > stopY && scrollY - stopY <= arrivalWindow;
+        if (crossesDown || crossesUp || approachesDown || approachesUp) stopToLock = index;
+      });
+
+      if (stopToLock >= 0) {
+        const stopY = sectionTop + travelDistance * timelineNodeStops[stopToLock];
+        lockTimelineNode(stopToLock, direction);
+        animateTimelineScrollTo(stopY, 360, () => {
+          window.scrollTo({ top: stopY, behavior: 'auto' });
+          revealTimelineLockedNode(stopToLock);
+          requestTimelineScrollSync();
+        });
+        return;
+      }
+
+      window.scrollTo({ top: nextY, behavior: 'auto' });
+      requestTimelineScrollSync();
+    }
+
+    function monitorTimelineScroll() {
+      if (chronologySection && window.innerWidth >= 900) {
+        const sectionTop = getTimelineSectionTop();
+        const sectionBottom = sectionTop + chronologySection.offsetHeight - window.innerHeight;
+        const isNearTimeline = window.scrollY >= sectionTop - 4 && window.scrollY <= sectionBottom + 4;
+        if (isNearTimeline || window.scrollY !== lastTimelineScrollY) {
+          lastTimelineScrollY = window.scrollY;
+          syncTimelineToScroll();
+        }
+      } else if (window.scrollY !== lastTimelineScrollY) {
+        lastTimelineScrollY = window.scrollY;
+        syncTimelineToScroll();
+      }
+      window.requestAnimationFrame(monitorTimelineScroll);
+    }
+
+    const worksSection = document.querySelector('.works-section') as HTMLElement | null;
+    const worksPin = document.querySelector('.works-pin') as HTMLElement | null;
+    const worksCards = Array.from(document.querySelectorAll('[data-work-card]')) as HTMLElement[];
+    const worksCategories = Array.from(document.querySelectorAll('[data-work-category].works-category')) as HTMLButtonElement[];
+    const worksNotes = Array.from(document.querySelectorAll('[data-work-note]')) as HTMLElement[];
+    const worksCurrent = document.querySelector('[data-work-current]') as HTMLElement | null;
+    const worksTotal = document.querySelector('[data-work-total]') as HTMLElement | null;
+    let activeWorkIndex = 0;
+    let visualWorkProgress = 0;
+    let targetWorkProgress = 0;
+    let worksScrollRaf: number | undefined;
+    let lastWorksScrollY = -1;
+
+    function stopWorksVideos(except?: HTMLElement) {
+      worksCards.forEach((card) => {
+        if (card === except) return;
+        const video = card.querySelector('video') as HTMLVideoElement | null;
+        if (!video) return;
+        const image = card.querySelector('img') as HTMLImageElement | null;
+        video.pause();
+        video.style.removeProperty('opacity');
+        image?.style.removeProperty('opacity');
+        card.classList.remove('is-playing');
+      });
+    }
+
+    function syncWorksMeta() {
+      if (!worksCards.length) return;
+      const activeCard = worksCards[activeWorkIndex];
+      const activeCategory = activeCard?.dataset.workCategory;
+
+      worksCategories.forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.workCategory === activeCategory);
+      });
+
+      worksNotes.forEach((note) => {
+        note.classList.toggle('is-active', note.dataset.workNote === activeCategory);
+      });
+
+      if (worksCurrent) worksCurrent.textContent = String(activeWorkIndex + 1).padStart(2, '0');
+      if (worksTotal) worksTotal.textContent = String(worksCards.length).padStart(2, '0');
+    }
+
+    function renderWorksStack(progress = activeWorkIndex) {
+      if (!worksCards.length) return;
+
+      worksCards.forEach((card, index) => {
+        const offset = index - activeWorkIndex;
+        const absOffset = Math.abs(offset);
+        const depth = Math.min(absOffset, 5);
+        const isActive = index === activeWorkIndex;
+        const isPast = offset < 0;
+        const isUpcoming = offset > 0;
+        const parkedX = offset < 0 ? '-64vw' : '64vw';
+        const parkedRotate = offset < 0 ? '-2.8deg' : '2.8deg';
+
+        card.classList.toggle('is-active', isActive);
+        card.classList.toggle('is-past', isPast);
+        card.classList.toggle('is-upcoming', isUpcoming);
+        card.style.setProperty('--offset', String(offset));
+        card.style.setProperty('--abs-offset', String(absOffset));
+        card.style.setProperty('--depth', String(depth));
+        card.style.setProperty('--stack-order', String(1000 - Math.round(absOffset * 20)));
+        card.style.opacity = isActive ? '1' : '0';
+        card.style.pointerEvents = isActive ? 'auto' : 'none';
+        card.style.transform = isActive
+          ? 'translate(-50%, -50%) rotate(0deg) scale(1)'
+          : `translate(calc(-50% + ${parkedX}), -50%) rotate(${parkedRotate}) scale(0.985)`;
+        card.style.visibility = isActive ? 'visible' : 'hidden';
+      });
+    }
+
+    function updateWorksStack() {
+      if (!worksCards.length) return;
+      renderWorksStack(visualWorkProgress);
+      syncWorksMeta();
+      const activeCard = worksCards[activeWorkIndex];
+
+      worksCards.forEach((card, index) => {
+        if (index !== activeWorkIndex) {
+          const video = card.querySelector('video') as HTMLVideoElement | null;
+          const image = card.querySelector('img') as HTMLImageElement | null;
+          video?.style.removeProperty('opacity');
+          image?.style.removeProperty('opacity');
+          card.classList.remove('is-playing');
+        }
+      });
+
+      stopWorksVideos(activeCard);
+    }
+
+    function setActiveWorkIndex(index: number) {
+      const nextIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
+      if (nextIndex === activeWorkIndex) return;
+      activeWorkIndex = nextIndex;
+      updateWorksStack();
+    }
+
+    function setWorksProgress(progress: number) {
+      targetWorkProgress = Math.min(Math.max(progress, 0), worksCards.length - 1);
+      visualWorkProgress = targetWorkProgress;
+      const nextIndex = Math.min(Math.floor(targetWorkProgress + 0.0001), worksCards.length - 1);
+      const stepProgress = nextIndex >= worksCards.length - 1 ? 1 : targetWorkProgress - nextIndex;
+      worksSection?.style.setProperty('--work-step-progress', String(Math.min(Math.max(stepProgress, 0), 1)));
+      setActiveWorkIndex(nextIndex);
+    }
+
+    function getWorksSectionTop() {
+      if (!worksSection) return 0;
+      return worksSection.offsetTop;
+    }
+
+    function getWorksTravelDistance() {
+      if (!worksSection) return 1;
+      const introHold = window.innerHeight * 1.25;
+      return Math.max(1, worksSection.offsetHeight - window.innerHeight - introHold);
+    }
+
+    function syncWorksStackToScroll() {
+      if (!worksSection || !worksCards.length || window.innerWidth < 900) return;
+      const introHold = window.innerHeight * 1.25;
+      const progress = (window.scrollY - getWorksSectionTop() - introHold) / getWorksTravelDistance();
+      const clampedProgress = Math.min(Math.max(progress, 0), 1);
+      setWorksProgress(clampedProgress * (worksCards.length - 1));
+    }
+
+    function requestWorksScrollSync() {
+      if (worksScrollRaf) return;
+      worksScrollRaf = window.requestAnimationFrame(() => {
+        worksScrollRaf = undefined;
+        syncWorksStackToScroll();
+      });
+    }
+
+    function normalizeWheelDelta(event: WheelEvent) {
+      if (event.deltaMode === 1) return event.deltaY * 16;
+      if (event.deltaMode === 2) return event.deltaY * window.innerHeight;
+      return event.deltaY;
+    }
+
+    function handleWorksWheel(event: WheelEvent) {
+      if (!worksSection || !worksCards.length || window.innerWidth < 900) return;
+      const sectionTop = getWorksSectionTop();
+      const sectionBottom = sectionTop + worksSection.offsetHeight - window.innerHeight;
+      const scrollY = window.scrollY;
+      const rawDelta = normalizeWheelDelta(event);
+      const isInsideWorks = scrollY >= sectionTop - 2 && scrollY <= sectionBottom + 2;
+      const isLeavingUp = scrollY <= sectionTop + 2 && rawDelta < 0;
+      const isLeavingDown = scrollY >= sectionBottom - 2 && rawDelta > 0;
+
+      if (!isInsideWorks || isLeavingUp || isLeavingDown || Math.abs(rawDelta) < 1) return;
+
+      event.preventDefault();
+      const maxStep = Math.max(36, Math.min(window.innerHeight * 0.09, 72));
+      const cappedDelta = Math.sign(rawDelta) * Math.min(Math.abs(rawDelta), maxStep);
+      const nextY = Math.min(Math.max(scrollY + cappedDelta, sectionTop), sectionBottom);
+      window.scrollTo({ top: nextY, behavior: 'auto' });
+      requestWorksScrollSync();
+    }
+
+    function monitorWorksScroll() {
+      if (window.scrollY !== lastWorksScrollY) {
+        lastWorksScrollY = window.scrollY;
+        syncWorksStackToScroll();
+      }
+      window.requestAnimationFrame(monitorWorksScroll);
+    }
+
+    function scrollToWorkIndex(index: number) {
+      if (!worksSection || !worksCards.length) return;
+      const targetIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
+      const ratio = worksCards.length > 1 ? targetIndex / (worksCards.length - 1) : 0;
+      const introHold = window.innerHeight * 1.25;
+      const targetY = getWorksSectionTop() + introHold + getWorksTravelDistance() * ratio;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+      setWorksProgress(targetIndex);
+      setActiveWorkIndex(targetIndex);
+    }
+
+    function toggleWorksVideo(card: HTMLElement) {
+      if (!card.classList.contains('is-active') || card.dataset.workKind !== 'video') return;
+      const video = card.querySelector('video') as HTMLVideoElement | null;
+      if (!video) return;
+      stopWorksVideos(card);
+      video.controls = true;
+      if (video.paused) {
+        if (video.readyState === 0) video.load();
+        video.muted = false;
+        video.removeAttribute('muted');
+        video.volume = Math.max(video.volume || 0, 0.85);
+        const image = card.querySelector('img') as HTMLImageElement | null;
+        video.style.setProperty('opacity', '1', 'important');
+        image?.style.setProperty('opacity', '0', 'important');
+        card.classList.add('is-playing');
+        video.play().then(() => {
+          card.classList.add('is-playing');
+        }).catch((error) => {
+          card.dataset.videoError = error?.name || 'play-failed';
+          card.classList.remove('is-playing');
+        });
+      } else {
+        video.pause();
+        const image = card.querySelector('img') as HTMLImageElement | null;
+        video.style.removeProperty('opacity');
+        image?.style.removeProperty('opacity');
+        card.classList.remove('is-playing');
+      }
+    }
+
+    if (chronologySection) {
+      setupTimelineGeometry();
+      const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
+      setTimelineTarget(mapTimelineScrollProgress(initialTimelineRaw), true);
+      monitorTimelineScroll();
+      window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
+      window.addEventListener('wheel', handleTimelineWheel, { passive: false });
+      window.addEventListener('resize', () => {
+        requestTimelineScrollSync();
+      });
+    }
+
+    if (worksCards.length) {
+      worksSection?.style.setProperty('--works-count', String(worksCards.length));
+      updateWorksStack();
+      syncWorksStackToScroll();
+      monitorWorksScroll();
+      window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
+      window.addEventListener('wheel', handleWorksWheel, { passive: false });
+      window.addEventListener('resize', () => {
+        requestWorksScrollSync();
+      });
+
+      worksCategories.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (button.getAttribute('aria-disabled') === 'true') return;
+          const category = button.dataset.workCategory;
+          const targetIndex = worksCards.findIndex((card) => card.dataset.workCategory === category);
+          if (targetIndex < 0) return;
+          scrollToWorkIndex(targetIndex);
+        });
+      });
+
+      worksCards.forEach((card) => {
+        const playButton = card.querySelector('.works-play') as HTMLButtonElement | null;
+        playButton?.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          toggleWorksVideo(card);
+        });
+
+        card.addEventListener('click', (event) => {
+          const target = event.target as HTMLElement;
+          if (target.closest('a') || target.closest('video')) return;
+          toggleWorksVideo(card);
+        });
+      });
+    }
+
+  </script>
+
+  <script type="module" is:inline>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    const profileModelPanel = document.querySelector('.profile-model-panel');
+    const profileModelCanvas = document.getElementById('profile-model-canvas');
+
+    if (profileModelPanel && profileModelCanvas) {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+      camera.position.set(3.6, 2.2, 5.4);
+
+      const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        canvas: profileModelCanvas,
+        powerPreference: 'high-performance'
+      });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.enablePan = false;
+      controls.minDistance = 3.4;
+      controls.maxDistance = 9;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.72;
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+      keyLight.position.set(3.5, 4.2, 4.5);
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x8edb35, 1.55);
+      rimLight.position.set(-3.6, 2.6, -2.4);
+      scene.add(rimLight);
+
+      const fillLight = new THREE.HemisphereLight(0xa6ff5a, 0x080808, 1.15);
+      scene.add(fillLight);
+
+      const grid = new THREE.GridHelper(5.6, 18, 0x8edb35, 0x243315);
+      grid.position.y = -1.35;
+      grid.material.transparent = true;
+      grid.material.opacity = 0.2;
+      scene.add(grid);
+
+      let modelRoot = null;
+      let frameId = 0;
+      let isVisible = false;
+
+      function resizeProfileModel() {
+        const rect = profileModelPanel.getBoundingClientRect();
+        const width = Math.max(1, Math.floor(rect.width));
+        const height = Math.max(1, Math.floor(rect.height));
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+
+      function frame() {
+        if (!isVisible) {
+          frameId = 0;
+          return;
+        }
+
+        if (modelRoot) {
+          modelRoot.rotation.y += 0.0022;
+        }
+
+        controls.update();
+        renderer.render(scene, camera);
+        frameId = window.requestAnimationFrame(frame);
+      }
+
+      function startProfileModel() {
+        if (frameId) return;
+        isVisible = true;
+        resizeProfileModel();
+        frame();
+      }
+
+      function stopProfileModel() {
+        isVisible = false;
+      }
+
+      new GLTFLoader().load(
+        '/models/lunar-lander.glb',
+        (gltf) => {
+          modelRoot = gltf.scene;
+          const bounds = new THREE.Box3().setFromObject(modelRoot);
+          const size = bounds.getSize(new THREE.Vector3());
+          const center = bounds.getCenter(new THREE.Vector3());
+          const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+
+          modelRoot.position.sub(center);
+          modelRoot.scale.setScalar(2.45 / maxAxis);
+          modelRoot.rotation.set(-0.08, 0.38, 0);
+
+          modelRoot.traverse((node) => {
+            if (!node.isMesh) return;
+            node.castShadow = true;
+            node.receiveShadow = true;
+            node.geometry?.computeVertexNormals?.();
+
+            const materials = Array.isArray(node.material) ? node.material : [node.material];
+            materials.forEach((material) => {
+              if (!material) return;
+              material.flatShading = true;
+              material.metalness = Math.min(material.metalness ?? 0.2, 0.48);
+              material.roughness = Math.max(material.roughness ?? 0.42, 0.5);
+              material.needsUpdate = true;
+            });
+          });
+
+          scene.add(modelRoot);
+          profileModelCanvas.dataset.modelReady = 'true';
+          startProfileModel();
+        },
+        undefined,
+        () => {
+          profileModelCanvas.dataset.modelReady = 'error';
+        }
+      );
+
+      const observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          startProfileModel();
+        } else {
+          stopProfileModel();
+        }
+      }, { threshold: 0.08 });
+
+      observer.observe(profileModelPanel);
+      window.addEventListener('resize', resizeProfileModel);
+      resizeProfileModel();
+    }
   </script>
 
   <style>
     * { cursor: none !important; }
+
+    @media (min-width: 901px) {
+      .chronology-section,
+      .profile-section {
+        min-height: 100vh;
+      }
+    }
+
+    .home-sections {
+      background: #050505;
+      color: #f5f5f5;
+      font-family: var(--font-sans-cn);
+      overflow: visible;
+      position: relative;
+      z-index: 5;
+    }
+
+    .home-section {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: clamp(5rem, 9vw, 8rem) 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .section-kicker {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: clamp(2rem, 4vw, 3.5rem);
+      max-width: 760px;
+    }
+
+    .split-head {
+      align-items: end;
+      grid-template-columns: 1fr auto;
+      max-width: none;
+    }
+
+    .section-head h2 {
+      color: #ffffff;
+      font-size: clamp(2.9rem, 8vw, 7.2rem);
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 0.9;
+      margin: 0;
+    }
+
+    .section-head p,
+    .profile-copy p {
+      color: rgba(229, 229, 229, 0.72);
+      font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+      line-height: 1.85;
+      margin: 0;
+    }
+
+    .section-link {
+      align-items: center;
+      border: 1px solid rgba(142, 219, 53, 0.55);
+      border-radius: 15px;
+      color: #8EDB35;
+      display: inline-flex;
+      font-family: "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, var(--font-sans-cn), sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      min-height: 2.6rem;
+      padding: 0 1rem;
+      text-decoration: none;
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+      white-space: nowrap;
+    }
+
+    .section-link:hover,
+    .section-link:focus-visible {
+      background: #8EDB35;
+      color: #050505;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .chronology-section {
+      --timeline-camera-scale: 1.42;
+      --timeline-camera-x: 0px;
+      --timeline-camera-y: 0px;
+      --timeline-grid-x: 0px;
+      --timeline-grid-y: 0px;
+      --timeline-progress: 0;
+      min-height: 760vh;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .chronology-pin {
+      box-sizing: border-box;
+      height: 100vh;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: clamp(5.2rem, 8vh, 7rem) clamp(1.4rem, 3vw, 3.4rem) clamp(1.2rem, 3vh, 2.2rem);
+      position: sticky;
+      top: 0;
+      width: 100%;
+    }
+
+    .chronology-copy {
+      left: clamp(1.4rem, 3vw, 3.4rem);
+      max-width: min(31rem, 33vw);
+      position: absolute;
+      top: clamp(5.2rem, 11vh, 7.2rem);
+      z-index: 3;
+    }
+
+    .chronology-copy .section-head {
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .chronology-copy h2 {
+      color: #ffffff;
+      font-size: clamp(2.5rem, 5.4vw, 5.7rem);
+      font-weight: 600;
+      line-height: 0.92;
+    }
+
+    .chronology-copy p {
+      color: rgba(229, 229, 229, 0.66);
+      font-size: clamp(0.88rem, 1vw, 0.98rem);
+      line-height: 1.85;
+    }
+
+    .chronology-progress {
+      align-items: center;
+      color: rgba(245, 245, 245, 0.62);
+      display: flex;
+      font-family: var(--font-mono-cn);
+      font-size: 0.74rem;
+      gap: 0.7rem;
+      letter-spacing: 0.16em;
+      margin-top: clamp(1.2rem, 3vh, 2rem);
+    }
+
+    .chronology-progress i {
+      background: rgba(245, 245, 245, 0.22);
+      display: block;
+      height: 1px;
+      overflow: hidden;
+      position: relative;
+      width: 4.25rem;
+    }
+
+    .chronology-progress i::after {
+      background: #8EDB35;
+      box-shadow: 0 0 14px rgba(142, 219, 53, 0.7);
+      content: "";
+      inset: 0;
+      position: absolute;
+      transform: scaleX(var(--timeline-progress));
+      transform-origin: left center;
+      transition: transform 90ms linear;
+    }
+
+    .chronology-map {
+      inset: clamp(4.5rem, 8vh, 6.5rem) clamp(1.4rem, 3vw, 3.4rem) clamp(1.2rem, 3vh, 2.2rem);
+      overflow: hidden;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .chronology-map::before {
+      background:
+        linear-gradient(90deg, rgba(142, 219, 53, 0.22) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(142, 219, 53, 0.18) 1px, transparent 1px);
+      background-position:
+        var(--timeline-grid-x) var(--timeline-grid-y),
+        var(--timeline-grid-x) var(--timeline-grid-y);
+      background-size:
+        48px 48px,
+        48px 48px;
+      content: "";
+      inset: -18%;
+      opacity: 0.64;
+      pointer-events: none;
+      position: absolute;
+      will-change: background-position;
+      z-index: 0;
+    }
+
+    .chronology-map::after {
+      background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5, 5, 5, 0.16) 72%, rgba(5, 5, 5, 0.72) 100%);
+      content: "";
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 0;
+    }
+
+    .chronology-world {
+      height: 2140px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate3d(var(--timeline-camera-x), var(--timeline-camera-y), 0) scale(var(--timeline-camera-scale));
+      transform-origin: 0 0;
+      transition: none;
+      width: 1000px;
+      will-change: transform;
+      z-index: 1;
+    }
+
+    .chronology-svg {
+      height: 100%;
+      inset: 0;
+      overflow: visible;
+      position: absolute;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .chronology-path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .chronology-path.is-ghost {
+      stroke: rgba(142, 219, 53, 0.045);
+      stroke-width: 4;
+    }
+
+    .chronology-path.is-live {
+      filter: drop-shadow(0 0 12px rgba(142, 219, 53, 0.66));
+      stroke: #8EDB35;
+      stroke-dasharray: 0;
+      stroke-dashoffset: 0;
+      stroke-width: 6;
+      transition: none;
+    }
+
+    .timeline-head {
+      background: #8EDB35;
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 8px rgba(142, 219, 53, 0.1),
+        0 0 28px rgba(142, 219, 53, 0.82);
+      height: 0.72rem;
+      left: 50%;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 0.72rem;
+      z-index: 4;
+    }
+
+    .timeline-head::after {
+      animation: timelineHeadPulse 1.2s ease-in-out infinite;
+      border: 1px solid rgba(142, 219, 53, 0.7);
+      border-radius: inherit;
+      content: "";
+      inset: -0.55rem;
+      position: absolute;
+    }
+
+    .timeline-node {
+      --node-card-x: calc(-100% - 4rem);
+      --node-card-y: -50%;
+      --node-x: 50%;
+      --node-y: 50%;
+      background: rgba(5, 5, 5, 0.76);
+      border: 1px solid rgba(142, 219, 53, 0.24);
+      border-radius: 14px;
+      box-sizing: border-box;
+      color: rgba(245, 245, 245, 0.72);
+      display: grid;
+      gap: 0.34rem;
+      left: var(--node-x);
+      min-height: 0;
+      min-width: 0;
+      max-width: 18.5rem;
+      opacity: 0;
+      padding: 0;
+      pointer-events: none;
+      position: absolute;
+      text-decoration: none;
+      top: var(--node-y);
+      transform: translate(-50%, -50%) scale(0.82);
+      transform-origin: 50% 50%;
+      transition: opacity 180ms ease, border-color 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
+      width: 0;
+      z-index: 3;
+    }
+
+    .timeline-node[data-card-side="right"] {
+      --node-card-x: 4rem;
+    }
+
+    .timeline-node::before {
+      background: #050505;
+      border: 2px solid rgba(142, 219, 53, 0.72);
+      border-radius: 50%;
+      box-shadow: 0 0 18px rgba(142, 219, 53, 0.36);
+      content: "";
+      height: 0.78rem;
+      left: 50%;
+      opacity: 0.42;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.78rem;
+      z-index: 2;
+    }
+
+    .timeline-node::after {
+      background: rgba(142, 219, 53, 0.58);
+      box-shadow: 0 0 12px rgba(142, 219, 53, 0.38);
+      content: "";
+      height: 1px;
+      left: 100%;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) scaleX(0);
+      transform-origin: left center;
+      transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      width: 4rem;
+      z-index: 1;
+    }
+
+    .timeline-node > span,
+    .timeline-node strong,
+    .timeline-node em,
+    .timeline-node-media,
+    .timeline-media-pair {
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
+
+    .timeline-node > span,
+    .timeline-node em {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.68rem;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .timeline-node strong {
+      color: #ffffff;
+      font-size: clamp(0.94rem, 1.15vw, 1.08rem);
+      font-weight: 600;
+      line-height: 1.32;
+    }
+
+    .timeline-node em {
+      color: rgba(245, 245, 245, 0.5);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+    }
+
+    .timeline-node-media,
+    .timeline-media-pair {
+      margin-top: 0.32rem;
+    }
+
+    .timeline-node-media {
+      aspect-ratio: 16 / 9;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      display: block;
+      filter: grayscale(0.25) contrast(1.08);
+      object-fit: cover;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .timeline-media-pair {
+      display: grid;
+      gap: 0.42rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .timeline-media-pair .timeline-node-media {
+      aspect-ratio: 4 / 5;
+      margin: 0;
+    }
+
+    .timeline-node.is-active {
+      background: transparent;
+      border-color: transparent;
+      opacity: 1;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .timeline-node.is-active::before {
+      background: #8EDB35;
+      opacity: 1;
+    }
+
+    .timeline-node.is-current {
+      background: rgba(10, 14, 8, 0.92);
+      border-color: rgba(142, 219, 53, 0.62);
+      min-width: 18.5rem;
+      opacity: 1;
+      padding: 0.82rem 0.95rem 0.92rem;
+      pointer-events: auto;
+      transform: translate(var(--node-card-x), var(--node-card-y)) scale(1);
+      width: 18.5rem;
+      z-index: 5;
+    }
+
+    .timeline-node.is-timeline-locked {
+      box-shadow:
+        inset 0 -1px 0 rgba(142, 219, 53, 0.24),
+        0 0 28px rgba(142, 219, 53, 0.08);
+    }
+
+    .timeline-node.is-current::before {
+      left: calc(100% + 4rem);
+    }
+
+    .timeline-node.is-current::after {
+      opacity: 1;
+      transform: translateY(-50%) scaleX(1);
+    }
+
+    .timeline-node[data-card-side="right"].is-current::before {
+      left: -4rem;
+    }
+
+    .timeline-node[data-card-side="right"].is-current::after {
+      left: -4rem;
+      transform-origin: right center;
+    }
+
+    .timeline-node.is-current > span,
+    .timeline-node.is-current strong,
+    .timeline-node.is-current em,
+    .timeline-node.is-current .timeline-node-media,
+    .timeline-node.is-current .timeline-media-pair {
+      opacity: 1;
+    }
+
+    @keyframes timelineHeadPulse {
+      0%, 100% {
+        opacity: 0.28;
+        transform: scale(0.72);
+      }
+
+      50% {
+        opacity: 0.9;
+        transform: scale(1.08);
+      }
+    }
+
+    .node-1 {
+      --node-x: 49%;
+      --node-y: 22%;
+    }
+
+    .node-2 {
+      --node-x: 74%;
+      --node-y: 43%;
+    }
+
+    .node-3 {
+      --node-x: 51%;
+      --node-y: 60%;
+    }
+
+    .node-4 {
+      --node-x: 30%;
+      --node-y: 82%;
+    }
+
+    .works-section {
+      --works-count: 10;
+      --works-intro-hold: 125vh;
+      --work-step-progress: 0;
+      min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * 96vh);
+      margin-left: 0;
+      margin-right: 0;
+      padding-bottom: 0;
+      padding-top: 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .works-section::before {
+      background:
+        linear-gradient(90deg, rgba(142, 219, 53, 0.1) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+      background-size: 72px 72px;
+      content: "";
+      inset: clamp(3rem, 6vw, 5rem) 0;
+      opacity: 0.22;
+      pointer-events: none;
+      position: absolute;
+      transform: skewY(-3deg);
+    }
+
+    .works-pin {
+      box-sizing: border-box;
+      height: 100vh;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .works-control {
+      display: grid;
+      gap: clamp(1rem, 2vh, 1.45rem);
+      justify-items: start;
+      left: clamp(2rem, 4vw, 4.6rem);
+      max-width: min(23rem, 32vw);
+      position: absolute;
+      top: clamp(6rem, 11vh, 8rem);
+      z-index: 6;
+    }
+
+    .works-control h2 {
+      align-items: center;
+      color: rgba(245, 245, 245, 0.92);
+      display: flex;
+      gap: 0.78rem;
+      font-family: var(--font-mono-cn);
+      font-size: clamp(1.05rem, 1.55vw, 1.52rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin: 0;
+      text-shadow:
+        -1px 0 #ff3048,
+        1px 0 #00f0ff,
+        0 0 18px rgba(0, 0, 0, 0.72);
+      white-space: nowrap;
+    }
+
+    .works-control h2 span {
+      background: rgba(245, 245, 245, 0.92);
+      border: 1px solid rgba(142, 219, 53, 0.72);
+      border-radius: 999px;
+      box-shadow:
+        -1px 0 #ff3048,
+        1px 0 #00f0ff,
+        0 0 12px rgba(142, 219, 53, 0.24);
+      display: block;
+      height: 1.05rem;
+      width: 1.35rem;
+    }
+
+    .works-category-list {
+      display: grid;
+      gap: clamp(0.72rem, 1.45vh, 1.05rem);
+      margin-top: 0;
+    }
+
+    .works-category {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: rgba(245, 245, 245, 0.56);
+      font-family: var(--font-mono-cn);
+      font-size: clamp(0.92rem, 1.25vw, 1.12rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 0.12rem 0;
+      text-align: left;
+      text-shadow:
+        -1px 0 rgba(255, 48, 72, 0.62),
+        1px 0 rgba(0, 240, 255, 0.62);
+      transition: color 180ms ease;
+    }
+
+    .works-category span {
+      color: rgba(142, 219, 53, 0.66);
+      display: inline-block;
+      min-width: 1.6rem;
+    }
+
+    .works-category.is-active {
+      color: #8EDB35;
+      text-shadow: 0 0 14px rgba(142, 219, 53, 0.42);
+    }
+
+    .works-category.is-empty {
+      color: rgba(245, 245, 245, 0.28);
+      opacity: 0.58;
+    }
+
+    .works-category.is-empty span {
+      color: rgba(142, 219, 53, 0.34);
+    }
+
+    .works-progress {
+      align-items: center;
+      color: rgba(245, 245, 245, 0.62);
+      display: flex;
+      font-family: var(--font-mono-cn);
+      font-size: 0.74rem;
+      gap: 0.65rem;
+      letter-spacing: 0.16em;
+      margin-top: 0.5rem;
+      text-shadow: 0 0 14px rgba(0, 0, 0, 0.8);
+    }
+
+    .works-progress i {
+      background: rgba(245, 245, 245, 0.22);
+      display: block;
+      height: 1px;
+      overflow: hidden;
+      position: relative;
+      width: 3.5rem;
+    }
+
+    .works-progress i::after {
+      background: #8EDB35;
+      box-shadow: 0 0 12px rgba(142, 219, 53, 0.62);
+      content: "";
+      inset: 0;
+      position: absolute;
+      transform: scaleX(var(--work-step-progress));
+      transform-origin: left center;
+      transition: transform 120ms linear;
+    }
+
+    .works-stage {
+      inset: clamp(4.7rem, 8vh, 6.25rem) clamp(1.7rem, 3vw, 3.4rem) clamp(1.4rem, 3.5vh, 2.4rem);
+      min-height: 0;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .works-layer {
+      --offset: 0;
+      --abs-offset: 0;
+      --stack-order: 1;
+      background: #050505;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.58);
+      color: #ffffff;
+      height: 100%;
+      left: 50%;
+      min-height: 0;
+      overflow: hidden;
+      position: absolute;
+      top: 50%;
+      transform:
+        translate(
+          calc(-50% + var(--offset) * -32px),
+          calc(-50% + var(--offset) * 22px)
+        )
+        rotate(calc(var(--offset) * -0.42deg))
+        scale(calc(1 - var(--depth) * 0.018));
+      transform-origin: 62% 54%;
+      opacity: 0;
+      transition: filter 180ms ease, opacity 180ms ease;
+      visibility: hidden;
+      will-change: opacity;
+      width: 100%;
+      z-index: var(--stack-order);
+    }
+
+    .works-layer.is-past {
+      pointer-events: none;
+    }
+
+    .works-layer.is-active {
+      cursor: pointer;
+    }
+
+    .works-layer.is-active::after {
+      z-index: 2;
+    }
+
+    .works-layer.is-active .works-layer-copy::after {
+      background: rgba(245, 245, 245, 0.2);
+      content: "";
+      height: 2px;
+      left: 0;
+      position: absolute;
+      top: -1rem;
+      width: min(15rem, 42vw);
+    }
+
+    .works-layer.is-active .works-layer-copy::before {
+      background: #8EDB35;
+      box-shadow: 0 0 14px rgba(142, 219, 53, 0.7);
+      content: "";
+      height: 2px;
+      left: 0;
+      position: absolute;
+      top: -1rem;
+      transform: scaleX(var(--work-step-progress));
+      transform-origin: left center;
+      transition: transform 120ms linear;
+      width: min(15rem, 42vw);
+      z-index: 1;
+    }
+
+    .works-layer img,
+    .works-layer video {
+      display: block;
+      filter: grayscale(0.45) contrast(1.08);
+      height: 100%;
+      inset: 0;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      transform: translateZ(0) scale(1.006);
+      transition: filter 260ms ease, opacity 220ms ease, transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: filter, transform, opacity;
+      width: 100%;
+    }
+
+    .works-layer video {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    :global(.works-layer.is-playing video) {
+      opacity: 1 !important;
+    }
+
+    :global(.works-layer.is-playing img) {
+      opacity: 0 !important;
+    }
+
+    .works-layer.is-active img {
+      animation: worksMediaEnter 520ms cubic-bezier(0.16, 1, 0.3, 1);
+      filter: grayscale(0.2) contrast(1.12);
+      transform: translateZ(0) scale(1);
+    }
+
+    .works-layer::after {
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.8) 82%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.28) 36%, transparent 70%);
+      content: "";
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .works-play {
+      appearance: none;
+      background: rgba(5, 5, 5, 0.78);
+      border: 1px solid rgba(142, 219, 53, 0.54);
+      border-radius: 999px;
+      bottom: clamp(1.25rem, 3vh, 2rem);
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 0.55rem 0.8rem;
+      position: absolute;
+      right: clamp(1.25rem, 4vw, 4.5rem);
+      z-index: 4;
+    }
+
+    .works-layer.is-playing .works-play {
+      bottom: auto;
+      color: rgba(245, 245, 245, 0.72);
+      opacity: 0.72;
+      padding: 0.42rem 0.62rem;
+      right: clamp(1rem, 2vw, 1.6rem);
+      top: clamp(1rem, 2vw, 1.6rem);
+    }
+
+    .works-layer.is-playing .works-play::before {
+      content: "PLAYING / ";
+    }
+
+    .works-layer-copy {
+      bottom: clamp(1.25rem, 3vh, 2.25rem);
+      display: grid;
+      gap: 0.58rem;
+      left: clamp(1.25rem, 4vw, 4.5rem);
+      max-width: min(46rem, 58vw);
+      position: absolute;
+      right: clamp(1.25rem, 4vw, 4.5rem);
+      z-index: 3;
+    }
+
+    .works-layer.is-active .works-layer-copy {
+      animation: worksCopyEnter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .is-video .works-layer-copy {
+      padding-left: 0;
+    }
+
+    .works-layer-copy span {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .works-layer-copy h3 {
+      color: #ffffff;
+      font-size: clamp(2rem, 4.6vw, 4.7rem);
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 0.96;
+      margin: 0;
+    }
+
+    .works-title-split {
+      align-items: baseline;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.32em;
+    }
+
+    .works-title-split .works-title-cn,
+    .works-title-split .works-title-en {
+      display: block;
+      font-family: inherit;
+      letter-spacing: 0;
+    }
+
+    .works-title-split .works-title-cn {
+      color: #ffffff;
+      font-size: 1em;
+      font-weight: 600;
+      line-height: 0.96;
+    }
+
+    .works-title-split .works-title-en {
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.58em;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .works-layer-copy p {
+      color: rgba(245, 245, 245, 0.72);
+      font-size: clamp(0.92rem, 1.15vw, 1.08rem);
+      line-height: 1.72;
+      margin: 0;
+      max-width: 42rem;
+    }
+
+    .works-layer-copy a {
+      color: rgba(142, 219, 53, 0.9);
+      font-family: var(--font-mono-cn);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      margin-top: 0.25rem;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .profile-section {
+      overflow: hidden;
+      position: relative;
+      width: min(1360px, calc(100vw - 32px));
+    }
+
+    .profile-section::before {
+      background:
+        linear-gradient(90deg, rgba(142, 219, 53, 0.12) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 84px 84px;
+      content: "";
+      inset: 0;
+      opacity: 0.22;
+      pointer-events: none;
+      position: absolute;
+      transform: skewY(-4deg);
+    }
+
+    .profile-layout {
+      align-items: stretch;
+      display: grid;
+      gap: clamp(2rem, 5vw, 5rem);
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr);
+      min-height: clamp(31rem, 46vw, 39rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-copy {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: none;
+      min-height: 100%;
+      padding: clamp(1.4rem, 3vw, 2.25rem) 0;
+    }
+
+    .profile-copy-main {
+      display: grid;
+      gap: clamp(0.9rem, 1.8vw, 1.35rem);
+      justify-items: start;
+      max-width: min(100%, 50rem);
+      width: 100%;
+    }
+
+    .profile-heading {
+      align-items: end;
+      display: flex;
+      gap: 1.2rem;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .profile-copy h2 {
+      align-items: end;
+      color: #ffffff;
+      display: inline-flex;
+      font-size: clamp(2.35rem, 5.4vw, 5.2rem);
+      font-weight: 600;
+      gap: 0.32em;
+      letter-spacing: 0;
+      line-height: 0.95;
+      margin: 0;
+    }
+
+    .profile-copy h2::after {
+      animation: profileCursorBlink 1s steps(2, start) infinite;
+      background: #8EDB35;
+      box-shadow: 0 0 16px rgba(142, 219, 53, 0.8);
+      content: "";
+      display: inline-block;
+      height: 0.12em;
+      margin-bottom: 0.1em;
+      width: 0.72em;
+    }
+
+    .profile-lead {
+      color: #ffffff !important;
+      font-size: clamp(1.02rem, 1.5vw, 1.2rem) !important;
+      font-weight: 500;
+      line-height: 1.72 !important;
+    }
+
+    .profile-brief-list {
+      border-block: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      gap: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: clamp(0.6rem, 1.5vw, 1.2rem);
+      width: min(100%, 50rem);
+    }
+
+    .profile-brief-list span {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 0.85rem 1rem 0.85rem 0;
+    }
+
+    .profile-brief-list span + span {
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding-left: 1rem;
+    }
+
+    .profile-detail-grid {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      gap: 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: clamp(0.15rem, 0.8vw, 0.65rem);
+      width: min(100%, 50rem);
+    }
+
+    .profile-detail-grid div {
+      display: grid;
+      gap: 0.35rem;
+      min-height: 5.4rem;
+      padding: 1rem 1.2rem 1.1rem 0;
+    }
+
+    .profile-detail-grid div + div {
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding-left: 1.2rem;
+    }
+
+    .profile-detail-grid span {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+    }
+
+    .profile-detail-grid p {
+      align-self: end;
+      color: rgba(245, 245, 245, 0.78);
+      font-size: clamp(0.88rem, 1.05vw, 1rem);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .profile-mini {
+      display: grid;
+      gap: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: clamp(2.2rem, 5vw, 4rem);
+      width: min(100%, 50rem);
+    }
+
+    .profile-mini div {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      gap: 0.35rem;
+      min-height: 4.8rem;
+      padding-top: 1rem;
+    }
+
+    .profile-mini div + div {
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding-left: 1.4rem;
+    }
+
+    .profile-mini span {
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+    }
+
+    .profile-mini strong {
+      color: rgba(245, 245, 245, 0.86);
+      font-size: clamp(0.92rem, 1.1vw, 1.02rem);
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .profile-mini-link {
+      align-self: end;
+      color: #8EDB35;
+      font-family: var(--font-mono-cn);
+      font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.55;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .profile-visual {
+      min-height: 100%;
+      position: relative;
+    }
+
+    .profile-model-panel {
+      background:
+        radial-gradient(circle at 50% 45%, rgba(142, 219, 53, 0.12), transparent 34%),
+        linear-gradient(90deg, rgba(142, 219, 53, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        rgba(5, 5, 5, 0.28);
+      background-size: auto, 62px 62px, 62px 62px, auto;
+      border: 1px solid rgba(142, 219, 53, 0.24);
+      border-radius: 16px;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .profile-model-panel::after {
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: inherit;
+      content: "";
+      inset: 0.65rem;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .profile-model-panel canvas {
+      display: block;
+      height: 100%;
+      min-height: 100%;
+      width: 100%;
+    }
+
+    @keyframes profileCursorBlink {
+      0%, 48% { opacity: 1; }
+      49%, 100% { opacity: 0; }
+    }
+
+    @keyframes worksMediaEnter {
+      0% {
+        filter: grayscale(0.52) contrast(1.02);
+        transform: translateZ(0) scale(1.024);
+      }
+
+      100% {
+        filter: grayscale(0.2) contrast(1.12);
+        transform: translateZ(0) scale(1);
+      }
+    }
+
+    @keyframes worksCopyEnter {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0.65rem, 0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
     @keyframes moveLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-25%); } }
     @keyframes moveRight { 0% { transform: translateX(-25%); } 100% { transform: translateX(0%); } }
     .marquee-left { display: inline-block; animation: moveLeft 12s linear infinite; }
     .marquee-right { display: inline-block; animation: moveRight 12s linear infinite; }
+
+    @media (max-width: 900px) {
+      .split-head,
+      .profile-layout,
+      .works-pin {
+        grid-template-columns: 1fr;
+      }
+
+      .works-section {
+        margin-left: auto;
+        margin-right: auto;
+        min-height: auto;
+        padding: clamp(5rem, 9vw, 8rem) 0;
+        width: min(1180px, calc(100vw - 32px));
+      }
+
+      .works-pin {
+        display: grid;
+        gap: 1.5rem;
+        min-height: auto;
+        padding: 0;
+        position: relative;
+        top: auto;
+      }
+
+      .chronology-section {
+        --timeline-progress: 1;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: auto;
+        padding: clamp(5rem, 9vw, 8rem) 0;
+        width: min(1180px, calc(100vw - 32px));
+      }
+
+      .chronology-pin {
+        height: auto;
+        min-height: 42rem;
+        padding: 0;
+        position: relative;
+        top: auto;
+      }
+
+      .chronology-copy {
+        max-width: none;
+        position: relative;
+        top: auto;
+        left: auto;
+      }
+
+      .chronology-map {
+        aspect-ratio: 4 / 5;
+        inset: auto;
+        margin-top: 2rem;
+        min-height: 34rem;
+        position: relative;
+      }
+
+      .chronology-world {
+        height: 100%;
+        transform: none !important;
+        width: 100%;
+      }
+
+      .timeline-head {
+        display: none;
+      }
+
+      .timeline-node,
+      .timeline-node.is-active,
+      .timeline-node.is-current {
+        --node-card-x: -50%;
+        --node-card-y: -50%;
+        min-width: 10rem;
+        opacity: 1;
+        padding: 0.62rem 0.72rem;
+        transform: translate(var(--node-card-x), var(--node-card-y)) scale(1);
+        width: auto;
+      }
+
+      .timeline-node::before {
+        left: 50%;
+        top: -0.7rem;
+        transform: translate(-50%, -50%);
+      }
+
+      .timeline-node.is-current::before,
+      .timeline-node.is-current::after {
+        display: none;
+      }
+
+      .works-control {
+        align-items: start;
+        grid-template-columns: 1fr auto;
+        left: auto;
+        max-width: none;
+        position: relative;
+        top: auto;
+      }
+
+      .works-control h2 {
+        font-size: 0.82rem;
+        line-height: 1;
+      }
+
+      .works-control h2,
+      .works-category-list {
+        grid-column: 1 / -1;
+      }
+
+      .works-category-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+      }
+
+      .works-category.is-active {
+        transform: none;
+      }
+
+      .works-stage {
+        display: grid;
+        gap: 1rem;
+        inset: auto;
+        min-height: 0;
+        position: relative;
+      }
+
+      .works-layer,
+      .works-layer.is-active,
+      .works-layer.is-past,
+      .works-layer.is-upcoming {
+        height: auto;
+        left: auto;
+        min-height: 28rem;
+        opacity: 1;
+        position: relative;
+        top: auto;
+        transform: none;
+        visibility: visible;
+        width: 100%;
+      }
+
+      .works-layer-copy {
+        max-width: min(28rem, calc(100% - 2rem));
+      }
+
+      .profile-layout {
+        gap: 1.4rem;
+        min-height: auto;
+      }
+
+      .profile-visual {
+        min-height: auto;
+      }
+
+      .profile-model-panel {
+        aspect-ratio: 16 / 11;
+        height: auto;
+        min-height: 0;
+      }
+
+      .profile-brief-list {
+        grid-template-columns: 1fr 1fr 1fr;
+        max-width: 26rem;
+      }
+
+      .profile-detail-grid {
+        width: min(100%, 32rem);
+      }
+
+      .profile-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+    }
+
+    @media (max-width: 620px) {
+      .home-section {
+        width: min(100vw - 24px, 1180px);
+      }
+
+      .works-category-list {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .works-control {
+        grid-template-columns: 1fr;
+      }
+
+      .works-layer,
+      .works-layer.is-active,
+      .works-layer.is-past,
+      .works-layer.is-upcoming {
+        min-height: 25rem;
+      }
+
+      .works-layer-copy {
+        bottom: 0.9rem;
+        left: 0.9rem;
+        right: 0.9rem;
+      }
+
+      .is-video .works-layer-copy {
+        padding-left: 0;
+        padding-bottom: 2.8rem;
+      }
+
+      .works-play {
+        bottom: 0.9rem;
+        right: 0.9rem;
+      }
+
+      .profile-copy {
+        gap: 2rem;
+      }
+
+      .profile-model-panel {
+        aspect-ratio: 1 / 1;
+      }
+
+      .profile-brief-list {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-brief-list span + span {
+        border-left: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-left: 0;
+      }
+
+      .profile-detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-detail-grid div + div {
+        border-left: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-left: 0;
+      }
+
+      .profile-mini {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .profile-mini div + div {
+        border-left: 0;
+        padding-left: 0;
+      }
+    }
   </style>
 </body>
 </html>

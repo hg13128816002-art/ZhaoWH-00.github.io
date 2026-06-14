@@ -18,7 +18,7 @@
   ></video>
 
   <div class="absolute top-8 right-8 hidden text-right pointer-events-none z-20 md:block">
-    <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] font-bold">SECTION // 02_NAVIGATION_HUB</div>
+    <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] font-bold">SECTION // 02_WORKS_HUB</div>
     <div class="text-neutral-500 text-[10px] mt-1 tracking-widest">BACKGROUND: DYNAMIC_VIDEO</div>
   </div>
 
@@ -90,7 +90,7 @@
     { text: "Explore project details / 项目详情", mobileText: "PROJECTS / 项目", href: "/project-detail" },
     { text: "Watch the videos of the works / 视频", mobileText: "VIDEOS / 视频", href: "/omni" },
     { text: "View the pictures of the works / 图片", mobileText: "PICTURES / 图片", href: "/dual" },
-    { text: "Get to know me / 关于我", mobileText: "ABOUT / 关于我", href: "/about" },
+    { text: "Get to know me / 关于我", mobileText: "PROFILE / 关于我", href: "/profile" },
     { text: "Contact me / 联系我", mobileText: "CONTACT / 联系我", href: "/contact" }
   ];
 
@@ -224,23 +224,33 @@
   let lockedPill: Pill | null = null;
   let pressedPill: Pill | null = null;
   let pressFeedbackUntil = 0;
+
+  function getCanvasPointer(clientX: number, clientY: number) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    };
+  }
   
   window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    const pointer = getCanvasPointer(e.clientX, e.clientY);
+    mouse.x = pointer.x;
+    mouse.y = pointer.y;
   });
 
-  function getHitPill(clientX: number, clientY: number) {
+  function getHitPill(x: number, y: number) {
     return pills.find((pill) => (
-      clientX >= pill.x
-      && clientX <= pill.x + pill.w
-      && clientY >= pill.y
-      && clientY <= pill.y + pill.h
+      x >= pill.x
+      && x <= pill.x + pill.w
+      && y >= pill.y
+      && y <= pill.y + pill.h
     )) || null;
   }
 
   canvas.addEventListener('pointerdown', (event) => {
-    const hitPill = getHitPill(event.clientX, event.clientY);
+    const pointer = getCanvasPointer(event.clientX, event.clientY);
+    const hitPill = getHitPill(pointer.x, pointer.y);
     if (!hitPill || !isMobileLayout()) return;
 
     pressedPill = hitPill;
@@ -248,7 +258,8 @@
   });
 
   canvas.addEventListener('pointerup', (event) => {
-    const hitPill = getHitPill(event.clientX, event.clientY);
+    const pointer = getCanvasPointer(event.clientX, event.clientY);
+    const hitPill = getHitPill(pointer.x, pointer.y);
 
     if (hitPill) {
       if (isMobileLayout()) {

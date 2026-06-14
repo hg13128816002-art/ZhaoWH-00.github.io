@@ -1,9 +1,6 @@
 ---
 // src/pages/hub.astro
-import '../styles/global.css';
-import LiquidNavHub from '../components/LiquidNavHub.astro';
-import PureTransition from '../components/PureTransition.astro';
-import HomeButton from '../components/HomeButton.astro';
+// 兼容旧入口：导航页已从正式体验中撤下，回到首页。
 ---
 
 <!DOCTYPE html>
@@ -11,15 +8,13 @@ import HomeButton from '../components/HomeButton.astro';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liquid Navigation Hub</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <script src="/scripts/font-loader.js" is:inline></script>
+  <meta http-equiv="refresh" content="0; url=/">
+  <title>Redirecting Home</title>
+  <script is:inline>
+    window.location.replace('/');
+  </script>
 </head>
-<body class="w-screen h-screen overflow-hidden m-0 p-0 bg-[#0a0a0a]">
-  <PureTransition />
-  <LiquidNavHub />
-  <HomeButton />
+<body style="margin:0;background:#050505;color:#8EDB35;font-family:monospace;">
+  <a href="/" style="color:#8EDB35;">ENTER HOME</a>
 </body>
 </html>

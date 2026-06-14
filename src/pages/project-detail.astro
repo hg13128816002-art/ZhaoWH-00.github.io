@@ -3,7 +3,7 @@
 // 修复版：移除 Tailwind CDN，使用原生 CSS
 import '../styles/global.css';
 import PureTransition from '../components/PureTransition.astro';
-import FloatingButton from '../components/FloatingButton.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 ---
 
 <html lang="zh-CN">
@@ -34,11 +34,6 @@ import FloatingButton from '../components/FloatingButton.astro';
       user-select: none;
     }
 
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #050505; }
-    ::-webkit-scrollbar-thumb { background: #333; }
-    ::-webkit-scrollbar-thumb:hover { background: #8EDB35; }
-
     .grid-bg {
       position: fixed;
       inset: 0;
@@ -55,12 +50,17 @@ import FloatingButton from '../components/FloatingButton.astro';
       width: 100%;
     }
 
+    .site-header-room {
+      padding-top: 6rem;
+    }
+
     .project-entry {
       position: relative;
       width: 100%;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      scroll-margin-top: 7rem;
       --thumb-offset: 2rem;
       --footer-top-gap: 4rem;
       --footer-bottom-gap: 2rem;
@@ -325,6 +325,40 @@ import FloatingButton from '../components/FloatingButton.astro';
       text-transform: uppercase;
     }
 
+    .project-video-link {
+      align-items: center;
+      border: 1px solid rgba(142, 219, 53, 0.46);
+      border-radius: 10px;
+      color: #8EDB35;
+      display: inline-flex;
+      font-size: 0.72rem;
+      font-weight: 700;
+      gap: 0.65rem;
+      letter-spacing: 0.22em;
+      margin-top: 1.8rem;
+      padding: 0.75rem 1.05rem;
+      text-decoration: none;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .project-video-link::before {
+      background: currentColor;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      content: "";
+      display: block;
+      height: 0.58rem;
+      width: 0.48rem;
+    }
+
+    .project-video-link:hover,
+    .project-video-link:focus-visible {
+      background: #8EDB35;
+      border-color: #8EDB35;
+      color: #050505;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
     .meta-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -478,11 +512,12 @@ import FloatingButton from '../components/FloatingButton.astro';
 <body>
 
   <PureTransition />
+  <SiteHeader />
 
   <div class="grid-bg"></div>
 
-  <main class="project-stack">
-    <article class="project-entry project-entry-never">
+  <main class="project-stack site-header-room">
+    <article id="never-extinguished" class="project-entry project-entry-never">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
@@ -556,6 +591,7 @@ import FloatingButton from '../components/FloatingButton.astro';
             未曾熄灭的
           </h1>
           <h2 class="title-sub">NEVER EXTINGUISHED</h2>
+          <a class="project-video-link" href="/omni#never-extinguished">WATCH VIDEO</a>
         </header>
 
         <div class="meta-grid">
@@ -598,7 +634,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       </div>
     </article>
 
-    <article class="project-entry project-entry-liminal">
+    <article id="liminal" class="project-entry project-entry-liminal">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
@@ -673,6 +709,7 @@ import FloatingButton from '../components/FloatingButton.astro';
           </h1>
           <h2 class="title-main">临近边缘的幻想</h2>
           <h3 class="title-sub">Liminal-The Fantasy at the Edge </h3>
+          <a class="project-video-link" href="/omni#liminal">WATCH VIDEO</a>
         </header>
 
         <div class="meta-grid">
@@ -707,7 +744,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       </div>
     </article>
 
-    <article class="project-entry project-entry-magnetic">
+    <article id="stare-ewsn" class="project-entry project-entry-magnetic">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
@@ -782,6 +819,7 @@ import FloatingButton from '../components/FloatingButton.astro';
           </h1>
           <h2 class="title-main">/任尔EWSN风？</h2>
           <h3 class="title-sub">Magnetic field- Chinese Internet</h3>
+          <a class="project-video-link" href="/omni#stare-ewsn">WATCH VIDEO</a>
         </header>
 
         <div class="meta-grid">
@@ -817,7 +855,7 @@ import FloatingButton from '../components/FloatingButton.astro';
       </div>
     </article>
 
-    <article class="project-entry project-entry-ar">
+    <article id="nazhou-ar" class="project-entry project-entry-ar">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
@@ -892,12 +930,13 @@ import FloatingButton from '../components/FloatingButton.astro';
           </h1>
           <h2 class="title-main">AR导览游戏Demo</h2>
           <h3 class="title-sub">AR Guided Tour Game Demo</h3>
+          <a class="project-video-link" href="/omni#nazhou-ar">WATCH VIDEO</a>
         </header>
 
         <div class="meta-grid">
           <div>
             <div class="meta-item-label">TIMESTAMP</div>
-            <div class="meta-item-value">206</div>
+            <div class="meta-item-value">2026</div>
           </div>
           <div>
             <div class="meta-item-label">CATEGORY</div>
@@ -926,6 +965,225 @@ import FloatingButton from '../components/FloatingButton.astro';
         </div>
       </div>
     </article>
+
+    <article id="miao-generator" class="project-entry project-entry-miao">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp"
+                alt="starE Promo Poster"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">Digital Intangible Culture Heritage</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">Interactive Web Page</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A32.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A33.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A34.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A35.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>005 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 005
+          </div>
+          <h1 class="title-main">
+            施洞苗绣
+          </h1>
+          <h2 class="title-main">纹样生成器</h2>
+          <h3 class="title-sub">Shidong Miao Embroidery Pattern Generator</h3>
+          <a class="project-video-link" href="https://miao.zhaowenhao.design/" target="_blank" rel="noopener noreferrer">OPEN WEBPAGE</a>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Digital Art</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">TOOLS</div>
+            <div class="meta-item-value">Vercel / Codex</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              本作品是一项聚焦于非遗数字转译的游戏化交互设计尝试。我们提取了“施洞苗族刺绣”中的蝴蝶、龙、鱼等九大传统视觉图腾，并开发出一款集数字再创作与非遗传播于一体的交互网页。作品立足于基础的 UI/UX 与前端交互设计，用户可通过控制面板自由组合刺绣元素，调节构图（团花/连续）、色板（节庆红/清水江）以及双针锁绣、破线绣等刺绣质感。同时，作品尝试融入了 AI 纹样评审功能，用户在完成共创后，系统会从构图、色彩等维度输出一份智能评分与优化建议。作品旨在通过数字美学为古老纹样提供一种趣味性的交互可能，用务实的方式为非遗的活态传承提供基础的数字化思路。
+            </p>
+          </div>
+
+
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+
+     <article id="shadow-shell" class="project-entry project-entry- shadow shell">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp"
+                alt="starE Promo Poster"
+                data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">Architecture</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">Hollow PP board</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%202.webp" alt="Scene thumbnail 1" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%203.webp" alt="Scene thumbnail 2" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%204.webp" alt="Scene thumbnail 3" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%205.webp" alt="Scene thumbnail 4" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>006 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+             <div class="pulse-dot"></div>
+             FILE_DECRYPTED // 006
+          </div>
+          <h1 class="title-main">
+            影 · 壳 
+          </h1>
+          <h2 class="title-sub">Shadow Shell</h2>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Architecture</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">TOOLS</div>
+            <div class="meta-item-value">Various construction tools</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              本构筑物以“壳”为外形，“影”为媒介，依傍元白楼中庭树池设置，将穿行人流引入一处可入、可立、可坐的微型空间。整体由11片白色PP中空板拱形单元连续排列而成，侧向取自黄金螺线，正向呈半圆，宛如一枚展开的身体保护壳，既是骨架也象征个体的聚集。空间内部，“影”被转化为三层叙事：凤凰树的自然树影回应场地中心，拱形板与栅格切分出结构之影，而人在栅格后若隐若现则形成身体之影；由此，空间自然衍生出明朗外向的“站区A”（顶部完全开放）、安静内聚的“站区B”（设栅格顶棚）以及顺应花坛边界供人停留对话的“坐区”。设计成功转译了自然界生物壳“保护与容纳”的逻辑，半围合的连续拱肋赋予身体被包裹的安定感，并利用缝隙与开口保持与外部的联系——“壳”提供了边界，但不切断关系；它制造了内部，却始终让内外持续交流。
+            </p>
+          </div>
+
+
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+
   </main>
 
   <div class="preview-backdrop" aria-hidden="true"></div>
@@ -1185,8 +1443,6 @@ import FloatingButton from '../components/FloatingButton.astro';
       image.addEventListener('blur', hidePreview);
     });
   </script>
-
-  <FloatingButton />
 
 </body>
 </html>

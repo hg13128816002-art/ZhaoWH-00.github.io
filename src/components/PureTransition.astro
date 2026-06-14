@@ -69,6 +69,10 @@
   document.addEventListener('click', (e) => {
     const link = (e.target as HTMLElement).closest('a');
     if (link && link.href && link.href.startsWith(window.location.origin) && !link.target && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+      const nextUrl = new URL(link.href);
+      const isSamePageHash = nextUrl.pathname === window.location.pathname && nextUrl.hash;
+      if (isSamePageHash) return;
+
       e.preventDefault();
       (window as any).triggerPureTransition(link.href);
     }

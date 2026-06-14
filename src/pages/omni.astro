@@ -3,8 +3,8 @@
 // 全向无限画廊全屏预览页 (完美修正版)
 import '../styles/global.css'; // 确保引入了全局 Reset 样式
 import InfiniteOmniGallery from '../components/InfiniteOmniGallery.astro';
-import FloatingButton from '../components/FloatingButton.astro';
 import PureTransition from '../components/PureTransition.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 ---
 
 <!DOCTYPE html>
@@ -20,7 +20,7 @@ import PureTransition from '../components/PureTransition.astro';
 </head>
 <body class="w-screen h-screen m-0 p-0 overflow-hidden bg-[#0a0a0a]">
   <PureTransition />
+  <SiteHeader />
   <InfiniteOmniGallery />
-  <FloatingButton />
 </body>
 </html>
