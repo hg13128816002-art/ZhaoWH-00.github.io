@@ -68,6 +68,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .left-panel {
       position: relative;
+      order: 2;
       width: 100%;
       min-height: 50vh;
       border-bottom: 1px solid #171717;
@@ -272,6 +273,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .right-panel {
+      order: 1;
       width: 100%;
       min-height: 50vh;
       z-index: 20;
@@ -431,11 +433,13 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       .left-panel {
         position: relative;
+        order: 2;
         width: 40%;
         height: auto;
         min-height: 100vh;
         border-bottom: none;
-        border-right: 1px solid #171717;
+        border-left: 1px solid #171717;
+        border-right: 0;
         padding: 3rem;
         flex-shrink: 0;
       }
@@ -447,6 +451,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .right-panel {
+        order: 1;
         width: 60%;
         margin-left: 0;
         margin-top: 0;
