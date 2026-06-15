@@ -22,10 +22,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     contain: paint;
   }
 
-  #hardware-cursor {
-    z-index: 10060;
-  }
-
   .hero-title-stack {
     font-family: var(--font-sans-cn);
     transform: translateY(clamp(-2.9rem, -5.2vh, -1.7rem));
@@ -66,7 +62,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
   </script>
 </head>
-<body class="w-full min-h-screen bg-[#050505] overflow-x-hidden select-none relative cursor-none" style="margin: 0; padding: 0; background-color: #050505;">
+<body class="w-full min-h-screen bg-[#050505] overflow-x-hidden select-none relative" style="margin: 0; padding: 0; background-color: #050505;">
   <PureTransition />
   <SiteHeader />
   <Preloader />
@@ -122,12 +118,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 
   <div id="warp-flash" class="absolute inset-0 bg-[#8EDB35] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
   </section>
-
-  <div id="hardware-cursor" class="fixed top-0 left-0 h-6 w-6 pointer-events-none z-[10060] flex items-center justify-center -translate-x-1/2 -translate-y-1/2">
-    <div class="absolute w-2 h-2 bg-[#8EDB35] rounded-full shadow-[0_0_12px_#8EDB35]"></div>
-    <div class="absolute w-6 h-[1px] bg-[#8EDB35]/70"></div>
-    <div class="absolute h-6 w-[1px] bg-[#8EDB35]/70"></div>
-  </div>
 
   <main class="home-sections">
     <section class="home-section chronology-section" aria-labelledby="creative-chronology-title">
@@ -428,7 +418,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     // ================= 终极全域 Canvas 粒子引擎 =================
     const canvas = document.getElementById('omni-universe') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')!;
-    const hwCursor = document.getElementById('hardware-cursor')!;
 
     let width = window.innerWidth;
     let height = window.innerHeight;
@@ -446,9 +435,12 @@ import SiteHeader from '../components/SiteHeader.astro';
     let cursorX = mouseX;
     let cursorY = mouseY;
 
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX; mouseY = e.clientY;
-    });
+    if (window.matchMedia('(pointer: fine)').matches) {
+      window.addEventListener('pointermove', (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      }, { passive: true });
+    }
 
     // 信仰链目标定义 (尾部加入适量空格完美分布圆周)
     const creedString = "INTEGRATE THINKING INTO DESIGN • ";
@@ -528,7 +520,6 @@ import SiteHeader from '../components/SiteHeader.astro';
       // 光标物理缓动更新
       cursorX += (mouseX - cursorX) * 0.15;
       cursorY += (mouseY - cursorY) * 0.15;
-      hwCursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
       
       // 光标环自转极速驱动
       cursorSpinAngle += 0.015;
@@ -1730,8 +1721,6 @@ import SiteHeader from '../components/SiteHeader.astro';
   </script>
 
   <style>
-    * { cursor: none !important; }
-
     @media (min-width: 901px) {
       .chronology-section,
       .profile-section {
@@ -2872,14 +2861,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     .marquee-right { display: inline-block; animation: moveRight 12s linear infinite; }
 
     @media (max-width: 900px) {
-      * {
-        cursor: auto !important;
-      }
-
-      #hardware-cursor {
-        display: none;
-      }
-
       .home-sections {
         overflow-x: clip;
         overflow-y: visible;
