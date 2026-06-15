@@ -9,6 +9,10 @@ import SiteHeader from '../components/SiteHeader.astro';
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&display=swap');
+
+  :root {
+    --stable-app-height: 100vh;
+  }
   
   .font-mono {
     font-family: var(--font-mono-cn) !important;
@@ -671,15 +675,75 @@ import SiteHeader from '../components/SiteHeader.astro';
     let timelineCameraVelocityX = 0;
     let timelineCameraVelocityY = 0;
     let timelineCameraVelocityScale = 0;
+    let stableMobileViewportWidth = window.innerWidth;
+    let stableMobileViewportHeight = window.innerHeight;
+
+    function getInteractionViewportHeight() {
+      return window.innerWidth < 900 ? stableMobileViewportHeight : window.innerHeight;
+    }
+
+    function applyStableViewportMetrics() {
+      const viewportHeight = getInteractionViewportHeight();
+      document.documentElement.style.setProperty('--stable-app-height', `${viewportHeight}px`);
+
+      if (window.innerWidth < 900) {
+        chronologySection?.style.setProperty('--timeline-section-height', `${viewportHeight * 7.6}px`);
+        chronologySection?.style.setProperty('min-height', `${viewportHeight * 7.6}px`);
+      } else {
+        chronologySection?.style.removeProperty('--timeline-section-height');
+        chronologySection?.style.removeProperty('min-height');
+      }
+    }
+
+    function refreshStableViewportSize(force = false) {
+      const widthDelta = Math.abs(window.innerWidth - stableMobileViewportWidth);
+      const shouldRefresh = force || window.innerWidth >= 900 || widthDelta > 8;
+      if (!shouldRefresh) return;
+
+      stableMobileViewportWidth = window.innerWidth;
+      stableMobileViewportHeight = window.innerHeight;
+      applyStableViewportMetrics();
+      hasTimelineCameraTransform = false;
+      hasTimelineCameraFocus = false;
+      timelineCameraVelocityX = 0;
+      timelineCameraVelocityY = 0;
+      timelineCameraVelocityScale = 0;
+    }
+
+    applyStableViewportMetrics();
 
     function getTimelineSectionTop() {
       if (!chronologySection) return 0;
-      return chronologySection.getBoundingClientRect().top + window.scrollY;
+      return chronologySection.offsetTop;
     }
 
     function getTimelineTravelDistance() {
       if (!chronologySection) return 1;
-      return Math.max(1, chronologySection.offsetHeight - window.innerHeight);
+      return Math.max(1, chronologySection.offsetHeight - getInteractionViewportHeight());
+    }
+
+    function isNearInteractiveSection(section: HTMLElement, lead = 1.15, tail = 0.45) {
+      const viewportHeight = getInteractionViewportHeight();
+      const sectionTop = section.offsetTop;
+      const sectionBottom = sectionTop + section.offsetHeight;
+      return window.scrollY >= sectionTop - viewportHeight * lead && window.scrollY <= sectionBottom + viewportHeight * tail;
+    }
+
+    function stopTimelineMotion() {
+      if (timelineSpringRaf) {
+        window.cancelAnimationFrame(timelineSpringRaf);
+        timelineSpringRaf = undefined;
+      }
+      if (timelineCameraRaf) {
+        window.cancelAnimationFrame(timelineCameraRaf);
+        timelineCameraRaf = undefined;
+      }
+      timelineVelocity = 0;
+      timelineCameraVelocityX = 0;
+      timelineCameraVelocityY = 0;
+      timelineCameraVelocityScale = 0;
+      hasTimelineCameraTransform = false;
+      hasTimelineCameraFocus = false;
     }
 
     function setupTimelineGeometry() {
@@ -722,14 +786,15 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     function setTimelineTarget(progress: number, immediate = false) {
       targetTimelineProgress = Math.min(Math.max(progress, 0), 1);
-      const isMobileJump = window.innerWidth < 900 && Math.abs(targetTimelineProgress - visualTimelineProgress) > 0.28;
+      const isMobileTimeline = window.innerWidth < 900;
+      const isMobileJump = isMobileTimeline && Math.abs(targetTimelineProgress - visualTimelineProgress) > 0.28;
 
-      if (immediate || isMobileJump) {
+      if (immediate || isMobileTimeline || isMobileJump) {
         if (timelineSpringRaf) {
           window.cancelAnimationFrame(timelineSpringRaf);
           timelineSpringRaf = undefined;
         }
-        if (isMobileJump) {
+        if (isMobileTimeline || isMobileJump) {
           if (timelineCameraRaf) {
             window.cancelAnimationFrame(timelineCameraRaf);
             timelineCameraRaf = undefined;
@@ -928,19 +993,46 @@ import SiteHeader from '../components/SiteHeader.astro';
       return { progress, stopIndex: currentStopIndex };
     }
 
+    function snapToDevicePixel(value: number) {
+      const ratio = Math.max(1, window.devicePixelRatio || 1);
+      return Math.round(value * ratio) / ratio;
+    }
+
     function applyTimelineCameraTransform() {
       if (!chronologySection) return;
-      chronologySection.style.setProperty('--timeline-camera-x', `${timelineCameraX}px`);
-      chronologySection.style.setProperty('--timeline-camera-y', `${timelineCameraY}px`);
+      const shouldSnap = window.innerWidth < 900;
+      const cameraX = shouldSnap ? snapToDevicePixel(timelineCameraX) : timelineCameraX;
+      const cameraY = shouldSnap ? snapToDevicePixel(timelineCameraY) : timelineCameraY;
+      const gridX = shouldSnap ? Math.round(cameraX * 0.08) : cameraX * 0.08;
+      const gridY = shouldSnap ? Math.round(cameraY * 0.08) : cameraY * 0.08;
+
+      chronologySection.style.setProperty('--timeline-camera-x', `${cameraX}px`);
+      chronologySection.style.setProperty('--timeline-camera-y', `${cameraY}px`);
       chronologySection.style.setProperty('--timeline-camera-scale', String(timelineCameraScale));
-      chronologySection.style.setProperty('--timeline-grid-x', `${timelineCameraX * 0.08}px`);
-      chronologySection.style.setProperty('--timeline-grid-y', `${timelineCameraY * 0.08}px`);
+      chronologySection.style.setProperty('--timeline-grid-x', `${gridX}px`);
+      chronologySection.style.setProperty('--timeline-grid-y', `${gridY}px`);
     }
 
     function setTimelineCameraTarget(x: number, y: number, scale: number) {
       timelineCameraTargetX = x;
       timelineCameraTargetY = y;
       timelineCameraTargetScale = scale;
+
+      if (window.innerWidth < 900) {
+        if (timelineCameraRaf) {
+          window.cancelAnimationFrame(timelineCameraRaf);
+          timelineCameraRaf = undefined;
+        }
+        hasTimelineCameraTransform = true;
+        timelineCameraX = x;
+        timelineCameraY = y;
+        timelineCameraScale = scale;
+        timelineCameraVelocityX = 0;
+        timelineCameraVelocityY = 0;
+        timelineCameraVelocityScale = 0;
+        applyTimelineCameraTransform();
+        return;
+      }
 
       if (!hasTimelineCameraTransform) {
         hasTimelineCameraTransform = true;
@@ -1029,7 +1121,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
       const focusXRatio = timelineCameraFocusRatio;
       const focusX = window.innerWidth * focusXRatio - mapRect.left;
-      const focusY = window.innerHeight * (isMobile ? 0.5 : 0.66) - mapRect.top;
+      const focusY = getInteractionViewportHeight() * (isMobile ? 0.5 : 0.66) - mapRect.top;
       const worldX = cameraPoint.x;
       const worldY = cameraPoint.y;
 
@@ -1069,6 +1161,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     function requestTimelineScrollSync() {
+      if (chronologySection && !isNearInteractiveSection(chronologySection)) return;
       if (timelineScrollRaf) return;
       timelineScrollRaf = window.requestAnimationFrame(() => {
         timelineScrollRaf = undefined;
@@ -1170,15 +1263,19 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     function monitorTimelineScroll() {
-      if (chronologySection && window.innerWidth >= 900) {
-        const sectionTop = getTimelineSectionTop();
-        const sectionBottom = sectionTop + chronologySection.offsetHeight - window.innerHeight;
-        const isNearTimeline = window.scrollY >= sectionTop - 4 && window.scrollY <= sectionBottom + 4;
-        if (isNearTimeline || window.scrollY !== lastTimelineScrollY) {
-          lastTimelineScrollY = window.scrollY;
-          syncTimelineToScroll();
-        }
-      } else if (window.scrollY !== lastTimelineScrollY) {
+      if (!chronologySection) {
+        window.requestAnimationFrame(monitorTimelineScroll);
+        return;
+      }
+
+      if (!isNearInteractiveSection(chronologySection)) {
+        lastTimelineScrollY = window.scrollY;
+        stopTimelineMotion();
+        window.requestAnimationFrame(monitorTimelineScroll);
+        return;
+      }
+
+      if (window.scrollY !== lastTimelineScrollY) {
         lastTimelineScrollY = window.scrollY;
         syncTimelineToScroll();
       }
@@ -1203,7 +1300,25 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     function getWorksIntroHoldDistance() {
-      return window.innerHeight * (isMobileWorksLayout() ? 0.58 : 1.25);
+      return getInteractionViewportHeight() * (isMobileWorksLayout() ? 0.58 : 1.25);
+    }
+
+    function applyWorksViewportMetrics() {
+      if (!worksSection) return;
+
+      if (isMobileWorksLayout()) {
+        const viewportHeight = getInteractionViewportHeight();
+        const introHold = getWorksIntroHoldDistance();
+        const stepScroll = viewportHeight * 0.72;
+        const totalHeight = viewportHeight + introHold + Math.max(worksCards.length - 1, 0) * stepScroll;
+        worksSection.style.setProperty('--works-intro-hold', `${introHold}px`);
+        worksSection.style.setProperty('--works-step-scroll', `${stepScroll}px`);
+        worksSection.style.setProperty('min-height', `${totalHeight}px`);
+      } else {
+        worksSection.style.removeProperty('--works-intro-hold');
+        worksSection.style.removeProperty('--works-step-scroll');
+        worksSection.style.removeProperty('min-height');
+      }
     }
 
     function stopWorksVideos(except?: HTMLElement) {
@@ -1308,7 +1423,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     function getWorksTravelDistance() {
       if (!worksSection) return 1;
       const introHold = getWorksIntroHoldDistance();
-      return Math.max(1, worksSection.offsetHeight - window.innerHeight - introHold);
+      return Math.max(1, worksSection.offsetHeight - getInteractionViewportHeight() - introHold);
     }
 
     function syncWorksStackToScroll() {
@@ -1320,6 +1435,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     function requestWorksScrollSync() {
+      if (worksSection && !isNearInteractiveSection(worksSection)) return;
       if (worksScrollRaf) return;
       worksScrollRaf = window.requestAnimationFrame(() => {
         worksScrollRaf = undefined;
@@ -1354,6 +1470,12 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     function monitorWorksScroll() {
+      if (worksSection && !isNearInteractiveSection(worksSection)) {
+        lastWorksScrollY = window.scrollY;
+        window.requestAnimationFrame(monitorWorksScroll);
+        return;
+      }
+
       if (window.scrollY !== lastWorksScrollY) {
         lastWorksScrollY = window.scrollY;
         syncWorksStackToScroll();
@@ -1402,6 +1524,19 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
     }
 
+    function handleInteractiveResize() {
+      const widthDelta = Math.abs(window.innerWidth - stableMobileViewportWidth);
+      const heightDelta = Math.abs(window.innerHeight - stableMobileViewportHeight);
+      const isMobileAddressBarResize = window.innerWidth < 900 && widthDelta <= 8 && heightDelta > 0;
+
+      refreshStableViewportSize();
+      applyWorksViewportMetrics();
+      if (isMobileAddressBarResize) return;
+
+      requestTimelineScrollSync();
+      requestWorksScrollSync();
+    }
+
     if (chronologySection) {
       setupTimelineGeometry();
       const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
@@ -1409,21 +1544,18 @@ import SiteHeader from '../components/SiteHeader.astro';
       monitorTimelineScroll();
       window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
       window.addEventListener('wheel', handleTimelineWheel, { passive: false });
-      window.addEventListener('resize', () => {
-        requestTimelineScrollSync();
-      });
+      window.addEventListener('resize', handleInteractiveResize);
     }
 
     if (worksCards.length) {
       worksSection?.style.setProperty('--works-count', String(worksCards.length));
+      applyWorksViewportMetrics();
       updateWorksStack();
       syncWorksStackToScroll();
       monitorWorksScroll();
       window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
       window.addEventListener('wheel', handleWorksWheel, { passive: false });
-      window.addEventListener('resize', () => {
-        requestWorksScrollSync();
-      });
+      window.addEventListener('resize', handleInteractiveResize);
 
       worksCategories.forEach((button) => {
         button.addEventListener('click', () => {
@@ -2089,8 +2221,9 @@ import SiteHeader from '../components/SiteHeader.astro';
     .works-section {
       --works-count: 10;
       --works-intro-hold: 125vh;
+      --works-step-scroll: 96vh;
       --work-step-progress: 0;
-      min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * 96vh);
+      min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * var(--works-step-scroll));
       margin-left: 0;
       margin-right: 0;
       padding-bottom: 0;
@@ -2271,7 +2404,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       opacity: 0;
       transition: filter 180ms ease, opacity 180ms ease;
       visibility: hidden;
-      will-change: opacity;
+      will-change: transform, opacity;
       width: 100%;
       z-index: var(--stack-order);
     }
@@ -2779,7 +2912,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         border-top: 0;
         margin-left: 0;
         margin-right: 0;
-        min-height: 760vh;
+        min-height: var(--timeline-section-height, 760vh);
         padding: 0;
         width: 100%;
       }
@@ -2788,8 +2921,10 @@ import SiteHeader from '../components/SiteHeader.astro';
         box-sizing: border-box;
         height: 100vh;
         height: 100svh;
+        height: var(--stable-app-height, 100svh);
         min-height: 100vh;
         min-height: 100svh;
+        min-height: var(--stable-app-height, 100svh);
         overflow: hidden;
         padding: calc(env(safe-area-inset-top) + 4.45rem) 0.7rem 0.85rem;
         position: sticky;
@@ -2986,11 +3121,12 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       .works-section {
         --works-intro-hold: 58vh;
+        --works-step-scroll: 72vh;
         border-top: 0;
         margin-left: 0;
         margin-right: 0;
         min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * 72vh);
-        min-height: calc(100svh + 58svh + (var(--works-count) - 1) * 72svh);
+        min-height: calc(var(--stable-app-height, 100svh) + var(--works-intro-hold) + (var(--works-count) - 1) * var(--works-step-scroll));
         padding: 0;
         width: 100%;
       }
@@ -2999,8 +3135,10 @@ import SiteHeader from '../components/SiteHeader.astro';
         display: block;
         height: 100vh;
         height: 100svh;
+        height: var(--stable-app-height, 100svh);
         min-height: 100vh;
         min-height: 100svh;
+        min-height: var(--stable-app-height, 100svh);
         overflow: hidden;
         padding: 0;
         position: sticky;
