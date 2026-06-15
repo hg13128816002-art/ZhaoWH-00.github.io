@@ -1173,6 +1173,10 @@ import SiteHeader from '../components/SiteHeader.astro';
     let worksScrollRaf: number | undefined;
     let lastWorksScrollY = -1;
 
+    function isMobileWorksLayout() {
+      return window.innerWidth < 900;
+    }
+
     function stopWorksVideos(except?: HTMLElement) {
       worksCards.forEach((card) => {
         if (card === except) return;
@@ -1234,6 +1238,23 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     function updateWorksStack() {
       if (!worksCards.length) return;
+      if (isMobileWorksLayout()) {
+        worksCards.forEach((card, index) => {
+          const isActive = index === activeWorkIndex;
+          card.classList.toggle('is-active', isActive);
+          card.classList.remove('is-past', 'is-upcoming');
+          card.style.removeProperty('--offset');
+          card.style.removeProperty('--abs-offset');
+          card.style.removeProperty('--depth');
+          card.style.removeProperty('--stack-order');
+          card.style.removeProperty('opacity');
+          card.style.removeProperty('pointer-events');
+          card.style.removeProperty('transform');
+          card.style.removeProperty('visibility');
+        });
+        syncWorksMeta();
+        return;
+      }
       renderWorksStack(visualWorkProgress);
       syncWorksMeta();
       const activeCard = worksCards[activeWorkIndex];
@@ -1331,6 +1352,11 @@ import SiteHeader from '../components/SiteHeader.astro';
     function scrollToWorkIndex(index: number) {
       if (!worksSection || !worksCards.length) return;
       const targetIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
+      if (isMobileWorksLayout()) {
+        setActiveWorkIndex(targetIndex);
+        worksCards[targetIndex]?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        return;
+      }
       const ratio = worksCards.length > 1 ? targetIndex / (worksCards.length - 1) : 0;
       const introHold = window.innerHeight * 1.25;
       const targetY = getWorksSectionTop() + introHold + getWorksTravelDistance() * ratio;
@@ -2706,6 +2732,30 @@ import SiteHeader from '../components/SiteHeader.astro';
     .marquee-right { display: inline-block; animation: moveRight 12s linear infinite; }
 
     @media (max-width: 900px) {
+      * {
+        cursor: auto !important;
+      }
+
+      #hardware-cursor {
+        display: none;
+      }
+
+      .home-sections {
+        overflow: hidden;
+      }
+
+      .section-kicker {
+        font-size: 0.66rem;
+        letter-spacing: 0.18em;
+        margin-bottom: 0.9rem;
+      }
+
+      .section-head h2,
+      .chronology-copy h2 {
+        font-size: clamp(2.45rem, 15vw, 4.3rem);
+        line-height: 0.94;
+      }
+
       .split-head,
       .profile-layout,
       .works-pin {
@@ -2723,6 +2773,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       .works-pin {
         display: grid;
         gap: 1.5rem;
+        height: auto;
         min-height: auto;
         padding: 0;
         position: relative;
@@ -2734,13 +2785,14 @@ import SiteHeader from '../components/SiteHeader.astro';
         margin-left: auto;
         margin-right: auto;
         min-height: auto;
-        padding: clamp(5rem, 9vw, 8rem) 0;
-        width: min(1180px, calc(100vw - 32px));
+        padding: clamp(5.8rem, 18vw, 7rem) 0 clamp(3rem, 12vw, 5rem);
+        width: min(1180px, calc(100vw - 1.25rem));
       }
 
       .chronology-pin {
         height: auto;
-        min-height: 42rem;
+        min-height: auto;
+        overflow: visible;
         padding: 0;
         position: relative;
         top: auto;
@@ -2754,17 +2806,44 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .chronology-map {
-        aspect-ratio: 4 / 5;
+        aspect-ratio: auto;
         inset: auto;
-        margin-top: 2rem;
-        min-height: 34rem;
+        margin-top: clamp(1.5rem, 8vw, 2.5rem);
+        min-height: 0;
+        overflow: visible;
         position: relative;
       }
 
+      .chronology-map::before {
+        inset: 0;
+        opacity: 0.34;
+      }
+
+      .chronology-map::after {
+        display: none;
+      }
+
       .chronology-world {
-        height: 100%;
+        display: grid;
+        gap: 0.85rem;
+        height: auto;
+        left: auto;
+        padding: 0.5rem 0 0 1.05rem;
+        position: relative;
         transform: none !important;
         width: 100%;
+      }
+
+      .chronology-world::before {
+        background: linear-gradient(180deg, rgba(142, 219, 53, 0.88), rgba(142, 219, 53, 0.2));
+        content: "";
+        inset: 0 auto 0 0.18rem;
+        position: absolute;
+        width: 1px;
+      }
+
+      .chronology-svg {
+        display: none;
       }
 
       .timeline-head {
@@ -2774,37 +2853,94 @@ import SiteHeader from '../components/SiteHeader.astro';
       .timeline-node,
       .timeline-node.is-active,
       .timeline-node.is-current {
-        --node-card-x: -50%;
-        --node-card-y: -50%;
-        min-width: 10rem;
+        background: rgba(5, 8, 4, 0.82);
+        border: 1px solid rgba(142, 219, 53, 0.34);
+        border-radius: 14px;
+        box-shadow: none;
+        display: grid;
+        gap: 0.35rem;
+        left: auto;
+        max-width: none;
+        min-width: 0;
         opacity: 1;
-        padding: 0.62rem 0.72rem;
-        transform: translate(var(--node-card-x), var(--node-card-y)) scale(1);
-        width: auto;
+        padding: 0.82rem 0.9rem;
+        pointer-events: auto;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        width: 100%;
       }
 
       .timeline-node::before {
-        left: 50%;
-        top: -0.7rem;
+        background: #8EDB35;
+        box-shadow: 0 0 14px rgba(142, 219, 53, 0.72);
+        display: block;
+        height: 0.52rem;
+        left: -1.16rem;
+        opacity: 1;
+        top: 1.25rem;
         transform: translate(-50%, -50%);
+        width: 0.52rem;
       }
 
-      .timeline-node.is-current::before,
+      .timeline-node::after,
       .timeline-node.is-current::after {
         display: none;
       }
 
+      .timeline-node > span,
+      .timeline-node strong,
+      .timeline-node em,
+      .timeline-node .timeline-node-media,
+      .timeline-node .timeline-media-pair {
+        opacity: 1;
+      }
+
+      .timeline-node strong {
+        font-size: clamp(1rem, 5.2vw, 1.35rem);
+        line-height: 1.28;
+      }
+
+      .timeline-node em {
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      .timeline-node .timeline-node-media {
+        aspect-ratio: 16 / 10;
+        border-radius: 10px;
+        margin-top: 0.4rem;
+        max-height: 12rem;
+        object-fit: cover;
+        width: 100%;
+      }
+
+      .timeline-media-pair {
+        display: grid;
+        gap: 0.55rem;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .timeline-media-pair .timeline-node-media {
+        aspect-ratio: 4 / 5;
+      }
+
       .works-control {
         align-items: start;
-        grid-template-columns: 1fr auto;
+        background: rgba(5, 5, 5, 0.58);
+        border: 1px solid rgba(142, 219, 53, 0.24);
+        border-radius: 16px;
+        gap: 0.9rem;
+        grid-template-columns: 1fr;
         left: auto;
         max-width: none;
+        padding: 0.95rem;
         position: relative;
         top: auto;
       }
 
       .works-control h2 {
-        font-size: 0.82rem;
+        font-size: clamp(0.92rem, 5vw, 1.25rem);
         line-height: 1;
       }
 
@@ -2814,8 +2950,13 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .works-category-list {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.6rem 0.75rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         width: 100%;
+      }
+
+      .works-category {
+        font-size: clamp(0.86rem, 4.2vw, 1rem);
       }
 
       .works-category.is-active {
@@ -2836,17 +2977,17 @@ import SiteHeader from '../components/SiteHeader.astro';
       .works-layer.is-upcoming {
         height: auto;
         left: auto;
-        min-height: 28rem;
+        min-height: clamp(27rem, 118vw, 34rem);
         opacity: 1;
         position: relative;
         top: auto;
-        transform: none;
+        transform: none !important;
         visibility: visible;
         width: 100%;
       }
 
       .works-layer-copy {
-        max-width: min(28rem, calc(100% - 2rem));
+        max-width: none;
       }
 
       .profile-layout {
@@ -2876,6 +3017,15 @@ import SiteHeader from '../components/SiteHeader.astro';
       .profile-heading {
         align-items: start;
         flex-direction: column;
+      }
+
+      .profile-section {
+        overflow: hidden;
+        width: min(1180px, calc(100vw - 1.25rem));
+      }
+
+      .profile-copy {
+        min-height: auto;
       }
 
     }

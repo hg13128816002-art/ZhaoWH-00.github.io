@@ -202,22 +202,25 @@ const startsVisible = !shouldHideAtTop;
 
   @media (max-width: 760px) {
     .site-header {
-      padding: 1.05rem 0.75rem 0.75rem;
+      padding: max(0.72rem, env(safe-area-inset-top)) 0.62rem 0.62rem;
     }
 
     .site-nav {
-      width: auto;
-      max-width: 100%;
+      width: calc(100vw - 1.25rem);
+      max-width: calc(100vw - 1.25rem);
       justify-content: flex-start;
       padding: 0.32rem;
       border-radius: 11px;
+      scroll-padding-inline: 0.32rem;
+      -webkit-overflow-scrolling: touch;
     }
 
     .site-nav-link {
-      min-height: 2.18rem;
-      padding: 0.48rem 0.74rem;
+      flex: 0 0 auto;
+      min-height: 2.12rem;
+      padding: 0.46rem 0.68rem;
       border-radius: 7px;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
     }
   }
 </style>
