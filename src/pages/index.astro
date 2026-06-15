@@ -2360,7 +2360,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       display: grid;
       gap: 0.58rem;
       left: clamp(1.25rem, 4vw, 4.5rem);
-      max-width: min(46rem, 58vw);
+      max-width: min(78rem, calc(100vw - clamp(2.5rem, 8vw, 9rem)));
       position: absolute;
       right: clamp(1.25rem, 4vw, 4.5rem);
       z-index: 3;
@@ -2384,17 +2384,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .works-layer-copy h3 {
       color: #ffffff;
-      font-size: clamp(2rem, 4.6vw, 4.7rem);
+      font-size: clamp(1.85rem, min(3.85vw, 7.4vh), 4.35rem);
       font-weight: 600;
       letter-spacing: 0;
       line-height: 0.96;
       margin: 0;
+      max-width: 100%;
+      white-space: nowrap;
     }
 
     .works-title-split {
       align-items: baseline;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 0.32em;
     }
 
@@ -2417,6 +2419,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       font-size: 0.58em;
       font-weight: 500;
       line-height: 1;
+      white-space: nowrap;
     }
 
     .works-layer-copy p {
@@ -2901,6 +2904,15 @@ import SiteHeader from '../components/SiteHeader.astro';
         bottom: 0.9rem;
         left: 0.9rem;
         right: 0.9rem;
+      }
+
+      .works-layer-copy h3 {
+        font-size: clamp(1.45rem, 7.8vw, 2.35rem);
+        white-space: normal;
+      }
+
+      .works-title-split {
+        flex-wrap: wrap;
       }
 
       .is-video .works-layer-copy {
