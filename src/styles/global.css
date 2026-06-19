@@ -19,6 +19,19 @@
   --site-scrollbar-line-hover: rgba(142, 219, 53, 1);
 }
 
+html[data-theme="light"] {
+  --site-frame-line: rgba(5, 5, 5, 0.28);
+  --site-scrollbar-line: rgba(5, 5, 5, 0.64);
+  --site-scrollbar-line-hover: rgba(5, 5, 5, 0.92);
+  background: #ffffff;
+  color-scheme: light;
+}
+
+html[data-theme="dark"],
+html:not([data-theme]) {
+  color-scheme: dark;
+}
+
 html {
   font-family: var(--font-sans-cn) !important;
   max-width: 100%;
@@ -42,6 +55,11 @@ select {
 body {
   max-width: 100%;
   overflow-x: clip;
+}
+
+html[data-theme="light"] body {
+  background: #ffffff !important;
+  color: #111111 !important;
 }
 
 .font-mono {
@@ -89,6 +107,363 @@ body::before {
 
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+html[data-theme="light"] :where(
+  .site-nav,
+  .home-sections,
+  .home-section,
+  .chronology-section,
+  .works-section,
+  .profile-section,
+  .project-detail-page,
+  .left-panel,
+  .right-panel,
+  .profile-model-panel,
+  .timeline-node,
+  .detail-root,
+  .contact-page,
+  .profile-page,
+  .omni-page,
+  .dual-page,
+  .bg-\[\#050505\],
+  .bg-\[\#080808\],
+  .bg-\[\#0a0a0a\],
+  .bg-\[\#0d0d0d\],
+  .bg-\[\#0f0f0f\]
+) {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+html[data-theme="light"] :where(
+  .site-nav,
+  .timeline-node,
+  .profile-model-panel,
+  .left-panel,
+  .right-panel,
+  .img-container,
+  .thumb-item,
+  .meta-grid,
+  .archive-card,
+  .project-card,
+  .contact-card,
+  [class*="border-neutral"],
+  [class*="border-zinc"],
+  [class*="border-stone"]
+) {
+  border-color: rgba(5, 5, 5, 0.18) !important;
+}
+
+html[data-theme="light"] .site-nav {
+  background: rgba(255, 255, 255, 0.76) !important;
+  border-color: rgba(5, 5, 5, 0.34) !important;
+  box-shadow: 0 16px 46px rgba(5, 5, 5, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+html[data-theme="light"] .site-nav-link {
+  color: rgba(5, 5, 5, 0.68) !important;
+}
+
+html[data-theme="light"] .site-nav-link:hover,
+html[data-theme="light"] .site-nav-link:focus-visible,
+html[data-theme="light"] .site-nav-link.is-active {
+  color: #050505 !important;
+  border-color: rgba(142, 219, 53, 0.82) !important;
+  background: #8EDB35 !important;
+  box-shadow: 0 0 18px rgba(142, 219, 53, 0.18) !important;
+}
+
+html[data-theme="light"] :where(
+  .title-main,
+  .section-head h2,
+  .chronology-copy h2,
+  .profile-title,
+  .profile-copy h2,
+  .project-title,
+  .title-mainline,
+  .text-white,
+  .text-neutral-50,
+  .text-neutral-100,
+  .text-zinc-50,
+  .text-zinc-100
+) {
+  color: #050505 !important;
+}
+
+html[data-theme="light"] :where(
+  .section-text,
+  .chronology-copy p,
+  .profile-copy p,
+  .timeline-node p,
+  .project-description,
+  .text-neutral-300,
+  .text-neutral-400,
+  .text-neutral-500,
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-zinc-500
+) {
+  color: rgba(5, 5, 5, 0.64) !important;
+}
+
+html[data-theme="light"] body :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  div,
+  a,
+  button,
+  small,
+  strong,
+  em,
+  li,
+  dt,
+  dd,
+  label
+):not(
+  [class*="green"],
+  [class*="lime"],
+  [style*="#8EDB35"],
+  [style*="#8edb35"],
+  [style*="142, 219, 53"]
+) {
+  color: #111111 !important;
+}
+
+html[data-theme="light"] :where(
+  .text-lime-300,
+  .text-lime-400,
+  .text-green-300,
+  .text-green-400,
+  .section-kicker,
+  .section-link,
+  .file-label,
+  .project-video-link,
+  .meta-item-value.green,
+  .thumb-index,
+  .works-category.is-active,
+  .works-category span,
+  .works-layer-copy span,
+  .works-layer-copy a,
+  .profile-brief-list span,
+  .profile-detail-grid span,
+  .profile-mini span,
+  .profile-mini-link,
+  .timeline-node > span,
+  .text-\[\#8EDB35\],
+  [style*="#8EDB35"],
+  [style*="#8edb35"],
+  [style*="142, 219, 53"]
+) {
+  color: #8EDB35 !important;
+}
+
+html[data-theme="light"] body :is(
+  .text-lime-300,
+  .text-lime-400,
+  .text-green-300,
+  .text-green-400,
+  .section-kicker,
+  .section-link,
+  .file-label,
+  .project-video-link,
+  .meta-item-value.green,
+  .thumb-index,
+  .works-category.is-active,
+  .works-category span,
+  .works-layer-copy span,
+  .works-layer-copy a,
+  .profile-brief-list span,
+  .profile-detail-grid span,
+  .profile-mini span,
+  .profile-mini-link,
+  .timeline-node > span,
+  .text-\[\#8EDB35\]
+),
+html[data-theme="light"] body [style*="#8EDB35"],
+html[data-theme="light"] body [style*="#8edb35"],
+html[data-theme="light"] body [style*="142, 219, 53"] {
+  color: #8EDB35 !important;
+}
+
+html[data-theme="light"] :where(.works-layer, .works-layer *) {
+  color: inherit;
+}
+
+html[data-theme="light"] .works-layer {
+  background: #050505 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] :where(
+  .works-layer-copy h3,
+  .works-title-split .works-title-cn,
+  .works-layer-copy p,
+  .works-layer.is-playing .works-play
+) {
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] :where(
+  .works-layer-copy span,
+  .works-layer-copy a
+) {
+  color: #8EDB35 !important;
+}
+
+html[data-theme="light"] .works-title-split .works-title-en {
+  color: rgba(255, 255, 255, 0.84) !important;
+}
+
+html[data-theme="light"] body .works-section :is(
+  .works-control h2,
+  .works-category,
+  .works-progress,
+  .works-layer-copy h3,
+  .works-title-split .works-title-cn,
+  .works-layer-copy p,
+  .works-layer.is-playing .works-play
+) {
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+html[data-theme="light"] body .works-section :is(
+  .works-control h2,
+  .works-layer-copy h3,
+  .works-title-split .works-title-cn
+) {
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] body .works-section :is(
+  .works-category.is-active,
+  .works-category span,
+  .works-layer-copy span,
+  .works-layer-copy a
+) {
+  color: #8EDB35 !important;
+}
+
+html[data-theme="light"] body .works-section .works-category.is-empty {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+
+html[data-theme="light"] :where(
+  .timeline-node,
+  .profile-model-panel,
+  .img-container,
+  .thumb-item,
+  .meta-grid,
+  .archive-card,
+  .project-card,
+  .contact-card
+) {
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 18px 60px rgba(5, 5, 5, 0.08) !important;
+}
+
+html[data-theme="light"] .timeline-node:not(.is-current) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] .timeline-node.is-current {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(142, 219, 53, 0.62) !important;
+  box-shadow: 0 18px 60px rgba(5, 5, 5, 0.08) !important;
+}
+
+html[data-theme="light"] .profile-section::before {
+  background:
+    linear-gradient(90deg, rgba(142, 219, 53, 0.14) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.055) 1px, transparent 1px) !important;
+  opacity: 0.38 !important;
+}
+
+html[data-theme="light"] :where(
+  .profile-copy,
+  .profile-brief-list,
+  .profile-detail-grid,
+  .profile-mini div
+) {
+  border-color: rgba(5, 5, 5, 0.18) !important;
+}
+
+html[data-theme="light"] :where(
+  .profile-brief-list span + span,
+  .profile-detail-grid div + div,
+  .profile-mini div + div
+) {
+  border-left-color: rgba(5, 5, 5, 0.18) !important;
+}
+
+html[data-theme="light"] .profile-model-panel {
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  background-image:
+    radial-gradient(circle at 50% 45%, rgba(142, 219, 53, 0.08), transparent 34%),
+    linear-gradient(90deg, rgba(142, 219, 53, 0.14) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.08) 1px, transparent 1px) !important;
+  border-color: rgba(142, 219, 53, 0.42) !important;
+}
+
+html[data-theme="light"] .profile-model-panel::after {
+  border-color: rgba(5, 5, 5, 0.14) !important;
+}
+
+html[data-theme="light"] :where(
+  .chronology-grid,
+  .chronology-map,
+  .profile-model-panel,
+  .profile-visual,
+  .grid-bg
+) {
+  background-image:
+    linear-gradient(rgba(5, 5, 5, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 5, 5, 0.075) 1px, transparent 1px) !important;
+}
+
+html[data-theme="light"] .chronology-map::after {
+  background: radial-gradient(circle at center, transparent 0 42%, rgba(255, 255, 255, 0.84) 72%) !important;
+}
+
+html[data-theme="light"] :where(
+  .bg-black,
+  .bg-neutral-950,
+  .bg-zinc-950
+) {
+  background-color: #ffffff !important;
+}
+
+html[data-theme="light"] :where(
+  #vanguard-preloader,
+  .slice,
+  .transition-screen,
+  .transition-panel
+) {
+  background: #ffffff !important;
+}
+
+.theme-dot-light:not(.is-active),
+.theme-dot-dark:not(.is-active) {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.theme-dot-light.is-active {
+  border-color: #050505 !important;
+  box-shadow: 0 0 0 2px rgba(5, 5, 5, 0.08) !important;
+}
+
+.theme-dot-dark.is-active {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) !important;
 }
 
 @media (max-width: 760px) {

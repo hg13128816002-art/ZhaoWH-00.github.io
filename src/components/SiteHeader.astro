@@ -48,8 +48,87 @@ const startsVisible = !shouldHideAtTop;
   </nav>
 </header>
 
+<div class="theme-switcher" aria-label="Theme switcher">
+  <button class="theme-dot theme-dot-light" type="button" data-theme-choice="light" aria-label="Use light theme"></button>
+  <button class="theme-dot theme-dot-dark" type="button" data-theme-choice="dark" aria-label="Use dark theme"></button>
+</div>
+
 <script is:inline>
   (() => {
+    const storageKey = 'zhao-portfolio-theme';
+    const getStoredTheme = () => {
+      try {
+        return localStorage.getItem(storageKey) === 'light' ? 'light' : 'dark';
+      } catch {
+        return 'dark';
+      }
+    };
+
+    const setStoredTheme = (theme) => {
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch {
+        // Storage may be unavailable in private contexts.
+      }
+    };
+
+    const syncThemeControls = (theme) => {
+      document.querySelectorAll('[data-theme-choice]').forEach((button) => {
+        const isActive = button.dataset.themeChoice === theme;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    };
+
+    const applyTheme = (theme) => {
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme === 'light' ? 'light' : 'dark';
+      syncThemeControls(theme);
+    };
+
+    const makeThemeReveal = (button, theme) => {
+      const rect = button.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+      const radius = Math.ceil(Math.hypot(
+        Math.max(originX, window.innerWidth - originX),
+        Math.max(originY, window.innerHeight - originY)
+      ));
+      const overlay = document.createElement('div');
+      overlay.className = 'theme-reveal';
+      overlay.style.setProperty('--theme-reveal-x', `${originX}px`);
+      overlay.style.setProperty('--theme-reveal-y', `${originY}px`);
+      overlay.style.setProperty('--theme-reveal-radius', `${radius}px`);
+      overlay.style.background = theme === 'light' ? '#ffffff' : '#050505';
+      document.body.appendChild(overlay);
+
+      window.requestAnimationFrame(() => {
+        overlay.dataset.active = 'true';
+      });
+
+      let isComplete = false;
+      const completeReveal = () => {
+        if (isComplete) return;
+        isComplete = true;
+        applyTheme(theme);
+        setStoredTheme(theme);
+        overlay.remove();
+      };
+
+      overlay.addEventListener('transitionend', completeReveal, { once: true });
+      window.setTimeout(completeReveal, 820);
+    };
+
+    applyTheme(getStoredTheme());
+
+    document.querySelectorAll('[data-theme-choice]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const theme = button.dataset.themeChoice;
+        if (!theme || document.documentElement.dataset.theme === theme) return;
+        makeThemeReveal(button, theme);
+      });
+    });
+
     const syncSiteHeaderActiveState = () => {
       const links = Array.from(document.querySelectorAll('.site-nav-link'));
       const activeMatch = window.location.pathname.replace(/\/$/, '') || '/';
@@ -200,6 +279,76 @@ const startsVisible = !shouldHideAtTop;
     transform: translateY(-1px);
   }
 
+  .theme-switcher {
+    align-items: center;
+    display: flex;
+    gap: 0.54rem;
+    position: fixed;
+    right: max(1.18rem, calc(var(--site-frame-inset, 0.95rem) + 0.58rem));
+    top: max(1.18rem, calc(var(--site-frame-inset, 0.95rem) + 0.58rem));
+    z-index: 10050;
+  }
+
+  .theme-dot {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    box-shadow: none;
+    cursor: pointer;
+    display: block;
+    height: 0.72rem;
+    padding: 0;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    width: 0.72rem;
+  }
+
+  .theme-dot:hover,
+  .theme-dot:focus-visible {
+    outline: none;
+    transform: scale(1.18);
+  }
+
+  .theme-dot-light {
+    background: #ffffff;
+  }
+
+  .theme-dot-dark {
+    background: #050505;
+  }
+
+  .theme-dot-light.is-active {
+    border-color: #050505;
+    box-shadow: 0 0 0 2px rgba(5, 5, 5, 0.08);
+  }
+
+  .theme-dot-light:not(.is-active) {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .theme-dot-dark.is-active {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+  }
+
+  .theme-dot-dark:not(.is-active) {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  :global(.theme-reveal) {
+    clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y));
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    transition: clip-path 680ms cubic-bezier(0.72, 0, 0.18, 1);
+    z-index: 10080;
+  }
+
+  :global(.theme-reveal[data-active="true"]) {
+    clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+
   @media (max-width: 760px) {
     .site-header {
       padding: max(0.72rem, env(safe-area-inset-top)) 0.62rem 0.62rem;
@@ -221,6 +370,12 @@ const startsVisible = !shouldHideAtTop;
       padding: 0.46rem 0.68rem;
       border-radius: 7px;
       font-size: 0.82rem;
+    }
+
+    .theme-switcher {
+      gap: 0.48rem;
+      right: max(0.8rem, calc(env(safe-area-inset-right) + 0.8rem));
+      top: max(0.8rem, calc(env(safe-area-inset-top) + 0.8rem));
     }
   }
 </style>

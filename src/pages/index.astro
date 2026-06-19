@@ -421,9 +421,14 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     let width = window.innerWidth;
     let height = window.innerHeight;
+    const mobileMotionQuery = window.matchMedia('(max-width: 899px)');
     function resize() {
       width = window.innerWidth; height = window.innerHeight;
       canvas.width = width; canvas.height = height;
+      if (mobileMotionQuery.matches) {
+        ctx.clearRect(0, 0, width, height);
+        canvas.style.visibility = 'hidden';
+      }
     }
     window.addEventListener('resize', resize);
     resize();
@@ -515,6 +520,12 @@ import SiteHeader from '../components/SiteHeader.astro';
     let cursorSpinAngle = 0;
 
     function renderUniverse() {
+      if (mobileMotionQuery.matches) {
+        ctx.clearRect(0, 0, width, height);
+        canvas.style.visibility = 'hidden';
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       // 光标物理缓动更新
@@ -617,14 +628,25 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       requestAnimationFrame(renderUniverse);
     }
-    // 等待字体加载完毕再开始渲染
-    if (window.fontsReadyPromise) {
-      window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; renderUniverse(); });
-    } else if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; renderUniverse(); });
-    } else {
+
+    function startUniverse() {
+      if (mobileMotionQuery.matches) {
+        canvas.style.visibility = 'hidden';
+        ctx.clearRect(0, 0, width, height);
+        return;
+      }
+
       canvas.style.visibility = 'visible';
       renderUniverse();
+    }
+
+    // 等待字体加载完毕再开始渲染
+    if (window.fontsReadyPromise) {
+      window.fontsReadyPromise.then(startUniverse);
+    } else if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(startUniverse);
+    } else {
+      startUniverse();
     }
 
     const chronologySection = document.querySelector('.chronology-section') as HTMLElement | null;
@@ -635,6 +657,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     const timelineHead = document.querySelector('[data-timeline-head]') as HTMLElement | null;
     const timelineNodes = Array.from(document.querySelectorAll('[data-timeline-node]')) as HTMLElement[];
     const timelineCurrent = document.querySelector('[data-timeline-current]') as HTMLElement | null;
+    const mobileHomeQuery = window.matchMedia('(max-width: 899px)');
     let timelineNodeStops = [] as number[];
     let timelineScrollRaf: number | undefined;
     let timelineSpringRaf: number | undefined;
@@ -673,17 +696,16 @@ import SiteHeader from '../components/SiteHeader.astro';
       return window.innerWidth < 900 ? stableMobileViewportHeight : window.innerHeight;
     }
 
+    function isMobileHomeFallback() {
+      return mobileHomeQuery.matches;
+    }
+
     function applyStableViewportMetrics() {
       const viewportHeight = getInteractionViewportHeight();
       document.documentElement.style.setProperty('--stable-app-height', `${viewportHeight}px`);
 
-      if (window.innerWidth < 900) {
-        chronologySection?.style.setProperty('--timeline-section-height', `${viewportHeight * 7.6}px`);
-        chronologySection?.style.setProperty('min-height', `${viewportHeight * 7.6}px`);
-      } else {
-        chronologySection?.style.removeProperty('--timeline-section-height');
-        chronologySection?.style.removeProperty('min-height');
-      }
+      chronologySection?.style.removeProperty('--timeline-section-height');
+      chronologySection?.style.removeProperty('min-height');
     }
 
     function refreshStableViewportSize(force = false) {
@@ -1275,6 +1297,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     const worksSection = document.querySelector('.works-section') as HTMLElement | null;
     const worksPin = document.querySelector('.works-pin') as HTMLElement | null;
+    const worksStage = document.querySelector('.works-stage') as HTMLElement | null;
     const worksCards = Array.from(document.querySelectorAll('[data-work-card]')) as HTMLElement[];
     const worksCategories = Array.from(document.querySelectorAll('[data-work-category].works-category')) as HTMLButtonElement[];
     const worksNotes = Array.from(document.querySelectorAll('[data-work-note]')) as HTMLElement[];
@@ -1287,7 +1310,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     let lastWorksScrollY = -1;
 
     function isMobileWorksLayout() {
-      return window.innerWidth < 900;
+      return isMobileHomeFallback();
     }
 
     function getWorksIntroHoldDistance() {
@@ -1298,13 +1321,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       if (!worksSection) return;
 
       if (isMobileWorksLayout()) {
-        const viewportHeight = getInteractionViewportHeight();
-        const introHold = getWorksIntroHoldDistance();
-        const stepScroll = viewportHeight * 0.72;
-        const totalHeight = viewportHeight + introHold + Math.max(worksCards.length - 1, 0) * stepScroll;
-        worksSection.style.setProperty('--works-intro-hold', `${introHold}px`);
-        worksSection.style.setProperty('--works-step-scroll', `${stepScroll}px`);
-        worksSection.style.setProperty('min-height', `${totalHeight}px`);
+        worksSection.style.removeProperty('--works-intro-hold');
+        worksSection.style.removeProperty('--works-step-scroll');
+        worksSection.style.removeProperty('min-height');
       } else {
         worksSection.style.removeProperty('--works-intro-hold');
         worksSection.style.removeProperty('--works-step-scroll');
@@ -1340,6 +1359,10 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       if (worksCurrent) worksCurrent.textContent = String(activeWorkIndex + 1).padStart(2, '0');
       if (worksTotal) worksTotal.textContent = String(worksCards.length).padStart(2, '0');
+      if (isMobileWorksLayout()) {
+        const overallProgress = worksCards.length > 1 ? activeWorkIndex / (worksCards.length - 1) : 1;
+        worksSection?.style.setProperty('--work-step-progress', String(overallProgress));
+      }
     }
 
     function renderWorksStack(progress = activeWorkIndex) {
@@ -1352,6 +1375,8 @@ import SiteHeader from '../components/SiteHeader.astro';
         const isActive = index === activeWorkIndex;
         const isPast = offset < 0;
         const isUpcoming = offset > 0;
+        const isMobile = isMobileWorksLayout();
+        const isMobileVisible = isMobile && offset >= 0 && offset <= 3;
         const parkedX = offset < 0 ? '-64vw' : '64vw';
         const parkedRotate = offset < 0 ? '-2.8deg' : '2.8deg';
 
@@ -1361,13 +1386,15 @@ import SiteHeader from '../components/SiteHeader.astro';
         card.style.setProperty('--offset', String(offset));
         card.style.setProperty('--abs-offset', String(absOffset));
         card.style.setProperty('--depth', String(depth));
-        card.style.setProperty('--stack-order', String(1000 - Math.round(absOffset * 20)));
-        card.style.opacity = isActive ? '1' : '0';
+        card.style.setProperty('--stack-order', String(isMobile ? 1000 - Math.max(offset, 0) : 1000 - Math.round(absOffset * 20)));
+        card.style.opacity = isActive || isMobileVisible ? String(isActive ? 1 : Math.max(0.38, 0.78 - offset * 0.14)) : '0';
         card.style.pointerEvents = isActive ? 'auto' : 'none';
-        card.style.transform = isActive
-          ? 'translate(-50%, -50%) rotate(0deg) scale(1)'
-          : `translate(calc(-50% + ${parkedX}), -50%) rotate(${parkedRotate}) scale(0.985)`;
-        card.style.visibility = isActive ? 'visible' : 'hidden';
+        card.style.transform = isMobile
+          ? `translate(-50%, calc(-50% + ${Math.max(offset, 0) * 0.72}rem)) rotate(${Math.max(offset, 0) * -1.1}deg) scale(${1 - Math.max(offset, 0) * 0.035})`
+          : isActive
+            ? 'translate(-50%, -50%) rotate(0deg) scale(1)'
+            : `translate(calc(-50% + ${parkedX}), -50%) rotate(${parkedRotate}) scale(0.985)`;
+        card.style.visibility = isActive || isMobileVisible ? 'visible' : 'hidden';
       });
     }
 
@@ -1477,6 +1504,10 @@ import SiteHeader from '../components/SiteHeader.astro';
     function scrollToWorkIndex(index: number) {
       if (!worksSection || !worksCards.length) return;
       const targetIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
+      if (isMobileWorksLayout()) {
+        setActiveWorkIndex(targetIndex);
+        return;
+      }
       const ratio = worksCards.length > 1 ? targetIndex / (worksCards.length - 1) : 0;
       const introHold = getWorksIntroHoldDistance();
       const targetY = getWorksSectionTop() + introHold + getWorksTravelDistance() * ratio;
@@ -1524,17 +1555,35 @@ import SiteHeader from '../components/SiteHeader.astro';
       applyWorksViewportMetrics();
       if (isMobileAddressBarResize) return;
 
-      requestTimelineScrollSync();
-      requestWorksScrollSync();
+      if (!isMobileHomeFallback()) {
+        requestTimelineScrollSync();
+        requestWorksScrollSync();
+      } else {
+        updateWorksStack();
+      }
+    }
+
+    function activateMobileTimelineFallback() {
+      stopTimelineMotion();
+      chronologySection?.style.setProperty('--timeline-progress', '1');
+      timelineNodes.forEach((node) => {
+        node.classList.remove('is-current', 'is-timeline-locked');
+        node.classList.add('is-active');
+      });
+      if (timelineCurrent) timelineCurrent.textContent = String(timelineNodes.length).padStart(2, '0');
     }
 
     if (chronologySection) {
       setupTimelineGeometry();
-      const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
-      setTimelineTarget(mapTimelineScrollProgress(initialTimelineRaw), true);
-      monitorTimelineScroll();
-      window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
-      window.addEventListener('wheel', handleTimelineWheel, { passive: false });
+      if (isMobileHomeFallback()) {
+        activateMobileTimelineFallback();
+      } else {
+        const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
+        setTimelineTarget(mapTimelineScrollProgress(initialTimelineRaw), true);
+        monitorTimelineScroll();
+        window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
+        window.addEventListener('wheel', handleTimelineWheel, { passive: false });
+      }
       window.addEventListener('resize', handleInteractiveResize);
     }
 
@@ -1542,10 +1591,12 @@ import SiteHeader from '../components/SiteHeader.astro';
       worksSection?.style.setProperty('--works-count', String(worksCards.length));
       applyWorksViewportMetrics();
       updateWorksStack();
-      syncWorksStackToScroll();
-      monitorWorksScroll();
-      window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
-      window.addEventListener('wheel', handleWorksWheel, { passive: false });
+      if (!isMobileWorksLayout()) {
+        syncWorksStackToScroll();
+        monitorWorksScroll();
+        window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
+        window.addEventListener('wheel', handleWorksWheel, { passive: false });
+      }
       window.addEventListener('resize', handleInteractiveResize);
 
       worksCategories.forEach((button) => {
@@ -1569,22 +1620,45 @@ import SiteHeader from '../components/SiteHeader.astro';
         card.addEventListener('click', (event) => {
           const target = event.target as HTMLElement;
           if (target.closest('a') || target.closest('video')) return;
+          if (isMobileWorksLayout() && card.dataset.workKind !== 'video') {
+            setActiveWorkIndex((activeWorkIndex + 1) % worksCards.length);
+            return;
+          }
           toggleWorksVideo(card);
         });
       });
+
+      let worksTouchStartX = 0;
+      let worksTouchStartY = 0;
+      worksStage?.addEventListener('touchstart', (event) => {
+        const touch = event.touches[0];
+        if (!touch) return;
+        worksTouchStartX = touch.clientX;
+        worksTouchStartY = touch.clientY;
+      }, { passive: true });
+
+      worksStage?.addEventListener('touchend', (event) => {
+        if (!isMobileWorksLayout()) return;
+        const touch = event.changedTouches[0];
+        if (!touch) return;
+        const deltaX = touch.clientX - worksTouchStartX;
+        const deltaY = touch.clientY - worksTouchStartY;
+        if (Math.abs(deltaX) < 42 || Math.abs(deltaX) < Math.abs(deltaY) * 1.15) return;
+        setActiveWorkIndex(activeWorkIndex + (deltaX < 0 ? 1 : -1));
+      }, { passive: true });
     }
 
   </script>
 
   <script type="module" is:inline>
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
     const profileModelPanel = document.querySelector('.profile-model-panel');
     const profileModelCanvas = document.getElementById('profile-model-canvas');
 
-    if (profileModelPanel && profileModelCanvas) {
+    if (profileModelPanel && profileModelCanvas && !window.matchMedia('(max-width: 899px)').matches) {
+      const THREE = await import('three');
+      const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
       camera.position.set(3.6, 2.2, 5.4);
@@ -3373,6 +3447,257 @@ import SiteHeader from '../components/SiteHeader.astro';
       .profile-mini div + div {
         border-left: 0;
         padding-left: 0;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .chronology-section {
+        min-height: auto !important;
+        padding: calc(env(safe-area-inset-top) + 5.6rem) 0.85rem 2.2rem;
+        width: min(100vw - 1rem, 42rem);
+      }
+
+      .chronology-pin {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible;
+        padding: 0;
+        position: relative;
+      }
+
+      .chronology-copy {
+        left: auto;
+        margin-bottom: 1.25rem;
+        max-width: 100%;
+        position: relative;
+        top: auto;
+      }
+
+      .chronology-copy h2 {
+        font-size: clamp(2.75rem, 15vw, 4.8rem);
+      }
+
+      .chronology-map {
+        border: 1px solid rgba(142, 219, 53, 0.22);
+        border-radius: 18px;
+        inset: auto;
+        min-height: 0;
+        overflow: visible;
+        padding: 0.85rem;
+        position: relative;
+      }
+
+      .chronology-map::before {
+        background-size: 38px 38px, 38px 38px;
+        inset: 0;
+        opacity: 0.4;
+        transform: none;
+      }
+
+      .chronology-map::after,
+      .chronology-svg,
+      .timeline-head {
+        display: none !important;
+      }
+
+      .chronology-world {
+        display: grid;
+        gap: 0.72rem;
+        height: auto;
+        left: auto;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        width: 100%;
+        will-change: auto;
+      }
+
+      .timeline-node,
+      .timeline-node.is-active,
+      .timeline-node.is-current {
+        background: rgba(8, 12, 6, 0.82);
+        border: 1px solid rgba(142, 219, 53, 0.3);
+        border-radius: 13px;
+        box-shadow: none;
+        display: grid;
+        gap: 0.34rem;
+        left: auto;
+        max-width: none;
+        min-width: 0;
+        opacity: 1;
+        padding: 0.85rem 0.9rem;
+        pointer-events: auto;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        transition: border-color 160ms ease, background 160ms ease;
+        width: 100%;
+      }
+
+      .timeline-node::before {
+        background: #8EDB35;
+        border: 0;
+        box-shadow: 0 0 14px rgba(142, 219, 53, 0.52);
+        display: block;
+        height: 0.48rem;
+        left: 0.78rem !important;
+        opacity: 1;
+        top: 1.06rem !important;
+        transform: none !important;
+        width: 0.48rem;
+      }
+
+      .timeline-node::after {
+        display: none !important;
+      }
+
+      .timeline-node > span,
+      .timeline-node strong,
+      .timeline-node em,
+      .timeline-node .timeline-node-media,
+      .timeline-node .timeline-media-pair {
+        opacity: 1;
+      }
+
+      .timeline-node > span {
+        padding-left: 1rem;
+      }
+
+      .timeline-node strong {
+        font-size: clamp(1rem, 5.2vw, 1.28rem);
+      }
+
+      .timeline-node .timeline-node-media {
+        max-height: 12rem;
+      }
+
+      .works-section {
+        min-height: auto !important;
+        padding: calc(env(safe-area-inset-top) + 5.4rem) 0.85rem 2.2rem;
+        width: min(100vw - 1rem, 42rem);
+      }
+
+      .works-section::before {
+        inset: 4rem 0 0;
+        opacity: 0.16;
+        transform: none;
+      }
+
+      .works-pin {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible;
+        padding: 0;
+        position: relative;
+      }
+
+      .works-control {
+        background: rgba(5, 5, 5, 0.72);
+        border: 1px solid rgba(142, 219, 53, 0.3);
+        border-radius: 14px;
+        left: auto;
+        margin-bottom: 0.95rem;
+        padding: 0.82rem;
+        position: relative;
+        right: auto;
+        top: auto;
+      }
+
+      .works-stage {
+        height: clamp(27rem, 118vw, 39rem);
+        inset: auto;
+        overflow: visible;
+        position: relative;
+      }
+
+      .works-layer,
+      .works-layer.is-active,
+      .works-layer.is-past,
+      .works-layer.is-upcoming {
+        height: 100%;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        width: 100%;
+      }
+
+      .works-layer {
+        border-color: rgba(255, 255, 255, 0.16);
+        border-radius: 18px;
+        box-shadow: 0 22px 56px rgba(0, 0, 0, 0.44);
+        transition:
+          opacity 240ms ease,
+          transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 240ms ease;
+        will-change: transform, opacity;
+      }
+
+      .works-layer.is-active {
+        box-shadow: 0 24px 68px rgba(0, 0, 0, 0.52);
+      }
+
+      .works-layer-copy {
+        bottom: 0.92rem;
+        left: 0.92rem;
+        right: 0.92rem;
+      }
+
+      .works-layer-copy h3 {
+        font-size: clamp(1.2rem, 7.2vw, 2rem);
+        white-space: normal;
+      }
+
+      .works-title-split {
+        flex-wrap: wrap;
+      }
+
+      .works-layer-copy p {
+        font-size: 0.78rem;
+        -webkit-line-clamp: 3;
+      }
+
+      .works-play {
+        bottom: 0.92rem;
+        border-radius: 12px;
+        right: 0.92rem;
+      }
+
+      .profile-section {
+        padding-top: calc(env(safe-area-inset-top) + 5.2rem);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .chronology-section,
+      .works-section {
+        width: min(100vw - 0.9rem, 42rem);
+      }
+
+      .chronology-progress,
+      .works-progress {
+        font-size: 0.68rem;
+      }
+
+      .works-category-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .works-stage {
+        height: clamp(29rem, 132vw, 38rem);
+      }
+    }
+
+    @media (max-width: 900px) {
+      html[data-theme="light"] .timeline-node,
+      html[data-theme="light"] .timeline-node.is-active,
+      html[data-theme="light"] .timeline-node.is-current {
+        background: rgba(255, 255, 255, 0.86) !important;
+        border-color: rgba(5, 5, 5, 0.16) !important;
+      }
+
+      html[data-theme="light"] .works-control {
+        background: rgba(255, 255, 255, 0.76) !important;
+        border-color: rgba(5, 5, 5, 0.18) !important;
       }
     }
   </style>
