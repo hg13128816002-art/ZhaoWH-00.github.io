@@ -368,6 +368,11 @@ html[data-theme="light"] :where(
   box-shadow: 0 18px 60px rgba(5, 5, 5, 0.08) !important;
 }
 
+html[data-theme="light"] .project-stack .meta-grid {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 html[data-theme="light"] .timeline-node:not(.is-current) {
   background: transparent !important;
   border-color: transparent !important;

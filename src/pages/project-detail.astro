@@ -372,6 +372,11 @@ import SiteHeader from '../components/SiteHeader.astro';
       background: rgba(5, 5, 5, 0.3);
     }
 
+    html[data-theme="light"] .project-stack .meta-grid {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
     .meta-item-label {
       color: #525252;
       font-size: 9px;
@@ -514,7 +519,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
   </style>
 </head>
-<body>
+<body class="project-detail-page">
 
   <PureTransition />
   <SiteHeader />

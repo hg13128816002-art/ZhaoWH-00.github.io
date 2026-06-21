@@ -25,7 +25,7 @@ import '../styles/global.css';
 
   <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
     
-    <div class="absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
+    <div class="video-overlay-topbar absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
       <div id="video-hud" class="text-[#8EDB35] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">STATUS: DECRYPTING_FILE</div>
       <div id="close-video" class="text-[#8EDB35] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#0a0a0a] px-4 py-2 border border-[#8EDB35]/30 hover:border-[#8EDB35]">
         [ X ] TERMINATE_LINK
@@ -43,18 +43,18 @@ import '../styles/global.css';
         </div>
       </div>
 
-      <div class="absolute bottom-0 left-0 w-full p-8 flex flex-col gap-4 pointer-events-none z-30">
+      <div class="video-controls absolute bottom-0 left-0 w-full p-8 flex flex-col gap-4 pointer-events-none z-30">
         <div class="relative w-full h-8 pointer-events-auto cursor-pointer" id="progress-container">
           <div class="absolute inset-x-0 top-1/2 h-[1px] -translate-y-1/2 bg-neutral-800"></div>
           <div id="progress-bar" class="absolute top-1/2 left-0 h-[1px] -translate-y-1/2 bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] w-0 pointer-events-none"></div>
         </div>
 
-        <div class="flex justify-between items-end">
-          <div class="flex flex-col gap-1">
+        <div class="video-meta flex justify-between items-end">
+          <div class="video-meta-primary flex flex-col gap-1">
             <div class="text-[#8EDB35] text-[10px] tracking-widest opacity-80">● SIGNAL_LIVE</div>
             <div id="overlay-title" class="text-white text-sm font-bold tracking-[0.2em]">FILE_NAME.MOV</div>
           </div>
-          <div class="flex flex-col items-end gap-1 text-neutral-600 text-[10px] tracking-widest">
+          <div class="video-meta-secondary flex flex-col items-end gap-1 text-neutral-600 text-[10px] tracking-widest">
             <div id="time-display">00:00 / 00:00</div>
             <div>RES: NATIVE // SECURE_NODE</div>
           </div>
@@ -63,6 +63,134 @@ import '../styles/global.css';
     </div>
   </div>
 </div>
+
+<style>
+  #progress-container {
+    touch-action: none;
+  }
+
+  #progress-container::before {
+    content: "";
+    position: absolute;
+    inset: -0.65rem 0;
+  }
+
+  @media (max-width: 760px), (max-height: 620px) and (pointer: coarse) {
+    #video-overlay {
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100svh;
+      overflow-y: auto;
+      padding: calc(env(safe-area-inset-top) + 7rem) 1rem calc(env(safe-area-inset-bottom) + 1.35rem);
+      box-sizing: border-box;
+    }
+
+    .video-overlay-topbar {
+      top: calc(env(safe-area-inset-top) + 4.85rem);
+      left: 0;
+      right: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.6rem;
+      align-items: center;
+      padding-inline: 1.08rem;
+    }
+
+    #video-hud {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      letter-spacing: 0.16em;
+    }
+
+    #close-video {
+      padding: 0.48rem 0.62rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    #video-stage {
+      width: min(100%, calc(100vw - 2rem));
+      max-height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8.6rem);
+      aspect-ratio: 16 / 9;
+      margin-top: 0.45rem;
+    }
+
+    #main-video {
+      object-fit: contain;
+      background: #050505;
+    }
+
+    #play-hint > div {
+      max-width: calc(100% - 2rem);
+      padding: 0.72rem 0.9rem;
+      text-align: center;
+      line-height: 1.55;
+      letter-spacing: 0.22em;
+    }
+
+    .video-controls {
+      gap: 0.72rem;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(5, 5, 5, 0.88), rgba(5, 5, 5, 0.38), rgba(5, 5, 5, 0));
+    }
+
+    #progress-container {
+      height: 2.65rem;
+      margin-bottom: -0.2rem;
+    }
+
+    #progress-container::before {
+      inset: -0.9rem 0;
+    }
+
+    #progress-container > div:first-child,
+    #progress-bar {
+      height: 2px;
+    }
+
+    .video-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.56rem;
+      align-items: start;
+    }
+
+    .video-meta-primary,
+    .video-meta-secondary {
+      align-items: flex-start;
+      min-width: 0;
+    }
+
+    .video-meta-primary > div:first-child {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+    }
+
+    #overlay-title {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      font-size: clamp(0.76rem, 3.4vw, 0.98rem);
+      line-height: 1.55;
+      letter-spacing: 0.16em;
+    }
+
+    .video-meta-secondary {
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      line-height: 1.45;
+    }
+  }
+
+  @media (max-width: 760px) and (orientation: portrait) {
+    #video-stage {
+      margin-top: 7vh;
+    }
+  }
+</style>
 
 <script>
   const canvas = document.getElementById('omni-canvas') as HTMLCanvasElement;
@@ -478,7 +606,10 @@ import '../styles/global.css';
     if (video.paused) { video.play(); playHint.style.opacity = '0'; } 
     else { video.pause(); playHint.style.opacity = '1'; }
   }
-  stage.addEventListener('click', togglePlay);
+  stage.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('#progress-container')) return;
+    togglePlay();
+  });
   
   video.addEventListener('timeupdate', () => {
     const percent = (video.currentTime / video.duration) * 100;
@@ -490,12 +621,47 @@ import '../styles/global.css';
     if(!isNaN(video.duration)) { timeDisplay.innerText = `${curMin}:${curSec} / ${durMin}:${durSec}`; }
   });
 
-  progressContainer.addEventListener('click', (e: any) => {
-    e.stopPropagation(); 
+  let isScrubbing = false;
+  let wasPlayingBeforeScrub = false;
+
+  function seekFromClientX(clientX: number) {
+    if (isNaN(video.duration) || video.duration <= 0) return;
     const rect = progressContainer.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
+    const pos = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
     video.currentTime = pos * video.duration;
+    progressBar.style.width = `${pos * 100}%`;
+  }
+
+  progressContainer.addEventListener('pointerdown', (e: PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isScrubbing = true;
+    wasPlayingBeforeScrub = !video.paused;
+    progressContainer.setPointerCapture(e.pointerId);
+    seekFromClientX(e.clientX);
+    if (wasPlayingBeforeScrub) video.pause();
   });
+
+  progressContainer.addEventListener('pointermove', (e: PointerEvent) => {
+    if (!isScrubbing) return;
+    e.preventDefault();
+    e.stopPropagation();
+    seekFromClientX(e.clientX);
+  });
+
+  function endScrub(e: PointerEvent) {
+    if (!isScrubbing) return;
+    e.preventDefault();
+    e.stopPropagation();
+    isScrubbing = false;
+    try {
+      progressContainer.releasePointerCapture(e.pointerId);
+    } catch {}
+    if (wasPlayingBeforeScrub) video.play().catch(() => {});
+  }
+
+  progressContainer.addEventListener('pointerup', endScrub);
+  progressContainer.addEventListener('pointercancel', endScrub);
 
   video.addEventListener('play', () => { playHint.style.opacity = '0'; });
   video.addEventListener('pause', () => { playHint.style.opacity = '1'; });
