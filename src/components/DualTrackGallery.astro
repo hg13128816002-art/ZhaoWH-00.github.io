@@ -107,12 +107,26 @@ import '../styles/global.css';
     { title: "风景写生", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" }
   ];
 
-projects.forEach((p: any) => {
+  projects.forEach((p: any) => {
     p.imgObj = new Image();
-    // 🚨 性能优化 1：利用阿里云 OSS 实时压缩，Canvas 只加载 800px 的缩略图！
-    // 极大减轻浏览器内存和显卡渲染压力
-    p.imgObj.src = p.src + "?x-oss-process=image/resize,w_800"; 
+    p.imgObj.decoding = 'async';
+    p.imageRequested = false;
   });
+
+  const loadProjectThumbnail = (index: number, priority: 'high' | 'low') => {
+    const project: any = projects[index];
+    if (!project || project.imageRequested) return;
+
+    project.imageRequested = true;
+    project.imgObj.fetchPriority = priority;
+
+    // Canvas 使用缩略请求；打开深度预览时仍加载项目原图。
+    project.imgObj.src = project.src + "?x-oss-process=image/resize,w_800";
+  };
+
+  // 优先覆盖初始双轨视口，其余图片仅在靠近视口时请求。
+  const initialProjectIndexes = [0, 1, 2, 3, 4, 5, projects.length - 2];
+  initialProjectIndexes.forEach((index) => loadProjectThumbnail(index, 'high'));
 
   // ================= 3. 全新双轨传送带引擎 =================
   let tracks = [
@@ -129,7 +143,7 @@ projects.forEach((p: any) => {
     projects.forEach((project: any, i: number) => {
       const col = i % 2; 
       tracks[col].cards.push({
-        col, project, hovered: false, scaleState: 0, x: 0, y: 0, w: 0, h: 0
+        col, project, projectIndex: i, hovered: false, scaleState: 0, x: 0, y: 0, w: 0, h: 0
       });
     });
   }
@@ -269,6 +283,12 @@ projects.forEach((p: any) => {
     const cY = card.y + (tY - card.y) * card.scaleState;
     const cW = card.w + (tW - card.w) * card.scaleState;
     const cH = card.h + (tH - card.h) * card.scaleState;
+
+    const isNearViewport = cY <= height * 1.5 && cY + cH >= -height * 0.5;
+    if (isNearViewport && !card.project.imageRequested) {
+      const priority = cY <= height && cY + cH >= 0 ? 'high' : 'low';
+      loadProjectThumbnail(card.projectIndex, priority);
+    }
 
     // 🚨 性能优化 2：视口剔除 (Culling)
     // 如果卡片的底部比屏幕顶部还要高，或者卡片的顶部比屏幕底部还要低

@@ -237,6 +237,7 @@ import '../styles/global.css';
     posterSrc: string;
     videoSrc: string;
     imgObj?: HTMLImageElement;
+    imageRequested?: boolean;
   };
 
   const projects: Project[] = [
@@ -289,8 +290,16 @@ import '../styles/global.css';
 
   projects.forEach((p: any) => {
     p.imgObj = new Image();
-    p.imgObj.src = p.posterSrc;
+    p.imgObj.decoding = 'async';
+    p.imageRequested = false;
   });
+
+  function loadProjectPoster(project: Project, priority: 'high' | 'low') {
+    if (!project.imgObj || project.imageRequested) return;
+    project.imageRequested = true;
+    project.imgObj.fetchPriority = priority;
+    project.imgObj.src = `${project.posterSrc}?x-oss-process=image/resize,w_1200`;
+  }
 
   let width = window.innerWidth; let height = window.innerHeight;
   let cameraX = 0; let cameraY = 0;
@@ -319,7 +328,44 @@ import '../styles/global.css';
     driveX = mouse.x - width / 2;
     driveY = mouse.y - height / 2;
   });
+  function preloadInitialPosters() {
+    const startX = Math.floor((-cameraX - width) / GRID_SIZE_X);
+    const endX = Math.ceil((-cameraX + width) / GRID_SIZE_X);
+    const startY = Math.floor((-cameraY - height) / GRID_SIZE_Y);
+    const endY = Math.ceil((-cameraY + height) / GRID_SIZE_Y);
+    const preloadMarginX = GRID_SIZE_X * 0.4;
+    const preloadMarginY = GRID_SIZE_Y * 0.4;
+    const priorities = new Map<Project, 'high' | 'low'>();
+
+    for (let ix = startX; ix <= endX; ix++) {
+      for (let iy = startY; iy <= endY; iy++) {
+        const hash = Math.abs(Math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453);
+        const project = projects[Math.floor(hash) % projects.length];
+        const posX = ix * GRID_SIZE_X + cameraX + width / 2;
+        const posY = iy * GRID_SIZE_Y + cameraY + height / 2;
+        const cardLeft = posX - cardW / 2;
+        const cardTop = posY - cardH / 2;
+        const isNearViewport = cardLeft <= width + preloadMarginX
+          && cardLeft + cardW >= -preloadMarginX
+          && cardTop <= height + preloadMarginY
+          && cardTop + cardH >= -preloadMarginY;
+        if (!isNearViewport) continue;
+
+        const isInViewport = cardLeft <= width
+          && cardLeft + cardW >= 0
+          && cardTop <= height
+          && cardTop + cardH >= 0;
+        if (isInViewport || !priorities.has(project)) {
+          priorities.set(project, isInViewport ? 'high' : 'low');
+        }
+      }
+    }
+
+    priorities.forEach((priority, project) => loadProjectPoster(project, priority));
+  }
+
   resize();
+  preloadInitialPosters();
 
   // ========================================================
   // 🌌 核心移动端硬件点火模块
@@ -417,6 +463,8 @@ import '../styles/global.css';
     const endX = Math.ceil((-cameraX + width) / GRID_SIZE_X);
     const startY = Math.floor((-cameraY - height) / GRID_SIZE_Y);
     const endY = Math.ceil((-cameraY + height) / GRID_SIZE_Y);
+    const preloadMarginX = GRID_SIZE_X * 0.4;
+    const preloadMarginY = GRID_SIZE_Y * 0.4;
 
     hoveredNodeCoord = null; 
 
@@ -431,6 +479,21 @@ import '../styles/global.css';
         const posY = iy * GRID_SIZE_Y + cameraY + height / 2;
         const cardLeft = posX - cardW/2;
         const cardTop = posY - cardH/2;
+
+        const isNearViewport = cardLeft <= width + preloadMarginX
+          && cardLeft + cardW >= -preloadMarginX
+          && cardTop <= height + preloadMarginY
+          && cardTop + cardH >= -preloadMarginY;
+        const isInViewport = cardLeft <= width
+          && cardLeft + cardW >= 0
+          && cardTop <= height
+          && cardTop + cardH >= 0;
+
+        if (isNearViewport && !project.imageRequested) {
+          loadProjectPoster(project, isInViewport ? 'high' : 'low');
+        }
+
+        if (!isInViewport) continue;
 
         const isHit = mouse.x > cardLeft && mouse.x < cardLeft + cardW && mouse.y > cardTop && mouse.y < cardTop + cardH;
         if (isHit && overlay.style.opacity !== '1') { hoveredNodeCoord = { ix, iy, project }; }

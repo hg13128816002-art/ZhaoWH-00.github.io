@@ -24,7 +24,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
   <div class="w-full md:w-[40%] border-b md:border-b-0 md:border-r border-neutral-800 p-8 md:p-12 flex flex-col justify-between shrink-0 bg-[#0a0a0a] z-20 relative overflow-hidden" style="background-color: #0a0a0a;">
     <div class="absolute inset-0 z-0 opacity-35 grayscale hover:opacity-85 hover:grayscale-0 transition-all duration-700 pointer-events-auto">
-      <img src="/main-picture.jpg" alt="Zhao Wenhao Portrait" class="w-full h-full object-cover" onerror="this.style.display='none'">
+      <img src="/main-picture.jpg" alt="Zhao Wenhao Portrait" class="w-full h-full object-cover" decoding="async" fetchpriority="high" onerror="this.style.display='none'">
     </div>
 
     <div class="relative z-10 pointer-events-none">
@@ -92,7 +92,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <div class="relative border border-neutral-800 p-2 overflow-hidden bg-[#0d0d0d] rounded-sm" style="background-color: #0d0d0d;">
           <div class="absolute inset-x-0 top-0 h-[2px] bg-[#8EDB35] z-20 opacity-0 group-hover:opacity-100 group-hover:animate-scan pointer-events-none"></div>
 
-          <img src="/second-picture.jpg" alt="Zhao Wenhao Kinetic Action" class="w-full max-h-[450px] object-cover grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.style.display='none'">
+          <img src="/second-picture.jpg" alt="Zhao Wenhao Kinetic Action" class="w-full max-h-[450px] object-cover grayscale group-hover:grayscale-0 transition-all duration-500" loading="lazy" decoding="async" onerror="this.style.display='none'">
 
           <div class="absolute bottom-4 right-4 bg-[#8EDB35] text-[#0a0a0a] text-[9px] px-2 py-1 font-black tracking-widest" style="background-color: #8EDB35; color: #050505;">
             ACTION_FREEZE

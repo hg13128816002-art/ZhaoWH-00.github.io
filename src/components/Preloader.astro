@@ -62,7 +62,14 @@
 
   // 轨道总周长参数，必须与 SVG 里的 dasharray 一致
   const CIRCUMFERENCE = 741; 
-  const isBooted = sessionStorage.getItem('vanguard_vibe_booted_v4');
+  const storageKey = 'vanguard_vibe_booted_v4';
+  let isBooted = false;
+
+  try {
+    isBooted = sessionStorage.getItem(storageKey) === 'true';
+  } catch {
+    // 受限浏览器环境下仍正常完成本次加载动画。
+  }
 
   if (isBooted) {
     preloader.style.display = 'none';
@@ -85,7 +92,11 @@
           orbit.style.opacity = '0'; // 轨道瞬间隐去
           preloader.style.opacity = '0'; // 黑幕淡出
           
-          sessionStorage.setItem('vanguard_vibe_booted_v4', 'true');
+          try {
+            sessionStorage.setItem(storageKey, 'true');
+          } catch {
+            // Storage 不可用时不影响遮罩退场。
+          }
           setTimeout(() => preloader.style.display = 'none', 800);
         }, 400); // 满载后停顿 400ms，让用户看清满圈状态
       }

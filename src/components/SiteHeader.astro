@@ -129,11 +129,13 @@ const startsVisible = !shouldHideAtTop;
       });
     });
 
+    const siteNavLinks = Array.from(document.querySelectorAll('.site-nav-link'));
+    const siteHeader = document.querySelector('.site-header');
+
     const syncSiteHeaderActiveState = () => {
-      const links = Array.from(document.querySelectorAll('.site-nav-link'));
       const activeMatch = window.location.pathname.replace(/\/$/, '') || '/';
 
-      links.forEach((link) => {
+      siteNavLinks.forEach((link) => {
         const isActive = link.dataset.navMatch === activeMatch;
         link.classList.toggle('is-active', isActive);
         if (isActive) {
@@ -147,9 +149,12 @@ const startsVisible = !shouldHideAtTop;
     let hideTimer = 0;
     const setHeaderVisibility = (header, isVisible) => {
       const nav = header.querySelector('.site-nav');
+      const nextVisibleState = isVisible ? 'true' : 'false';
+      if (header.dataset.visible === nextVisibleState) return;
+
       window.clearTimeout(hideTimer);
 
-      header.dataset.visible = isVisible ? 'true' : 'false';
+      header.dataset.visible = nextVisibleState;
       header.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
       header.style.opacity = isVisible ? '1' : '0';
       header.style.transform = isVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, calc(-100% - 0.75rem), 0)';
@@ -170,32 +175,33 @@ const startsVisible = !shouldHideAtTop;
     };
 
     const syncSiteHeaderVisibility = () => {
-      const header = document.querySelector('.site-header');
-      if (!header) return;
+      if (!siteHeader) return;
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      const isVisible = header.dataset.hideAtTop !== 'true' || scrollTop > 28;
-      setHeaderVisibility(header, isVisible);
+      const isVisible = siteHeader.dataset.hideAtTop !== 'true' || scrollTop > 28;
+      setHeaderVisibility(siteHeader, isVisible);
     };
 
     let frameId = 0;
-    const syncSiteHeader = () => {
-      if (frameId) {
-        window.cancelAnimationFrame(frameId);
-      }
+    const scheduleSiteHeaderVisibility = () => {
+      if (frameId) return;
       frameId = window.requestAnimationFrame(() => {
         frameId = 0;
-        syncSiteHeaderActiveState();
         syncSiteHeaderVisibility();
       });
     };
 
+    const syncSiteHeaderRoute = () => {
+      syncSiteHeaderActiveState();
+      scheduleSiteHeaderVisibility();
+    };
+
     syncSiteHeaderActiveState();
     syncSiteHeaderVisibility();
-    window.addEventListener('hashchange', syncSiteHeader);
-    window.addEventListener('popstate', syncSiteHeader);
-    window.addEventListener('scroll', syncSiteHeader, { passive: true });
-    window.addEventListener('resize', syncSiteHeader, { passive: true });
-    window.addEventListener('pageshow', syncSiteHeader);
+    window.addEventListener('hashchange', syncSiteHeaderRoute);
+    window.addEventListener('popstate', syncSiteHeaderRoute);
+    window.addEventListener('scroll', scheduleSiteHeaderVisibility, { passive: true });
+    window.addEventListener('resize', scheduleSiteHeaderVisibility, { passive: true });
+    window.addEventListener('pageshow', syncSiteHeaderRoute);
   })();
 </script>
 

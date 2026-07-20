@@ -8,8 +8,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 ---
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&display=swap');
-
   :root {
     --stable-app-height: 100vh;
   }
@@ -52,6 +50,7 @@ import SiteHeader from '../components/SiteHeader.astro';
   <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com">
   <script src="/scripts/font-loader.js" is:inline></script>
   <script type="importmap" is:inline>
     {
@@ -158,7 +157,7 @@ import SiteHeader from '../components/SiteHeader.astro';
               <span>2020.03 / LIFE</span>
               <strong>萌生艺术与设计的想法</strong>
               <em>第一次认真把未来和创作联系在一起。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B9%85%E7%94%B5%E5%AD%90%E7%BB%98%E7%94%BB%E4%BD%9C%E5%93%81.webp" alt="我的第一幅电子绘画作品">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B9%85%E7%94%B5%E5%AD%90%E7%BB%98%E7%94%BB%E4%BD%9C%E5%93%81.webp" alt="我的第一幅电子绘画作品" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-3" href="/profile" data-timeline-node data-x="440" data-y="460">
               <span>2021.08 / LIFE</span>
@@ -170,8 +169,8 @@ import SiteHeader from '../components/SiteHeader.astro';
               <strong>深圳市盐田高级中学美术班</strong>
               <em>初步接触设计，并完成一些早期视觉作品。</em>
               <span class="timeline-media-pair">
-                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" alt="人生是旷野，不是轨道公益海报">
-                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" alt="群体性孤独公益海报">
+                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" alt="人生是旷野，不是轨道公益海报" loading="lazy" decoding="async">
+                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" alt="群体性孤独公益海报" loading="lazy" decoding="async">
               </span>
             </a>
             <a class="timeline-node node-5" href="/profile" data-timeline-node data-x="470" data-y="820">
@@ -183,43 +182,43 @@ import SiteHeader from '../components/SiteHeader.astro';
               <span>2025.11 / WORK</span>
               <strong>纪录片《缘》</strong>
               <em>影像练习与叙事氛围的阶段性尝试。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘短片封面">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘短片封面" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-7 has-media" href="/project-detail#stare-ewsn" data-timeline-node data-x="430" data-y="1140">
               <span>2025.12 / WORK</span>
               <strong>《starE》/《任尔 EWSN 风？》</strong>
               <em>围绕网络舆论场与磁场隐喻展开的装置艺术。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-8 has-media" href="/project-detail#liminal" data-timeline-node data-x="610" data-y="1300">
               <span>2026.01 / WORK</span>
               <strong>《Liminal-临近边缘的幻想》</strong>
               <em>关于算法、虚构与真实边界的实验短片。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-9 has-media" href="/project-detail#never-extinguished" data-timeline-node data-x="470" data-y="1460">
               <span>2026.01 / WORK</span>
               <strong>VR 游戏《Never Extinguished》</strong>
               <em>以东北下岗潮为背景的 VR 严肃游戏原型。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="Never Extinguished 宣传海报">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="Never Extinguished 宣传海报" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-10 has-media" href="/project-detail#nazhou-ar" data-timeline-node data-x="620" data-y="1620">
               <span>2026.04 / WORK</span>
               <strong>AR 游戏 Demo《画意那洲·文化寻根》</strong>
               <em>把景区导览转化为带有探索循环的 AR 体验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="画意那洲 AR 导览 Demo 封面">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="画意那洲 AR 导览 Demo 封面" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-11 has-media" href="/project-detail#miao-generator" data-timeline-node data-x="450" data-y="1780">
               <span>2026.06 / WORK</span>
               <strong>交互网页《施洞苗绣纹样生成器》</strong>
               <em>以非遗纹样为素材的数字共创与交互生成实验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面" loading="lazy" decoding="async">
             </a>
             <a class="timeline-node node-12 has-media" href="/project-detail#shadow-shell" data-timeline-node data-x="585" data-y="1940">
               <span>2026.06 / WORK</span>
               <strong>建筑设计《Shadow Shell》</strong>
               <em>围绕光影、遮蔽与临时结构展开的建筑模型实验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp" alt="Shadow Shell 建筑模型">
+              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp" alt="Shadow Shell 建筑模型" loading="lazy" decoding="async">
             </a>
           </div>
         </div>
@@ -253,7 +252,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="works-stage" aria-label="首页作品预览叠层">
           <article class="works-layer is-active" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="未曾熄灭的作品海报">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="未曾熄灭的作品海报" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>VR 严肃游戏 / 2026</span>
               <h3>未曾熄灭的</h3>
@@ -263,7 +262,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="那洲村 AR 导览游戏 Demo">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="那洲村 AR 导览游戏 Demo" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>AR 导览游戏 / 2026</span>
               <h3>画意那洲·文化寻根</h3>
@@ -273,7 +272,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>交互网页 / 2026</span>
               <h3>施洞苗绣纹样生成器</h3>
@@ -283,7 +282,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>装置艺术 / 2025</span>
               <h3>starE / 任尔 EWSN 风？</h3>
@@ -293,8 +292,8 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" preload="metadata" muted playsinline></video>
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面" loading="lazy" decoding="async">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" preload="none" muted playsinline></video>
             <button class="works-play" type="button" aria-label="播放 Liminal">CLICK TO PLAY</button>
             <div class="works-layer-copy">
               <span>实验短片 / 2026</span>
@@ -305,8 +304,8 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘 短片封面">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" preload="metadata" muted playsinline></video>
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘 短片封面" loading="lazy" decoding="async">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" preload="none" muted playsinline></video>
             <button class="works-play" type="button" aria-label="播放缘">CLICK TO PLAY</button>
             <div class="works-layer-copy">
               <span>影像练习</span>
@@ -317,7 +316,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="photo" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E5%90%88%E6%88%90%E7%9A%84%E6%B2%89%E9%BB%98%E3%80%8B%20%28Synthetic%20Silence%29.webp" alt="《合成的沉默》摄影作品">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E5%90%88%E6%88%90%E7%9A%84%E6%B2%89%E9%BB%98%E3%80%8B%20%28Synthetic%20Silence%29.webp" alt="《合成的沉默》摄影作品" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>摄影作品</span>
               <h3 class="works-title-split">
@@ -330,7 +329,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" alt="自画像">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" alt="自画像" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>图像档案</span>
               <h3>自画像</h3>
@@ -340,7 +339,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" alt="风景写生">
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" alt="风景写生" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>图像档案</span>
               <h3>风景写生</h3>
@@ -350,8 +349,8 @@ import SiteHeader from '../components/SiteHeader.astro';
           </article>
 
           <article class="works-layer is-video" data-work-card data-work-category="other" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png" alt="清迈良园土地庙微改造封面">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" preload="metadata" muted playsinline></video>
+            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png" alt="清迈良园土地庙微改造封面" loading="lazy" decoding="async">
+            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" preload="none" muted playsinline></video>
             <button class="works-play" type="button" aria-label="播放清迈良园土地庙微改造">CLICK TO PLAY</button>
             <div class="works-layer-copy">
               <span>空间改造记录</span>
@@ -472,6 +471,10 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     const baseChars = ['设', '计', '思', '维', '先', '锋', '0', '1', '+', '#', '×', '•'];
     const particles: OmniParticle[] = [];
+    const homeHero = document.getElementById('home-hero');
+    let universeFrameId = 0;
+    let isUniverseReady = false;
+    let isUniverseVisible = true;
     
     // ！！！极其核心修复：精准映射手绘图的三体布局与大小节奏 ！！！
     const planets = [
@@ -520,6 +523,9 @@ import SiteHeader from '../components/SiteHeader.astro';
     let cursorSpinAngle = 0;
 
     function renderUniverse() {
+      universeFrameId = 0;
+      if (!isUniverseReady || !isUniverseVisible || document.hidden) return;
+
       if (mobileMotionQuery.matches) {
         ctx.clearRect(0, 0, width, height);
         canvas.style.visibility = 'hidden';
@@ -626,19 +632,44 @@ import SiteHeader from '../components/SiteHeader.astro';
         ctx.restore();
       });
 
-      requestAnimationFrame(renderUniverse);
+      universeFrameId = requestAnimationFrame(renderUniverse);
     }
 
-    function startUniverse() {
-      if (mobileMotionQuery.matches) {
-        canvas.style.visibility = 'hidden';
-        ctx.clearRect(0, 0, width, height);
+    function syncUniversePlayback() {
+      const shouldRender = isUniverseReady && isUniverseVisible && !document.hidden && !mobileMotionQuery.matches;
+
+      if (!shouldRender) {
+        if (universeFrameId) {
+          cancelAnimationFrame(universeFrameId);
+          universeFrameId = 0;
+        }
+
+        if (mobileMotionQuery.matches) {
+          canvas.style.visibility = 'hidden';
+          ctx.clearRect(0, 0, width, height);
+        }
         return;
       }
 
       canvas.style.visibility = 'visible';
-      renderUniverse();
+      if (!universeFrameId) universeFrameId = requestAnimationFrame(renderUniverse);
     }
+
+    function startUniverse() {
+      isUniverseReady = true;
+      syncUniversePlayback();
+    }
+
+    if (homeHero) {
+      const heroVisibilityObserver = new IntersectionObserver(([entry]) => {
+        isUniverseVisible = Boolean(entry?.isIntersecting);
+        syncUniversePlayback();
+      });
+      heroVisibilityObserver.observe(homeHero);
+    }
+
+    document.addEventListener('visibilitychange', syncUniversePlayback);
+    mobileMotionQuery.addEventListener('change', syncUniversePlayback);
 
     // 等待字体加载完毕再开始渲染
     if (window.fontsReadyPromise) {
@@ -665,7 +696,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     let targetTimelineProgress = 0;
     let visualTimelineProgress = 0;
     let timelineVelocity = 0;
-    let lastTimelineScrollY = -1;
     let lockedTimelineStopIndex = -1;
     let lockedTimelineDirection = 0;
     let isTimelineLockReady = false;
@@ -1275,26 +1305,6 @@ import SiteHeader from '../components/SiteHeader.astro';
       requestTimelineScrollSync();
     }
 
-    function monitorTimelineScroll() {
-      if (!chronologySection) {
-        window.requestAnimationFrame(monitorTimelineScroll);
-        return;
-      }
-
-      if (!isNearInteractiveSection(chronologySection)) {
-        lastTimelineScrollY = window.scrollY;
-        stopTimelineMotion();
-        window.requestAnimationFrame(monitorTimelineScroll);
-        return;
-      }
-
-      if (window.scrollY !== lastTimelineScrollY) {
-        lastTimelineScrollY = window.scrollY;
-        syncTimelineToScroll();
-      }
-      window.requestAnimationFrame(monitorTimelineScroll);
-    }
-
     const worksSection = document.querySelector('.works-section') as HTMLElement | null;
     const worksPin = document.querySelector('.works-pin') as HTMLElement | null;
     const worksStage = document.querySelector('.works-stage') as HTMLElement | null;
@@ -1307,7 +1317,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     let visualWorkProgress = 0;
     let targetWorkProgress = 0;
     let worksScrollRaf: number | undefined;
-    let lastWorksScrollY = -1;
+    const pendingWorksVideoReveals = new WeakMap<HTMLVideoElement, EventListener>();
 
     function isMobileWorksLayout() {
       return isMobileHomeFallback();
@@ -1331,16 +1341,26 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
     }
 
+    function restoreWorksVideoPoster(card: HTMLElement, video: HTMLVideoElement) {
+      const pendingReveal = pendingWorksVideoReveals.get(video);
+      if (pendingReveal) {
+        video.removeEventListener('playing', pendingReveal);
+        pendingWorksVideoReveals.delete(video);
+      }
+      const image = card.querySelector('img') as HTMLImageElement | null;
+      delete card.dataset.videoLoading;
+      video.style.removeProperty('opacity');
+      image?.style.removeProperty('opacity');
+      card.classList.remove('is-playing');
+    }
+
     function stopWorksVideos(except?: HTMLElement) {
       worksCards.forEach((card) => {
         if (card === except) return;
         const video = card.querySelector('video') as HTMLVideoElement | null;
         if (!video) return;
-        const image = card.querySelector('img') as HTMLImageElement | null;
         video.pause();
-        video.style.removeProperty('opacity');
-        image?.style.removeProperty('opacity');
-        card.classList.remove('is-playing');
+        restoreWorksVideoPoster(card, video);
       });
     }
 
@@ -1487,20 +1507,6 @@ import SiteHeader from '../components/SiteHeader.astro';
       requestWorksScrollSync();
     }
 
-    function monitorWorksScroll() {
-      if (worksSection && !isNearInteractiveSection(worksSection)) {
-        lastWorksScrollY = window.scrollY;
-        window.requestAnimationFrame(monitorWorksScroll);
-        return;
-      }
-
-      if (window.scrollY !== lastWorksScrollY) {
-        lastWorksScrollY = window.scrollY;
-        syncWorksStackToScroll();
-      }
-      window.requestAnimationFrame(monitorWorksScroll);
-    }
-
     function scrollToWorkIndex(index: number) {
       if (!worksSection || !worksCards.length) return;
       const targetIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
@@ -1520,6 +1526,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       if (!card.classList.contains('is-active') || card.dataset.workKind !== 'video') return;
       const video = card.querySelector('video') as HTMLVideoElement | null;
       if (!video) return;
+      if (card.dataset.videoLoading === 'true') return;
       stopWorksVideos(card);
       video.controls = true;
       if (video.paused) {
@@ -1528,21 +1535,28 @@ import SiteHeader from '../components/SiteHeader.astro';
         video.removeAttribute('muted');
         video.volume = Math.max(video.volume || 0, 0.85);
         const image = card.querySelector('img') as HTMLImageElement | null;
-        video.style.setProperty('opacity', '1', 'important');
-        image?.style.setProperty('opacity', '0', 'important');
-        card.classList.add('is-playing');
-        video.play().then(() => {
+        card.dataset.videoLoading = 'true';
+
+        const revealVideo: EventListener = () => {
+          pendingWorksVideoReveals.delete(video);
+          delete card.dataset.videoLoading;
+          if (video.paused || !card.classList.contains('is-active')) return;
+          video.style.setProperty('opacity', '1', 'important');
+          image?.style.setProperty('opacity', '0', 'important');
           card.classList.add('is-playing');
-        }).catch((error) => {
+        };
+        pendingWorksVideoReveals.set(video, revealVideo);
+        video.addEventListener('playing', revealVideo, { once: true });
+
+        video.play().catch((error) => {
+          // 旧一轮 play() 的异步失败不得打断同一卡片上已经开始的新一轮播放。
+          if (pendingWorksVideoReveals.get(video) !== revealVideo) return;
           card.dataset.videoError = error?.name || 'play-failed';
-          card.classList.remove('is-playing');
+          restoreWorksVideoPoster(card, video);
         });
       } else {
         video.pause();
-        const image = card.querySelector('img') as HTMLImageElement | null;
-        video.style.removeProperty('opacity');
-        image?.style.removeProperty('opacity');
-        card.classList.remove('is-playing');
+        restoreWorksVideoPoster(card, video);
       }
     }
 
@@ -1580,11 +1594,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       } else {
         const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
         setTimelineTarget(mapTimelineScrollProgress(initialTimelineRaw), true);
-        monitorTimelineScroll();
         window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
         window.addEventListener('wheel', handleTimelineWheel, { passive: false });
       }
-      window.addEventListener('resize', handleInteractiveResize);
     }
 
     if (worksCards.length) {
@@ -1593,11 +1605,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       updateWorksStack();
       if (!isMobileWorksLayout()) {
         syncWorksStackToScroll();
-        monitorWorksScroll();
         window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
         window.addEventListener('wheel', handleWorksWheel, { passive: false });
       }
-      window.addEventListener('resize', handleInteractiveResize);
 
       worksCategories.forEach((button) => {
         button.addEventListener('click', () => {
@@ -1648,6 +1658,10 @@ import SiteHeader from '../components/SiteHeader.astro';
       }, { passive: true });
     }
 
+    if (chronologySection || worksCards.length) {
+      window.addEventListener('resize', handleInteractiveResize);
+    }
+
   </script>
 
   <script type="module" is:inline>
@@ -1655,11 +1669,18 @@ import SiteHeader from '../components/SiteHeader.astro';
     const profileModelCanvas = document.getElementById('profile-model-canvas');
 
     if (profileModelPanel && profileModelCanvas && !window.matchMedia('(max-width: 899px)').matches) {
-      const THREE = await import('three');
-      const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
-      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      let modelLoadStarted = false;
 
-      const scene = new THREE.Scene();
+      const initProfileModel = async () => {
+        if (modelLoadStarted) return;
+        modelLoadStarted = true;
+
+        try {
+          const THREE = await import('three');
+          const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+          const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+
+          const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
       camera.position.set(3.6, 2.2, 5.4);
 
@@ -1771,7 +1792,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
           scene.add(modelRoot);
           profileModelCanvas.dataset.modelReady = 'true';
-          startProfileModel();
+          if (isVisible) startProfileModel();
         },
         undefined,
         () => {
@@ -1790,7 +1811,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       observer.observe(profileModelPanel);
       window.addEventListener('resize', resizeProfileModel);
-      resizeProfileModel();
+          resizeProfileModel();
+        } catch {
+          profileModelCanvas.dataset.modelReady = 'error';
+        }
+      };
+
+      const modelLoadObserver = new IntersectionObserver(([entry]) => {
+        if (!entry?.isIntersecting) return;
+        modelLoadObserver.disconnect();
+        void initProfileModel();
+      }, { rootMargin: '1200px 0px' });
+
+      modelLoadObserver.observe(profileModelPanel);
     }
   </script>
 

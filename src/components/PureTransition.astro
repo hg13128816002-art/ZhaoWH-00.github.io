@@ -32,9 +32,28 @@
   const slices = document.querySelectorAll('.slice');
   const logo = document.getElementById('transition-logo');
   let isTransitioning = false;
+  const warmedRoutes = new Set<string>();
 
-  // 1. 【进场动效】：新页面骨架挂载完毕，阵列带错落感向上顺滑开启
-  window.addEventListener('pageshow', () => {
+  const warmRoute = (targetUrl: string) => {
+    try {
+      const url = new URL(targetUrl, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      url.hash = '';
+      const href = url.href;
+      if (warmedRoutes.has(href)) return;
+      warmedRoutes.add(href);
+
+      const prefetchLink = document.createElement('link');
+      prefetchLink.rel = 'prefetch';
+      prefetchLink.href = href;
+      document.head.appendChild(prefetchLink);
+    } catch {
+      // 无效 URL 交给浏览器原生导航处理。
+    }
+  };
+
+  // 1. 【进场动效】：页面骨架挂载完毕后立即开启，不等待图片/视频等重资源。
+  const revealPage = () => {
     requestAnimationFrame(() => {
       slices.forEach((slice: any) => {
         slice.style.transform = 'translateY(-100%)';
@@ -43,12 +62,26 @@
       if (gate) gate.style.pointerEvents = 'none';
       isTransitioning = false;
     });
+  };
+
+  // 页面本身仍由本地字体门控可见性；只等待字体，不再被图片、视频等资源拖住。
+  const fontsReady = window.fontsReadyPromise;
+  if (fontsReady) {
+    fontsReady.then(revealPage, revealPage);
+  } else {
+    revealPage();
+  }
+
+  // 从浏览器的前进/后退缓存恢复时，脚本不会重新执行，需要重新打开遮罩。
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) revealPage();
   });
 
   // 2. 【退场动效】：接收全局跃迁指令，阵列从天而降
   (window as any).triggerPureTransition = function(targetUrl: string) {
     if (isTransitioning) return;
     isTransitioning = true;
+    warmRoute(targetUrl);
     if (gate) gate.style.pointerEvents = 'auto';
 
     // 强行移除之前向上抽离的形变，使其恢复至 translateY(0)，即顺滑降下覆盖全屏
