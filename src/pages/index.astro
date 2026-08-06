@@ -136,6 +136,11 @@ import SiteHeader from '../components/SiteHeader.astro';
         <div class="chronology-map" aria-label="创作编年时间轴">
           <div class="chronology-world" data-timeline-world>
             <svg class="chronology-svg" viewBox="0 0 1000 2140" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <clipPath id="timeline-live-clip" clipPathUnits="userSpaceOnUse">
+                  <rect data-timeline-live-clip x="-100" y="-100" width="1200" height="100" />
+                </clipPath>
+              </defs>
               <path
                 class="chronology-path is-ghost"
                 d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
@@ -143,6 +148,7 @@ import SiteHeader from '../components/SiteHeader.astro';
               <path
                 class="chronology-path is-live"
                 data-timeline-path
+                clip-path="url(#timeline-live-clip)"
                 d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
               />
             </svg>
@@ -698,6 +704,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     const timelineWorld = document.querySelector('[data-timeline-world]') as HTMLElement | null;
     const timelinePath = document.querySelector('[data-timeline-path]') as SVGPathElement | null;
     const timelineGhostPath = document.querySelector('.chronology-path.is-ghost') as SVGPathElement | null;
+    const timelineLiveClip = document.querySelector('[data-timeline-live-clip]') as SVGRectElement | null;
     const timelineHead = document.querySelector('[data-timeline-head]') as HTMLElement | null;
     const timelineNodes = Array.from(document.querySelectorAll('[data-timeline-node]')) as HTMLElement[];
     const timelineCurrent = document.querySelector('[data-timeline-current]') as HTMLElement | null;
@@ -1186,8 +1193,10 @@ import SiteHeader from '../components/SiteHeader.astro';
         timelineHead.style.top = `${headPoint.y}px`;
       }
 
-      timelinePath.style.strokeDasharray = `${pathLength}`;
-      timelinePath.style.strokeDashoffset = `${pathLength * (1 - progress)}`;
+      // Clip in the same SVG coordinate system as the moving head. This keeps the
+      // highlighted line aligned across camera zoom and high-DPI displays, where
+      // non-scaling-stroke dash lengths otherwise drift from path geometry.
+      timelineLiveClip?.setAttribute('height', String(Math.max(0, headPoint.y + 100)));
 
       timelineNodes.forEach((node) => {
         const threshold = Number(node.dataset.threshold || 0);
@@ -2082,8 +2091,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     .chronology-path.is-live {
       filter: drop-shadow(0 0 12px rgba(142, 219, 53, 0.66));
       stroke: #8EDB35;
-      stroke-dasharray: 0;
-      stroke-dashoffset: 0;
       stroke-width: 6;
       transition: none;
     }
