@@ -10,7 +10,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARCHIVE // NEVER_EXTINGUISHED</title>
+  <title>PROJECTS // ZHAO WENHAO</title>
   <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
@@ -204,6 +204,32 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .project-entry-never .thumb-item {
       aspect-ratio: 16 / 10;
+    }
+
+    .project-entry-synesthesia .thumb-item img {
+      filter: grayscale(0.18);
+      transform: scale(1.82);
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(1) img {
+      transform-origin: 8% 36%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(2) img {
+      transform-origin: 48% 43%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(3) img {
+      transform-origin: 92% 40%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(4) img {
+      transform-origin: 55% 92%;
+    }
+
+    .project-entry-synesthesia .thumb-item:hover img {
+      filter: grayscale(0);
+      transform: scale(1.94);
     }
 
     .thumb-item img {
@@ -526,6 +552,118 @@ import SiteHeader from '../components/SiteHeader.astro';
   <div class="grid-bg"></div>
 
   <main class="project-stack site-header-room">
+    <article id="synesthesia-canvas" class="project-entry project-entry-synesthesia">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // INTERACTIVE_CANVAS</div>
+
+        <div class="img-container">
+          <div class="corner-tl"></div>
+          <div class="corner-br"></div>
+
+          <img src="/synesthesia-canvas-cover.svg"
+               alt="通感画布互动音乐创作界面"
+               loading="eager" decoding="async" data-hover-preview
+               data-preview-label="INTERACTIVE_CANVAS // PRIMARY"
+               class="main-img" />
+        </div>
+
+        <div class="visual-caption">DRAW SOUND / HEAR COLOR // REAL-TIME GENERATIVE INTERFACE</div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">CREATIVE CODING</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">INTERACTIVE WEB INSTRUMENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">COLOR / RHYTHM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">BROWSER</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="声音画笔局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="SOUND_BRUSHES // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="绘图声音画布局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="DRAWING_CANVAS // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="声音参数映射局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="SOUND_MAPPING // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="作品播放控制局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="PLAYBACK_CONTROL // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+        <div class="archive-rail">
+          <div class="archive-rail-line"></div>
+          <div class="archive-rail-text">
+            <span>ARCHIVE_NODE</span>
+            <span>001 / ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <header style="margin-bottom: 3rem;">
+          <div class="file-label">
+            <div class="pulse-dot"></div>
+            FILE_DECRYPTED // 001
+          </div>
+          <h1 class="title-main">通感画布</h1>
+          <h2 class="title-sub">SYNESTHESIA CANVAS</h2>
+          <a class="project-video-link" href="https://synesthesia.zhaowenhao.design" target="_blank" rel="noopener noreferrer">OPEN INTERACTIVE PAGE</a>
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">TIMESTAMP</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">CATEGORY</div>
+            <div class="meta-item-value green">Creative Coding / Digital Art</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">TOOLS</div>
+            <div class="meta-item-value">Next.js / Web Audio API / Canvas / TypeScript</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
+            <p class="section-text">
+              《通感画布》是一件把图形实时翻译成音乐的浏览器乐器。用户可以像绘画一样放置颜色、形状和轨迹，并直接听见它们形成的旋律、和声与节奏。作品内置 13 种声音、13 组音阶与无限延展时间轴，也支持变奏、工程分享和 WAV 导出，让一次即兴绘制成为可以继续编辑、传播与保存的音乐作品。
+            </p>
+          </div>
+
+          <div class="section">
+            <h3 class="section-title">II. INTERACTION MAPPING</h3>
+            <p class="section-text">
+              画布把视觉参数与声音参数建立一一对应：横向位置决定时间与声像，纵向位置决定音高，形状宽度决定持续时间，大小决定力度，不同颜色与画笔则对应不同音色。所有合成与播放都在浏览器本地完成，使观众无需音乐制作经验，也能通过直观的视觉动作组织一段属于自己的声音。
+            </p>
+          </div>
+        </section>
+
+        <div class="footer">
+          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
+        </div>
+      </div>
+    </article>
+
     <article id="never-extinguished" class="project-entry project-entry-never">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
@@ -585,7 +723,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>001 / ACTIVE</span>
+            <span>002 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -594,7 +732,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 001
+             FILE_DECRYPTED // 002
           </div>
           <h1 class="title-main">
             未曾熄灭的
@@ -702,7 +840,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>002 / ACTIVE</span>
+            <span>003 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -711,7 +849,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 002
+             FILE_DECRYPTED // 003
           </div>
           <h1 class="title-main">
             Liminal
@@ -812,7 +950,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>003 / ACTIVE</span>
+            <span>004 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -821,7 +959,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 003
+             FILE_DECRYPTED // 004
           </div>
           <h1 class="title-main">
             starE
@@ -923,7 +1061,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>004 / ACTIVE</span>
+            <span>005 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -932,7 +1070,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 004
+             FILE_DECRYPTED // 005
           </div>
           <h1 class="title-main">
             画意那洲·文化寻根
@@ -1034,7 +1172,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>005 / ACTIVE</span>
+            <span>006 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -1043,7 +1181,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 005
+             FILE_DECRYPTED // 006
           </div>
           <h1 class="title-main">
             施洞苗绣
@@ -1085,7 +1223,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       </div>
     </article>
 
-     <article id="shadow-shell" class="project-entry project-entry- shadow shell">
+     <article id="shadow-shell" class="project-entry project-entry-shadow-shell">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
 
@@ -1144,7 +1282,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
             <span>ARCHIVE_NODE</span>
-            <span>006 / ACTIVE</span>
+            <span>007 / ACTIVE</span>
           </div>
         </div>
       </div>
@@ -1153,7 +1291,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 006
+             FILE_DECRYPTED // 007
           </div>
           <h1 class="title-main">
             影 · 壳 
