@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Synesthesia Canvas 通感画布</title>
+  <desc id="desc">由彩色声音形状、时间网格和音轨组成的互动音乐画布视觉预览</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050505"/>
+      <stop offset="0.6" stop-color="#0a0d08"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#8edb35"/>
+      <stop offset="1" stop-color="#d8ff76"/>
+    </linearGradient>
+    <linearGradient id="control-shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#050505" stop-opacity=".98"/>
+      <stop offset=".62" stop-color="#050505" stop-opacity=".82"/>
+      <stop offset="1" stop-color="#050505" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#8edb35" stroke-opacity=".1" stroke-width="1"/>
+    </pattern>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="32" y="32" width="1536" height="836" rx="28" fill="none" stroke="#8edb35" stroke-opacity=".35"/>
+  <rect x="70" y="178" width="1460" height="582" rx="24" fill="#080b08" stroke="#ffffff" stroke-opacity=".12"/>
+  <rect x="292" y="216" width="1000" height="500" rx="18" fill="url(#grid)" stroke="#ffffff" stroke-opacity=".08"/>
+
+  <circle cx="1190" cy="170" r="210" fill="#8edb35" opacity=".08" filter="url(#soft)"/>
+  <circle cx="600" cy="720" r="180" fill="#00efff" opacity=".05" filter="url(#soft)"/>
+
+  <text x="1050" y="116" fill="#8edb35" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700" letter-spacing="5">DRAW SOUND / HEAR COLOR</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <text x="96" y="238" fill="#f5f5f5" fill-opacity=".5" font-size="13" letter-spacing="2">SOUND BRUSHES</text>
+    <g transform="translate(96 270)">
+      <rect width="164" height="54" rx="12" fill="#101510" stroke="#8edb35" stroke-opacity=".52"/>
+      <circle cx="28" cy="27" r="10" fill="#ffbf19"/>
+      <text x="50" y="23" fill="#f5f5f5" font-size="14">NEON BRASS</text>
+      <text x="50" y="40" fill="#f5f5f5" fill-opacity=".42" font-size="10">BRIGHT / PUNCHY</text>
+    </g>
+    <g transform="translate(96 336)">
+      <rect width="164" height="54" rx="12" fill="#101510" stroke="#ffffff" stroke-opacity=".1"/>
+      <circle cx="28" cy="27" r="10" fill="#22a7ff"/>
+      <text x="50" y="23" fill="#f5f5f5" font-size="14">PIXEL ORGAN</text>
+      <text x="50" y="40" fill="#f5f5f5" fill-opacity=".42" font-size="10">ROUND / GRAINY</text>
+    </g>
+    <g transform="translate(96 402)">
+      <rect width="164" height="54" rx="12" fill="#101510" stroke="#ffffff" stroke-opacity=".1"/>
+      <circle cx="28" cy="27" r="10" fill="#ff4f9a"/>
+      <text x="50" y="23" fill="#f5f5f5" font-size="14">GLASS KEYS</text>
+      <text x="50" y="40" fill="#f5f5f5" fill-opacity=".42" font-size="10">LIGHT / SPARKLE</text>
+    </g>
+    <g transform="translate(96 468)">
+      <rect width="164" height="54" rx="12" fill="#101510" stroke="#ffffff" stroke-opacity=".1"/>
+      <circle cx="28" cy="27" r="10" fill="#8a68ff"/>
+      <text x="50" y="23" fill="#f5f5f5" font-size="14">SAKURA STR.</text>
+      <text x="50" y="40" fill="#f5f5f5" fill-opacity=".42" font-size="10">SOFT / LONG</text>
+    </g>
+    <text x="96" y="570" fill="#f5f5f5" fill-opacity=".5" font-size="13" letter-spacing="2">TOOLS</text>
+    <g transform="translate(96 594)" fill="none" stroke="#8edb35" stroke-opacity=".8">
+      <rect width="36" height="36" rx="10" fill="#8edb35" fill-opacity=".12"/>
+      <rect x="46" width="36" height="36" rx="10"/>
+      <rect x="92" width="36" height="36" rx="10"/>
+      <rect x="138" width="36" height="36" rx="10"/>
+    </g>
+  </g>
+
+  <g opacity=".34" stroke="#ffffff">
+    <path d="M292 316H1292M292 416H1292M292 516H1292M292 616H1292"/>
+    <path d="M492 216V716M692 216V716M892 216V716M1092 216V716"/>
+  </g>
+  <path d="M542 216V716" stroke="#8edb35" stroke-width="3" stroke-opacity=".75" filter="url(#glow)"/>
+
+  <g filter="url(#glow)">
+    <path d="M372 560l38-62 38 62z" fill="#ffbf19"/>
+    <circle cx="508" cy="410" r="31" fill="none" stroke="#22a7ff" stroke-width="12"/>
+    <path d="M615 350l34 34-34 34-34-34z" fill="#ff4f9a"/>
+    <path d="M714 520c34-58 66 58 100 0s66 58 100 0" fill="none" stroke="#8a68ff" stroke-width="14" stroke-linecap="round"/>
+    <rect x="850" y="290" width="112" height="46" rx="23" fill="#8edb35"/>
+    <path d="M1000 468l28-58 25 28 42-65 26 95z" fill="#ff7338"/>
+    <path d="M1135 580l34-42 34 42-34 42z" fill="#00efff"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#f5f5f5" fill-opacity=".42">
+    <text x="306" y="242">HIGH</text>
+    <text x="306" y="456">MID</text>
+    <text x="306" y="702">LOW</text>
+    <text x="306" y="742">TIME →</text>
+  </g>
+
+  <g transform="translate(1322 216)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <text x="0" y="22" fill="#f5f5f5" fill-opacity=".5" font-size="13" letter-spacing="2">MAPPING</text>
+    <text x="0" y="72" fill="#8edb35" font-size="12">X POSITION</text>
+    <text x="0" y="92" fill="#f5f5f5" fill-opacity=".72" font-size="15">TIME / PAN</text>
+    <text x="0" y="144" fill="#8edb35" font-size="12">Y POSITION</text>
+    <text x="0" y="164" fill="#f5f5f5" fill-opacity=".72" font-size="15">PITCH</text>
+    <text x="0" y="216" fill="#8edb35" font-size="12">SHAPE SIZE</text>
+    <text x="0" y="236" fill="#f5f5f5" fill-opacity=".72" font-size="15">VELOCITY</text>
+    <text x="0" y="288" fill="#8edb35" font-size="12">WIDTH</text>
+    <text x="0" y="308" fill="#f5f5f5" fill-opacity=".72" font-size="15">DURATION</text>
+  </g>
+
+  <rect x="0" y="0" width="560" height="770" fill="url(#control-shade)"/>
+
+  <g transform="translate(70 790)">
+    <rect width="1460" height="70" rx="18" fill="#0c100c" stroke="#ffffff" stroke-opacity=".1"/>
+    <circle cx="48" cy="35" r="20" fill="url(#lime)"/>
+    <path d="M42 25l16 10-16 10z" fill="#050505"/>
+    <text x="86" y="31" fill="#f5f5f5" font-family="Arial, 'Noto Sans SC', sans-serif" font-size="16" font-weight="700">PLAY YOUR DRAWING</text>
+    <text x="86" y="51" fill="#f5f5f5" fill-opacity=".42" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">132 BPM · E HIRAJOSHI · 1/16</text>
+    <text x="1250" y="42" fill="#8edb35" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="2">DRAW → LISTEN</text>
+  </g>
+
+  <text x="1260" y="102" fill="#f5f5f5" fill-opacity=".24" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" letter-spacing="3">ZHAO WENHAO / WORK 11</text>
+</svg>

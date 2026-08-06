@@ -246,12 +246,25 @@ import SiteHeader from '../components/SiteHeader.astro';
           <div class="works-progress" aria-live="polite">
             <span data-work-current>01</span>
             <i></i>
-            <span data-work-total>10</span>
+            <span data-work-total>11</span>
           </div>
         </div>
 
         <div class="works-stage" aria-label="首页作品预览叠层">
           <article class="works-layer is-active" data-work-card data-work-category="digital" data-work-kind="image">
+            <img src="/synesthesia-canvas-cover.svg" alt="通感画布互动音乐创作界面预览" loading="eager" decoding="async">
+            <div class="works-layer-copy">
+              <span>互动音乐网页 / 2026</span>
+              <h3 class="works-title-split">
+                <span class="works-title-cn">通感画布</span>
+                <span class="works-title-en">Synesthesia Canvas</span>
+              </h3>
+              <p>把颜色、形状与位置实时翻译成音乐的浏览器乐器：在无限画布上绘制声音，编排节奏，并分享或导出自己的作品。</p>
+              <a href="https://synesthesia.zhaowenhao.design" target="_blank" rel="noopener noreferrer" aria-label="打开通感画布互动页面（新窗口）">打开互动页面 ↗</a>
+            </div>
+          </article>
+
+          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
             <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="未曾熄灭的作品海报" loading="lazy" decoding="async">
             <div class="works-layer-copy">
               <span>VR 严肃游戏 / 2026</span>
@@ -2315,7 +2328,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-section {
-      --works-count: 10;
+      --works-count: 11;
       --works-intro-hold: 125vh;
       --works-step-scroll: 96vh;
       --work-step-progress: 0;
