@@ -1287,7 +1287,69 @@ import { workCategories, works } from '../data/works';
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.05;
+      // 曝光由下面的 applyLightingTheme() 按主题统一设置（深色 1.0 / 浅色 1.02）
+
+      // 模型自身没有材质定义（GLTFLoader 补的是 metalness 1 / roughness 1 的纯白材质），
+      // 没有环境贴图时金属度只会吃掉漫反射，整只着陆器就是一团发白的平面。
+      // 这里自制一张「影棚」等距柱状贴图：左上柔光箱、右上冷光带、地面反弹光、四周压暗。
+      // 金属切面正是靠反射这些明暗块才分得出层次，均匀的室内环境只会把它照平。
+      function makeStudioEnvTexture(size = 1024) {
+        const width = size;
+        const height = size / 2;
+        const surface = document.createElement('canvas');
+        surface.width = width;
+        surface.height = height;
+        const paint = surface.getContext('2d');
+
+        const background = paint.createLinearGradient(0, 0, 0, height);
+        background.addColorStop(0, '#16202f');
+        background.addColorStop(0.5, '#080e18');
+        background.addColorStop(1, '#03060b');
+        paint.fillStyle = background;
+        paint.fillRect(0, 0, width, height);
+
+        // 等距柱状贴图的上边缘是天顶、下边缘是天底，横向为方位角，画上的软光斑就是空中的柔光箱
+        function softbox(cx, cy, rx, ry, color, alpha) {
+          paint.save();
+          paint.globalAlpha = alpha;
+          paint.translate(cx * width, cy * height);
+          paint.scale(rx * width, ry * height);
+          const glow = paint.createRadialGradient(0, 0, 0, 0, 0, 1);
+          glow.addColorStop(0, color);
+          glow.addColorStop(0.5, color);
+          glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          paint.fillStyle = glow;
+          paint.beginPath();
+          paint.arc(0, 0, 1, 0, Math.PI * 2);
+          paint.fill();
+          paint.restore();
+        }
+
+        softbox(0.24, 0.2, 0.16, 0.28, '#ffffff', 1); // 主柔光箱
+        softbox(0.62, 0.26, 0.12, 0.2, '#cfe8ff', 0.85); // 冷色反光板
+        softbox(0.9, 0.42, 0.08, 0.14, '#ffd9a8', 0.45); // 一点暖色，免得整机全是冷调
+        softbox(0.36, 0.92, 0.24, 0.16, '#41566f', 0.55); // 地面反弹，托住下半身
+        softbox(0.02, 0.98, 0.3, 0.22, '#2b3d52', 0.5);
+
+        const texture = new THREE.CanvasTexture(surface);
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const generator = new THREE.PMREMGenerator(renderer);
+        const envMap = generator.fromEquirectangular(texture).texture;
+        texture.dispose();
+        generator.dispose();
+        return envMap;
+      }
+
+      scene.environment = makeStudioEnvTexture();
+
+      // 浅色底比深色底要反射得更亮才不会发灰，两套主题各给一组光比
+      const themeLighting = {
+        dark: { exposure: 1.0, envIntensity: 1.5, hemisphere: 0.16, glowOpacity: 0.42 },
+        light: { exposure: 1.02, envIntensity: 1.6, hemisphere: 0.2, glowOpacity: 0.16 },
+      };
+      const modelMaterials = [];
+      let glowBaseOpacity = themeLighting.dark.glowOpacity;
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -1298,26 +1360,125 @@ import { workCategories, works } from '../data/works';
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.72;
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-      keyLight.position.set(3.5, 4.2, 4.5);
+      // 主光：右前上方，负责切面之间的明暗分层（环境贴图已经很亮，直射光压到 1.5 量级即可）
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      keyLight.position.set(3.6, 3.5, 4.8);
       scene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0xacdbfb, 1.55);
-      rimLight.position.set(-3.6, 2.6, -2.4);
+      // 冷边光：左后方，勾出蓝色轮廓
+      const rimLight = new THREE.DirectionalLight(0xacdbfb, 1.25);
+      rimLight.position.set(-4.3, 1.7, -3.4);
       scene.add(rimLight);
 
-      const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x080808, 1.15);
+      // 反向轮廓光：与边光对侧，保证模型自转到任意角度都还有一条亮边
+      const counterRim = new THREE.DirectionalLight(0x8fc8f4, 0.75);
+      counterRim.position.set(4.4, 1.1, -3.7);
+      scene.add(counterRim);
+
+      // 底部反弹光：托住着陆支架与底面，避免下半身糊成一片黑
+      const bounceLight = new THREE.DirectionalLight(0xdbeaf8, 0.45);
+      bounceLight.position.set(-0.9, -3.2, 2.6);
+      scene.add(bounceLight);
+
+      // 镜头侧点光：在金属切面上打出一颗会跟着旋转移动的小高光
+      const glintLight = new THREE.PointLight(0xffffff, 5, 16, 2);
+      glintLight.position.set(2.3, 1.3, 3.9);
+      scene.add(glintLight);
+
+      // 环境补光：压得比原来低，把明暗对比让给主光与边光
+      const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x060a10, 0.16);
       scene.add(fillLight);
 
-      const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x152633);
+      const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x1d3a4d);
       grid.position.y = -1.35;
       grid.material.transparent = true;
-      grid.material.opacity = 0.2;
+      grid.material.opacity = 0.26;
       scene.add(grid);
+
+      // 径向渐变贴图：辉光与接触阴影都用它，省掉后处理管线
+      function makeRadialTexture(stops) {
+        const size = 256;
+        const surface = document.createElement('canvas');
+        surface.width = size;
+        surface.height = size;
+        const paint = surface.getContext('2d');
+        const gradient = paint.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        stops.forEach(([offset, color]) => gradient.addColorStop(offset, color));
+        paint.fillStyle = gradient;
+        paint.fillRect(0, 0, size, size);
+        const texture = new THREE.CanvasTexture(surface);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        return texture;
+      }
+
+      // 模型背后的蓝色辉光：随呼吸轻微明灭，让金属边缘像在发光
+      const backdropGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeRadialTexture([
+          [0, 'rgba(172, 219, 251, 0.85)'],
+          [0.42, 'rgba(122, 178, 226, 0.32)'],
+          [1, 'rgba(4, 10, 16, 0)'],
+        ]),
+        color: 0xacdbfb,
+        transparent: true,
+        opacity: 0.42,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }));
+      backdropGlow.position.set(0, 0.25, -2.35);
+      backdropGlow.scale.set(5.6, 5.6, 1);
+      scene.add(backdropGlow);
+
+      // 假接触阴影：贴在支架脚下，把模型「按」到地面上（不占一张阴影贴图）
+      const contactShadow = new THREE.Mesh(
+        new THREE.PlaneGeometry(3.6, 3.6),
+        new THREE.MeshBasicMaterial({
+          map: makeRadialTexture([
+            [0, 'rgba(0, 0, 0, 0.95)'],
+            [0.5, 'rgba(0, 0, 0, 0.42)'],
+            [0.78, 'rgba(0, 0, 0, 0.12)'],
+            [1, 'rgba(0, 0, 0, 0)'],
+          ]),
+          color: 0x000000,
+          transparent: true,
+          opacity: 0.46,
+          depthWrite: false,
+        })
+      );
+      contactShadow.rotation.x = -Math.PI / 2;
+      contactShadow.position.y = -1.34;
+      scene.add(contactShadow);
 
       let modelRoot = null;
       let frameId = 0;
       let isVisible = false;
+      let lightClock = 0;
+
+      function currentThemeLighting() {
+        return (document.documentElement.dataset.theme || 'dark') === 'light'
+          ? themeLighting.light
+          : themeLighting.dark;
+      }
+
+      // 曝光、反射强度、辉光浓淡都跟着主题走；模型材质是异步加载的，所以两处都要能重复调用
+      function applyLightingTheme() {
+        const preset = currentThemeLighting();
+        renderer.toneMappingExposure = preset.exposure;
+        fillLight.intensity = preset.hemisphere;
+        glowBaseOpacity = preset.glowOpacity;
+        backdropGlow.material.opacity = preset.glowOpacity;
+        modelMaterials.forEach((material) => {
+          material.envMapIntensity = preset.envIntensity;
+          material.needsUpdate = true;
+        });
+      }
+
+      applyLightingTheme();
+
+      // 顶栏的主题开关会改 html[data-theme]，这里跟着重算 3D 光比
+      new MutationObserver(() => applyLightingTheme()).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
 
       function resizeProfileModel() {
         const rect = profileModelPanel.getBoundingClientRect();
@@ -1334,9 +1495,34 @@ import { workCategories, works } from '../data/works';
           return;
         }
 
+        lightClock += 0.016;
+
         if (modelRoot) {
           modelRoot.rotation.y += 0.0022;
         }
+
+        // 灯光缓慢漂移 + 边光呼吸：让高光在自转时持续流动，而不是一成不变
+        keyLight.position.set(
+          3.6 + Math.sin(lightClock * 0.33) * 0.85,
+          3.5 + Math.cos(lightClock * 0.24) * 0.55,
+          4.8 + Math.sin(lightClock * 0.19) * 0.45
+        );
+        rimLight.position.set(
+          -4.3 + Math.cos(lightClock * 0.27) * 0.75,
+          1.7 + Math.sin(lightClock * 0.31) * 0.45,
+          -3.4 + Math.sin(lightClock * 0.22) * 0.35
+        );
+        rimLight.intensity = 1.25 + Math.sin(lightClock * 0.5) * 0.22;
+        counterRim.intensity = 0.75 + Math.cos(lightClock * 0.42 + 1.1) * 0.16;
+        glintLight.position.set(
+          2.3 + Math.sin(lightClock * 0.37 + 0.6) * 0.9,
+          1.3 + Math.cos(lightClock * 0.29) * 0.5,
+          3.9
+        );
+        // 辉光按主题基准值做呼吸，浅色主题几乎看不出，深色主题才明显
+        backdropGlow.material.opacity = glowBaseOpacity * (1 + Math.sin(lightClock * 0.45) * 0.24);
+        const glowScale = 5.6 + Math.sin(lightClock * 0.45) * 0.22;
+        backdropGlow.scale.set(glowScale, glowScale, 1);
 
         controls.update();
         renderer.render(scene, camera);
@@ -1367,6 +1553,10 @@ import { workCategories, works } from '../data/works';
           modelRoot.scale.setScalar(2.45 / maxAxis);
           modelRoot.rotation.set(-0.08, 0.38, 0);
 
+          // 摆好姿态后再算一次包围盒，把接触阴影贴到支架脚下
+          const fitted = new THREE.Box3().setFromObject(modelRoot);
+          contactShadow.position.y = fitted.min.y - 0.01;
+
           modelRoot.traverse((node) => {
             if (!node.isMesh) return;
             node.castShadow = true;
@@ -1377,11 +1567,17 @@ import { workCategories, works } from '../data/works';
             materials.forEach((material) => {
               if (!material) return;
               material.flatShading = true;
-              material.metalness = Math.min(material.metalness ?? 0.2, 0.48);
-              material.roughness = Math.max(material.roughness ?? 0.42, 0.5);
+              // 放开到「抛光金属」区间：切面之间靠反射环境贴图拉开明暗，
+              // 压得太钝（metalness 低 + roughness 高）反而会重新糊成一片白。
+              material.metalness = Math.min(Math.max(material.metalness ?? 0.7, 0.66), 0.74);
+              material.roughness = Math.min(Math.max(material.roughness ?? 0.38, 0.34), 0.42);
               material.needsUpdate = true;
+              modelMaterials.push(material);
             });
           });
+
+          // 材质到位后套用当前主题的反射强度
+          applyLightingTheme();
 
           scene.add(modelRoot);
           profileModelCanvas.dataset.modelReady = 'true';
