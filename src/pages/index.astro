@@ -1953,6 +1953,20 @@ import { workCategories, works } from '../data/works';
       }
     }
 
+    /* 悬停时配图掀开的起点由 --media-wipe 给出（见悬停预览样式块），
+       缺变量时按「从下边往上掀」兜底 */
+    @keyframes timelineMediaIn {
+      from {
+        clip-path: var(--media-wipe, inset(100% 0 0 0 round 13px));
+        opacity: 0;
+      }
+
+      to {
+        clip-path: inset(0 round 13px);
+        opacity: 1;
+      }
+    }
+
     /* ---- 生长：卡片不是「点亮」，而是随着轴线扫过从轴上真正长出来 ----
        .is-active 的时机完全由生长头是否越过该节点决定（见脚本 setTimelineProgress），
        于是「轴线扫过 → 就地生长」是先后关系，而不是提前摆好再调透明度。
@@ -2061,6 +2075,93 @@ import { workCategories, works } from '../data/works';
       }
     }
 
+    /* ---- 悬停预览：把卡片里的配图铺到卡片上 ----
+       卡片很窄，配图在桌面端一直是 display:none（见上方基础规则），于是平时不占排版位置、
+       也不由时间轴自己发起下载（display:none 没有盒子，loading="lazy" 不触发；实测过
+       只属于时间轴的封面始终是 0x0，只有和下方 WORKS 区块共用的那几张会跟着那边一起进来）。
+       悬停时它才铺满整张卡片：绝对定位、退出排版，脚本量到的卡片高度与轴线几何完全不变；
+       掀开的起点和卡片本身的生长方向一致——上排从贴着引线的底边往上，下排从顶边往下。
+       日期与标题抬到图上方的暗底上照旧可读，说明文字先让位给图。
+       整套只在能真正悬停的桌面端生效，移动端（≤900px）的静态大图不受影响。 */
+    @media (min-width: 901px) and (hover: hover) {
+      /* 掀开的起点：默认给上排（从底边往上），下排覆盖成从顶边往下 */
+      .timeline-node.has-media .timeline-node-body {
+        --media-wipe: inset(100% 0 0 0 round 13px);
+      }
+
+      .timeline-node.has-media[data-card-side="down"] .timeline-node-body {
+        --media-wipe: inset(0 0 100% 0 round 13px);
+      }
+
+      /* 悬停：单图与双图共用同一套定位（margin 也清零，免得绝对定位被外边距推偏） */
+      .timeline-node.has-media .timeline-node-body:hover > .timeline-node-media,
+      .timeline-node.has-media .timeline-node-body:hover > .timeline-media-pair {
+        animation: timelineMediaIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        clip-path: inset(0 round 13px);
+        inset: 0;
+        margin: 0;
+        opacity: 1;
+        position: absolute;
+      }
+
+      .timeline-node.has-media .timeline-node-body:hover > .timeline-node-media {
+        display: block;
+      }
+
+      /* 双图：左右各占一格铺满 */
+      .timeline-node.has-media .timeline-node-body:hover > .timeline-media-pair {
+        display: grid;
+        gap: 3px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      /* 图铺开时去掉小方块的方比、描边与褪色滤镜，直接给真实画面 */
+      .timeline-node.has-media .timeline-node-body:hover .timeline-node-media {
+        aspect-ratio: auto;
+        border: 0;
+        border-radius: 13px;
+        filter: none;
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
+      }
+
+      /* 图上的暗底：只压上半张，日期与标题照旧压得住 */
+      .timeline-node.has-media .timeline-node-body::after {
+        background: linear-gradient(180deg, rgba(4, 10, 16, 0.9) 0%, rgba(4, 10, 16, 0.72) 32%, rgba(4, 10, 16, 0.22) 66%, rgba(4, 10, 16, 0) 100%);
+        border-radius: 13px;
+        content: "";
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        transition: opacity 240ms ease;
+        z-index: 2;
+      }
+
+      .timeline-node.has-media .timeline-node-body:hover::after {
+        opacity: 1;
+      }
+
+      /* 文字抬到图与暗底之上；说明文字让位 */
+      .timeline-node.has-media .timeline-node-body > .timeline-node-meta,
+      .timeline-node.has-media .timeline-node-body > strong,
+      .timeline-node.has-media .timeline-node-body > em {
+        position: relative;
+        transition: opacity 240ms ease;
+        z-index: 3;
+      }
+
+      .timeline-node.has-media .timeline-node-body:hover > em {
+        opacity: 0;
+      }
+
+      .timeline-node.has-media .timeline-node-body:hover > .timeline-node-meta,
+      .timeline-node.has-media .timeline-node-body:hover > strong {
+        text-shadow: 0 1px 14px rgba(4, 10, 16, 0.8);
+      }
+    }
+
     /* 窄桌面：12 张卡片同屏时单张列宽有限，先收起说明，保住标题完整可读 */
     @media (min-width: 901px) and (max-width: 1319px) {
       .timeline-node-body em {
@@ -2120,6 +2221,16 @@ import { workCategories, works } from '../data/works';
         background: #2E6A96;
         border-color: #2E6A96;
         box-shadow: 0 0 14px rgba(46, 106, 150, 0.42);
+      }
+
+      /* 浅色主题的卡片是白底深字，悬停把图铺上来之后文字得反过来压成亮的
+         （全局规则用 !important 把卡片文字压成深色，这里必须同样 !important 才盖得住） */
+      html[data-theme="light"] .timeline-node.has-media .timeline-node-body:hover > .timeline-node-meta {
+        color: #ACDBFB !important;
+      }
+
+      html[data-theme="light"] .timeline-node.has-media .timeline-node-body:hover > strong {
+        color: #ffffff !important;
       }
     }
 
