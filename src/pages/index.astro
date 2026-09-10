@@ -1447,8 +1447,12 @@ import { workCategories, works } from '../data/works';
       const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x040a12, 0.045);
       scene.add(fillLight);
 
+      // 地面高度：网格、接触阴影、模型脚底都对齐到这一个值，
+      // 三者各写一个数字的话很容易错开，模型就会「浮」在网格上方
+      const FLOOR_Y = -1.35;
+
       const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x1d3a4d);
-      grid.position.y = -1.35;
+      grid.position.y = FLOOR_Y;
       grid.material.transparent = true;
       grid.material.opacity = 0.26;
       scene.add(grid);
@@ -1487,6 +1491,8 @@ import { workCategories, works } from '../data/works';
       scene.add(backdropGlow);
 
       // 假接触阴影：贴在支架脚下，把模型「按」到地面上（不占一张阴影贴图）
+      // 比地面略高 6‰，免得和网格线抢深度；脚底压在这层之上，看着才是踩进阴影里
+      const SHADOW_Y = FLOOR_Y + 0.006;
       const contactShadow = new THREE.Mesh(
         new THREE.PlaneGeometry(3.6, 3.6),
         new THREE.MeshBasicMaterial({
@@ -1503,7 +1509,7 @@ import { workCategories, works } from '../data/works';
         })
       );
       contactShadow.rotation.x = -Math.PI / 2;
-      contactShadow.position.y = -1.34;
+      contactShadow.position.y = SHADOW_Y;
       scene.add(contactShadow);
 
       let modelRoot = null;
@@ -1618,11 +1624,15 @@ import { workCategories, works } from '../data/works';
 
           modelRoot.position.sub(center);
           modelRoot.scale.setScalar(2.45 / maxAxis);
-          modelRoot.rotation.set(-0.08, 0.38, 0);
+          // 只留一点偏航，让起落架别正对镜头；俯仰与翻滚必须为 0 ——
+          // 模型自身三只脚就是齐平的，一旦压上俯仰，就会变成一只脚扎进地里、两只悬空
+          modelRoot.rotation.set(0, 0.38, 0);
 
-          // 摆好姿态后再算一次包围盒，把接触阴影贴到支架脚下
+          // 摆正后再量一次包围盒：最低点就是脚底，把它对齐到地面，
+          // 自转只绕 Y 轴（绕 Y 转不改变各点高度），所以转到任何角度三只脚都踩在同一层地面上
           const fitted = new THREE.Box3().setFromObject(modelRoot);
-          contactShadow.position.y = fitted.min.y - 0.01;
+          modelRoot.position.y += FLOOR_Y - fitted.min.y;
+          contactShadow.position.y = SHADOW_Y;
 
           modelRoot.traverse((node) => {
             if (!node.isMesh) return;
