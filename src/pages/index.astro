@@ -1412,14 +1412,14 @@ import { workCategories, works } from '../data/works';
       }
 
       // 瞄准点也放进光组：光照方向只取决于两者在相机空间的相对关系，
-      // 所以拖拽、缩放都不会改变打光角度，只改变从哪个角度看这只「被照亮」的模型
+      // 所以拖拽、缩放都不会改变打光角度，只改变从哪个角度看这只「被照亮」的模型。
+      // 光源位置在这里一次写死，之后每帧都不再动 —— 光要牢牢钉在展示窗口里
       function makeRigLight(color, intensity, azimuthDeg, elevationDeg, distance) {
         const light = new THREE.DirectionalLight(color, intensity);
         light.position.copy(rigPosition(azimuthDeg, elevationDeg, distance));
         const aim = new THREE.Object3D();
         aim.position.set(0, 0, -RIG_AIM_DISTANCE);
         light.target = aim;
-        light.userData.basePosition = light.position.clone();
         lightRig.add(aim);
         lightRig.add(light);
         return light;
@@ -1438,9 +1438,9 @@ import { workCategories, works } from '../data/works';
       const bounceLight = makeRigLight(0x9ec6ea, 0.3, -6, -44, 6.8);
 
       // 镜头侧点光：贴着右前方，模型自转时在金属切面上扫出一颗流动的高光
+      // （扫动来自模型自己在转，灯本身不动）
       const glintLight = new THREE.PointLight(0xffffff, 7, 26, 2);
       glintLight.position.copy(rigPosition(30, 8, 4.2));
-      glintLight.userData.basePosition = glintLight.position.clone();
       lightRig.add(glintLight);
 
       // 环境补光：只用来兜住暗部下限，明暗对比交给主光与边光
@@ -1473,7 +1473,11 @@ import { workCategories, works } from '../data/works';
         return texture;
       }
 
-      // 模型背后的蓝色辉光：随呼吸轻微明灭，让金属边缘像在发光
+      // 模型背后的蓝色辉光：随呼吸轻微明灭，让金属边缘像在发光。
+      // 它必须挂在相机（= 展示窗口坐标系）下，并在 frame() 里钉到模型正后方 ——
+      // 摆在世界坐标里的话，相机绕模型自转时这块亮斑会跟着模型一起转，
+      // 看起来就是「打光在跟着模型走」（实测背景左右亮度比会从 0.5 荡到 1.8）。
+      const GLOW_BEHIND = 1.5; // 比模型中心再往后 1.5 个世界单位，正好托在背后
       const backdropGlow = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeRadialTexture([
           [0, 'rgba(172, 219, 251, 0.85)'],
@@ -1486,9 +1490,9 @@ import { workCategories, works } from '../data/works';
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      backdropGlow.position.set(0, 0.25, -2.35);
+      backdropGlow.position.set(0, 0.25, -(camera.position.length() + GLOW_BEHIND));
       backdropGlow.scale.set(5.6, 5.6, 1);
-      scene.add(backdropGlow);
+      camera.add(backdropGlow);
 
       // 假接触阴影：贴在支架脚下，把模型「按」到地面上（不占一张阴影贴图）
       // 比地面略高 6‰，免得和网格线抢深度；脚底压在这层之上，看着才是踩进阴影里
@@ -1570,32 +1574,27 @@ import { workCategories, works } from '../data/works';
           modelRoot.rotation.y += 0.0022;
         }
 
-        // 光源在相机空间里小幅漂移 + 边光呼吸：高光会流动，但整束光始终留在屏幕右侧
-        const keyBase = keyLight.userData.basePosition;
-        keyLight.position.set(
-          keyBase.x + Math.sin(lightClock * 0.33) * 0.5,
-          keyBase.y + Math.cos(lightClock * 0.24) * 0.34,
-          keyBase.z + Math.sin(lightClock * 0.19) * 0.3
-        );
+        // 光源位置一像素都不动：整套灯挂在相机下、位置在创建时就写死了，
+        // 所以无论是模型自转还是换机位，光都停在展示窗口的右上角
+        // （之前每帧给光源加一点漂移，高光会在窗口里游走，与「始终固定」冲突）。
+        // 「活着」的感觉交给强度呼吸，以及模型自转带来的切面明暗变化
         keyLight.intensity = keyBaseIntensity * (1 + Math.sin(lightClock * 0.5) * 0.05);
         rimLight.intensity = rimBaseIntensity * (1 + Math.cos(lightClock * 0.42 + 1.1) * 0.08);
-        const glintBase = glintLight.userData.basePosition;
-        glintLight.position.set(
-          glintBase.x + Math.sin(lightClock * 0.37 + 0.6) * 0.7,
-          glintBase.y + Math.cos(lightClock * 0.29) * 0.4,
-          glintBase.z + Math.sin(lightClock * 0.23) * 0.5
-        );
-        // 辉光按主题基准值做呼吸，浅色主题几乎看不出，深色主题才明显
+        // 辉光按主题基准值做呼吸，浅色主题几乎看不出，深色主题才明显；
+        // 同时每帧钉到模型正后方：相机坐标系里正后方就是 -Z，
+        // 距离取「相机到模型的距离 + 1.5」，缩放跟着相机远近走，屏占比才稳定
         backdropGlow.material.opacity = glowBaseOpacity * (1 + Math.sin(lightClock * 0.45) * 0.24);
         const glowScale = 5.6 + Math.sin(lightClock * 0.45) * 0.22;
         backdropGlow.scale.set(glowScale, glowScale, 1);
+        backdropGlow.position.set(0, 0.25, -(camera.position.length() + GLOW_BEHIND));
 
         controls.update();
 
-        // 环境贴图里的亮块跟着相机一起转：否则相机自转到某个角度时，
-        // 反光会跑到屏幕左侧，与「光源固定在右侧」自相矛盾。
-        // 着色器里取样方向是 envMapRotation * worldNormal，PMREM 贴图还会把欧拉角取负，
-        // 于是「世界方位角 = 贴图方位角 + environmentRotation.y」，+90° 正是屏幕右侧。
+        // 环境贴图里的亮块也要跟着机位转，才能一直停在展示窗口右侧。
+        // 着色器取样方向是 envMapRotation * worldDir，而 three 组装这个矩阵时会把欧拉角整体取负，
+        // 于是「灯的世界方位角 = 贴图方位角 + environmentRotation.y」；
+        // 机位方位角 θ 处屏幕右方的世界方位角恒为 θ + 90°，所以这里是 +90° 而不是 -90°
+        // （把直射灯全关、只留环境的对照实验里，写成负号时贴图 az 0° 的柔光箱会落到屏幕左上）。
         scene.environmentRotation.y = Math.atan2(camera.position.x, camera.position.z) + Math.PI / 2;
 
         renderer.render(scene, camera);
