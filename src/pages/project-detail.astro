@@ -1,21 +1,11 @@
 ---
 // src/pages/project-detail.astro
-// 修复版：移除 Tailwind CDN，使用原生 CSS
-import '../styles/global.css';
-import PureTransition from '../components/PureTransition.astro';
-import SiteHeader from '../components/SiteHeader.astro';
+// 项目详情页：每个项目一个全屏 project-entry（左侧视觉档案 + 右侧解密档案文本）
+import Layout from '../layouts/Layout.astro';
+import { asset } from '../data/assets';
 ---
 
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PROJECTS // ZHAO WENHAO</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com">
-  <script src="/scripts/font-loader.js" is:inline></script>
+<Layout title="PROJECTS // ZHAO WENHAO" lang="zh-CN" bodyClass="project-detail-page">
   <style>
     * {
       margin: 0;
@@ -25,7 +15,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     body {
       font-family: var(--font-mono-cn);
-      background-color: #050505;
+      background-color: #040A10;
       color: #a3a3a3;
       margin: 0;
       overflow-x: hidden;
@@ -70,9 +60,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       order: 2;
       width: 100%;
       min-height: 50vh;
-      border-bottom: 1px solid #171717;
+      border-bottom: 1px solid #161C22;
       z-index: 10;
-      background: #020202;
+      background: #01070D;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -98,8 +88,8 @@ import SiteHeader from '../components/SiteHeader.astro';
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      border: 1px solid #171717;
-      background: #050505;
+      border: 1px solid #161C22;
+      background: #040A10;
       cursor: zoom-in;
     }
 
@@ -109,8 +99,8 @@ import SiteHeader from '../components/SiteHeader.astro';
       left: 0;
       width: 1rem;
       height: 1rem;
-      border-top: 1px solid #8EDB35;
-      border-left: 1px solid #8EDB35;
+      border-top: 1px solid #ACDBFB;
+      border-left: 1px solid #ACDBFB;
       z-index: 20;
       transition: all 0.3s;
     }
@@ -121,8 +111,8 @@ import SiteHeader from '../components/SiteHeader.astro';
       right: 0;
       width: 1rem;
       height: 1rem;
-      border-bottom: 1px solid #8EDB35;
-      border-right: 1px solid #8EDB35;
+      border-bottom: 1px solid #ACDBFB;
+      border-right: 1px solid #ACDBFB;
       z-index: 20;
       transition: all 0.3s;
     }
@@ -154,7 +144,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       line-height: 1.7;
       margin-top: 1rem;
       padding-bottom: 1.25rem;
-      border-bottom: 1px solid #171717;
+      border-bottom: 1px solid #161C22;
     }
 
     .visual-meta {
@@ -192,8 +182,8 @@ import SiteHeader from '../components/SiteHeader.astro';
     .thumb-item {
       position: relative;
       aspect-ratio: 4 / 3;
-      border: 1px solid #171717;
-      background: #0a0a0a;
+      border: 1px solid #161C22;
+      background: #090F15;
       overflow: hidden;
       cursor: zoom-in;
     }
@@ -250,10 +240,10 @@ import SiteHeader from '../components/SiteHeader.astro';
       position: absolute;
       left: 0.5rem;
       bottom: 0.45rem;
-      color: #8EDB35;
+      color: #ACDBFB;
       font-size: 9px;
       letter-spacing: 0.18em;
-      text-shadow: 0 0 10px #050505;
+      text-shadow: 0 0 10px #040A10;
     }
 
     .archive-rail {
@@ -269,7 +259,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, #8EDB35, #171717 45%, transparent);
+      background: linear-gradient(90deg, #ACDBFB, #161C22 45%, transparent);
     }
 
     .archive-rail-text {
@@ -287,14 +277,14 @@ import SiteHeader from '../components/SiteHeader.astro';
       inset: 0;
       z-index: 79;
       pointer-events: none;
-      background: rgba(5, 5, 5, 0);
+      background: rgba(4, 10, 16, 0);
       opacity: 0;
       transition: opacity 0.28s ease, background 0.28s ease;
     }
 
     .preview-backdrop.active {
       opacity: 1;
-      background: rgba(5, 5, 5, 0.68);
+      background: rgba(4, 10, 16, 0.68);
     }
 
     .right-panel {
@@ -303,14 +293,14 @@ import SiteHeader from '../components/SiteHeader.astro';
       min-height: 50vh;
       z-index: 20;
       position: relative;
-      background: #050505;
+      background: #040A10;
       padding: 3.5rem 1.5rem 1.5rem;
       display: flex;
       flex-direction: column;
     }
 
     .file-label {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-size: 10px;
       letter-spacing: 0.4em;
       display: flex;
@@ -322,7 +312,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     .pulse-dot {
       width: 0.375rem;
       height: 0.375rem;
-      background: #8EDB35;
+      background: #ACDBFB;
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
@@ -354,9 +344,9 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .project-video-link {
       align-items: center;
-      border: 1px solid rgba(142, 219, 53, 0.46);
+      border: 1px solid rgba(172, 219, 251, 0.46);
       border-radius: 10px;
-      color: #8EDB35;
+      color: #ACDBFB;
       display: inline-flex;
       font-size: 0.72rem;
       font-weight: 700;
@@ -379,9 +369,9 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .project-video-link:hover,
     .project-video-link:focus-visible {
-      background: #8EDB35;
-      border-color: #8EDB35;
-      color: #050505;
+      background: #ACDBFB;
+      border-color: #ACDBFB;
+      color: #040A10;
       outline: none;
       transform: translateY(-1px);
     }
@@ -390,11 +380,11 @@ import SiteHeader from '../components/SiteHeader.astro';
       display: grid;
       grid-template-columns: 1fr;
       gap: 1.5rem;
-      border-top: 1px solid #171717;
-      border-bottom: 1px solid #171717;
+      border-top: 1px solid #161C22;
+      border-bottom: 1px solid #161C22;
       padding: 1.5rem 0;
       margin: 2rem 0;
-      background: rgba(5, 5, 5, 0.3);
+      background: rgba(4, 10, 16, 0.3);
     }
 
     html[data-theme="light"] .project-stack .meta-grid {
@@ -415,7 +405,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .meta-item-value.green {
-      color: #8EDB35;
+      color: #ACDBFB;
     }
 
     .section {
@@ -427,7 +417,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       font-size: 0.875rem;
       letter-spacing: 0.2em;
       font-weight: 700;
-      border-left: 2px solid #8EDB35;
+      border-left: 2px solid #ACDBFB;
       padding-left: 0.75rem;
       margin-bottom: 1rem;
     }
@@ -446,11 +436,11 @@ import SiteHeader from '../components/SiteHeader.astro';
       position: relative;
       padding-top: var(--footer-top-gap);
       padding-bottom: var(--footer-bottom-gap);
-      color: #262626;
+      color: #252B31;
       font-size: 10px;
       line-height: 1.2;
       letter-spacing: 0.3em;
-      border-top: 1px solid #171717;
+      border-top: 1px solid #161C22;
     }
 
     /* 桌面端响应式 */
@@ -469,7 +459,7 @@ import SiteHeader from '../components/SiteHeader.astro';
         min-height: 100vh;
         border-bottom: none;
         border-left: 0;
-        border-right: 1px solid #171717;
+        border-right: 1px solid #161C22;
         padding: 3rem;
         flex-shrink: 0;
       }
@@ -543,11 +533,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
   </style>
-</head>
-<body class="project-detail-page">
-
-  <PureTransition />
-  <SiteHeader />
 
   <div class="grid-bg"></div>
 
@@ -560,7 +545,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp"
+           <img src={asset('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp')}
                 alt="Never Extinguished Promo"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -590,19 +575,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景2 拷贝.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF3%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景3 拷贝.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF4%20%E6%8B%B7%E8%B4%9D.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景4 拷贝.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -677,7 +662,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png"
+           <img src={asset('posters/Liminal封面.png')}
                 alt="Liminal-The Fantasy at the Edge"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -707,19 +692,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE01.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/Liminal-视频截图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE02.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/Liminal-视频截图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE03.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/Liminal-视频截图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E8%A7%86%E9%A2%91%E6%88%AA%E5%9B%BE04.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/Liminal-视频截图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -787,7 +772,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp"
+           <img src={asset('images/艺术装置《starE》- P7.webp')}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -817,19 +802,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P8.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/艺术装置《starE》- P8.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P1.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/艺术装置《starE》- P1.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P2.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/艺术装置《任尔EWSN风？》-P2.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P3.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/艺术装置《任尔EWSN风？》-P3.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -898,7 +883,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png"
+           <img src={asset('posters/那洲村AR导览DEMO演示视频封面.png')}
                 alt="Nazo Village AR Guide Demo Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -928,19 +913,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE01.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/那洲AR演示图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE02.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/那洲AR演示图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE03.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/那洲AR演示图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%82%A3%E6%B4%B2AR%E6%BC%94%E7%A4%BA%E5%9B%BE04.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/那洲AR演示图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -1009,7 +994,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp"
+           <img src={asset('images/施洞苗绣1.webp')}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -1039,19 +1024,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A32.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/施洞苗绣2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A33.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/施洞苗绣3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A34.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/施洞苗绣4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A35.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/施洞苗绣5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -1119,7 +1104,7 @@ import SiteHeader from '../components/SiteHeader.astro';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp"
+           <img src={asset('images/Shadow Shell 1.webp')}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -1149,19 +1134,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%202.webp" alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img src={asset('images/Shadow Shell 2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%203.webp" alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img src={asset('images/Shadow Shell 3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%204.webp" alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img src={asset('images/Shadow Shell 4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%205.webp" alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img src={asset('images/Shadow Shell 5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -1542,9 +1527,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       clone.style.position = 'fixed';
       clone.style.zIndex = '80';
       clone.style.margin = '0';
-      clone.style.border = '1px solid rgba(142, 219, 53, 0.48)';
-      clone.style.background = '#050505';
-      clone.style.boxShadow = '0 0 40px rgba(0, 0, 0, 0.85), 0 0 32px rgba(142, 219, 53, 0.14)';
+      clone.style.border = '1px solid rgba(172, 219, 251, 0.48)';
+      clone.style.background = '#040A10';
+      clone.style.boxShadow = '0 0 40px rgba(0, 0, 0, 0.85), 0 0 32px rgba(172, 219, 251, 0.14)';
       clone.style.pointerEvents = 'none';
       clone.style.transform = 'translateZ(0)';
       clone.style.transformOrigin = 'top left';
@@ -1592,6 +1577,4 @@ import SiteHeader from '../components/SiteHeader.astro';
       image.addEventListener('blur', hidePreview);
     });
   </script>
-
-</body>
-</html>
+</Layout>

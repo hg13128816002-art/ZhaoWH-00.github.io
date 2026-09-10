@@ -1,48 +1,37 @@
 ---
 // src/pages/contact.astro
-// 像素级交互打磨版：恢复 violent 波形震荡反馈 + 移除 Telegram 节点 + 稳定排版 + 完美多端自适应
-import '../styles/global.css';
-import PureTransition from '../components/PureTransition.astro';
-import SiteHeader from '../components/SiteHeader.astro';
+// 像素级交互打磨版：violent 波形震荡反馈 + 稳定排版 + 多端自适应
+import Layout from '../layouts/Layout.astro';
+
 const headerText = '嗨！很高兴你能看到这里，如果你对我的作品有任何想法或合作意向，请联系我！';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Contact // HAO</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <script src="/scripts/font-loader.js" is:inline></script>
-  
+<Layout
+  title="Contact // HAO"
+  viewport="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  bodyClass="min-h-screen w-screen bg-[#090F15] text-neutral-100 flex flex-col justify-between px-6 pb-6 pt-6 md:px-12 md:pb-12 md:pt-10 relative overflow-x-hidden select-none box-border"
+>
   <style>
     .font-mono, body, button, a {
       font-family: var(--font-mono-cn) !important;
     }
   </style>
-</head>
-<body class="min-h-screen w-screen bg-[#0a0a0a] text-neutral-100 flex flex-col justify-between px-6 pb-6 pt-6 md:px-12 md:pb-12 md:pt-10 relative overflow-x-hidden select-none box-border">
-  <PureTransition />
-  <SiteHeader />
 
   <div class="flex justify-start items-start z-20 w-full">
     <div>
-      <div class="text-[#8EDB35] text-[10px] md:text-xs tracking-[0.4em] font-bold">// TELEMETRY_ACTIVE</div>
+      <div class="text-[#ACDBFB] text-[10px] md:text-xs tracking-[0.4em] font-bold">// TELEMETRY_ACTIVE</div>
       <div class="text-neutral-500 text-[9px] md:text-xs mt-1 tracking-widest">OSCILLOSCOPE_ONLINE</div>
     </div>
   </div>
 
-  <div id="developer-header" class="z-30 w-full mt-6 md:mt-12 text-center text-[#8EDB35] font-bold text-base md:text-2xl leading-relaxed px-2 max-w-4xl mx-auto">
+  <div id="developer-header" class="z-30 w-full mt-6 md:mt-12 text-center text-[#ACDBFB] font-bold text-base md:text-2xl leading-relaxed px-2 max-w-4xl mx-auto">
     {headerText}
   </div>
 
   <div class="relative w-full flex items-center justify-center z-10 pointer-events-none my-4 flex-grow md:flex-grow-0">
     <canvas id="oscilloscope-canvas" class="block w-full h-[25vh] md:h-[45vh]"></canvas>
     
-    <div id="signal-feedback" class="absolute text-[#0a0a0a] bg-[#8EDB35] text-sm md:text-2xl font-black tracking-widest opacity-0 px-4 py-2 md:px-8 md:py-3 pointer-events-none border border-white/20 transition-opacity duration-150 whitespace-nowrap z-50">
+    <div id="signal-feedback" class="absolute text-[#090F15] bg-[#ACDBFB] text-sm md:text-2xl font-black tracking-widest opacity-0 px-4 py-2 md:px-8 md:py-3 pointer-events-none border border-white/20 transition-opacity duration-150 whitespace-nowrap z-50">
       / 您成功的复制了我的联系方式 /
     </div>
   </div>
@@ -51,13 +40,13 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
     
     <button 
       data-copy="zhaowenhaodesign@163.com" 
-      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
+      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
     >
       <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
+        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
           <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
         </svg>
-        <span class="text-[#8EDB35] text-xs md:text-sm tracking-widest font-bold">// 邮箱/E-mail</span>
+        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 邮箱/E-mail</span>
       </div>
 
       <div>
@@ -68,13 +57,13 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
 
     <button 
       data-copy="Zwh1326562" 
-      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
+      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
     >
       <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
+        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
         </svg>
-        <span class="text-[#8EDB35] text-xs md:text-sm tracking-widest font-bold">// 微信/WeChat</span>
+        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 微信/WeChat</span>
       </div>
 
       <div>
@@ -87,14 +76,14 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
       href="https://space.bilibili.com/430411383?spm_id_from=333.788.0.0" 
       target="_blank"
       rel="noopener noreferrer"
-      class="group p-4 md:p-6 border-2 border-neutral-800 bg-[#0d0d0d] hover:border-[#8EDB35] transition-all text-left flex flex-col justify-between cursor-pointer block h-28 md:h-44 text-decoration-none box-border"
+      class="group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer block h-28 md:h-44 text-decoration-none box-border"
     >
       <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#8EDB35" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
+        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
           <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
           <polyline points="17 2 12 7 7 2"></polyline>
         </svg>
-        <span class="text-[#8EDB35] text-xs md:text-sm tracking-widest font-bold">// 哔哩哔哩/bilibili</span>
+        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 哔哩哔哩/bilibili</span>
       </div>
 
       <div>
@@ -162,14 +151,14 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
       currentAmplitude += (targetAmplitude - currentAmplitude) * 0.08;
       phase += 0.1;
 
-      ctx.strokeStyle = '#1a1a1a';
+      ctx.strokeStyle = '#191F25';
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(0, height / 2); ctx.lineTo(width, height / 2); ctx.stroke();
 
-      ctx.strokeStyle = '#8EDB35';
+      ctx.strokeStyle = '#ACDBFB';
       ctx.lineWidth = window.innerWidth < 768 ? 2 : 3;
       ctx.shadowBlur = feedback.style.opacity === '1' ? 20 : 0;
-      ctx.shadowColor = '#8EDB35';
+      ctx.shadowColor = '#ACDBFB';
       ctx.beginPath();
 
       for (let x = 0; x < width; x++) {
@@ -208,7 +197,7 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
         if (copyText) {
           navigator.clipboard.writeText(copyText).then(() => {
             targetLabel.innerText = "COPIED SUCCESSFULLY!";
-            targetLabel.style.color = '#8EDB35';
+            targetLabel.style.color = '#ACDBFB';
             targetLabel.style.fontWeight = 'bold';
             
             targetAmplitude = height * 0.9; 
@@ -229,5 +218,4 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
       });
     });
   </script>
-</body>
-</html>
+</Layout>

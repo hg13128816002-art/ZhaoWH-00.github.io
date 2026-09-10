@@ -3,22 +3,22 @@
 // 终极先锋史诗版加载屏：宏大深空轨道 + 真实激光填充进度 + 极纤细呼吸文本
 ---
 
-<div id="vanguard-preloader" class="fixed inset-0 z-[10010] bg-[#050505] flex items-center justify-center transition-opacity duration-[800ms] select-none pointer-events-auto">
+<div id="vanguard-preloader" class="fixed inset-0 z-[10010] bg-[#040A10] flex items-center justify-center transition-opacity duration-[800ms] select-none pointer-events-auto">
   
   <div class="relative flex items-center justify-center animate-scale-up-slow">
     
     <svg class="w-64 h-64 md:w-80 md:h-80" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="120" cy="120" r="118" stroke="#1a1a1a" stroke-width="1"></circle>
+      <circle cx="120" cy="120" r="118" stroke="#191F25" stroke-width="1"></circle>
       
       <circle 
         id="loading-orbit"
         cx="120" cy="120" r="118" 
-        stroke="#8EDB35" 
+        stroke="#ACDBFB" 
         stroke-width="1.5" 
         stroke-dasharray="741" 
         stroke-dashoffset="741" 
         stroke-linecap="round"
-        class="drop-shadow-[0_0_8px_#8EDB35] transition-all duration-[120ms] ease-out origin-center -rotate-90"
+        class="drop-shadow-[0_0_8px_#ACDBFB] transition-all duration-[120ms] ease-out origin-center -rotate-90"
       ></circle>
     </svg>
 
@@ -49,7 +49,7 @@
   /* 纤细文字点的呼吸 */
   @keyframes pulse-dot {
     0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.9; text-shadow: 0 0 8px rgba(142,219,53,0.5); color: #8EDB35; }
+    50% { opacity: 0.9; text-shadow: 0 0 8px rgba(172,219,251,0.5); color: #ACDBFB; }
   }
   .animate-pulse-dot {
     animation: pulse-dot 1.5s ease-in-out infinite;

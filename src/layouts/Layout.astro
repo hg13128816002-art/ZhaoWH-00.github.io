@@ -1,0 +1,55 @@
+---
+// src/layouts/Layout.astro
+// 全站唯一的外壳：document 骨架 + 中文字体预加载 + 常驻导航 + 跨页转场。
+// 各页面只负责自己的正文内容；页面级的 <head> 内容（如 importmap）用 head 具名插槽注入。
+import '../styles/global.css';
+import PureTransition from '../components/PureTransition.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+interface Props {
+  /** <title> 文本 */
+  title: string;
+  /** <html lang> 的取值 */
+  lang?: string;
+  /** <meta name="viewport"> 的 content，个别页面需要覆盖默认值 */
+  viewport?: string;
+  /** <body> 的类名，由页面按各自布局传入 */
+  bodyClass?: string;
+  /** <body> 的行内样式（主要是兜底背景色） */
+  bodyStyle?: string;
+}
+
+const {
+  title,
+  lang = 'en',
+  viewport = 'width=device-width, initial-scale=1.0',
+  bodyClass,
+  bodyStyle,
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content={viewport} />
+    <title>{title}</title>
+
+    <!-- 自托管中文字体：先声明预加载，配合 fonts-ready 门控避免首屏字体跳动 -->
+    <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com" />
+
+    <!-- 必须同步最前执行：站内所有脚本都依赖 window.fontsReadyPromise -->
+    <script src="/scripts/font-loader.js" is:inline></script>
+
+    <slot name="head" />
+  </head>
+  <body class={bodyClass} style={bodyStyle}>
+    <PureTransition />
+    <SiteHeader />
+    <slot />
+  </body>
+</html>
+

@@ -4,41 +4,41 @@
 import '../styles/global.css'; 
 ---
 
-<div class="relative w-screen h-screen bg-[#0a0a0a] overflow-hidden select-none font-mono">
+<div class="relative w-screen h-screen bg-[#090F15] overflow-hidden select-none font-mono">
   
   <canvas id="omni-canvas" class="absolute inset-0 block w-full h-full z-10 cursor-crosshair"></canvas>
 
   <div class="absolute top-8 left-8 z-20 pointer-events-none">
-    <div class="text-[#8EDB35] text-[10px] tracking-[0.5em] font-bold">OMNIDIRECTIONAL // VIDEO_ARCHIVE_NODE</div>
+    <div class="text-[#ACDBFB] text-[10px] tracking-[0.5em] font-bold">OMNIDIRECTIONAL // VIDEO_ARCHIVE_NODE</div>
     <div class="text-neutral-600 text-[10px] mt-2 tracking-widest">GRID_RATIO: CUSTOM_XY // CHAOTIC_SCATTERING</div>
   </div>
 
-  <div id="gyro-init-overlay" class="fixed inset-0 z-[10030] bg-[#050505]/95 backdrop-blur-md flex-col items-center justify-center font-mono transition-opacity duration-300" style="display: none;">
-    <div class="text-[#8EDB35] text-sm md:text-base tracking-[0.2em] mb-10 text-center px-6 leading-loose">
+  <div id="gyro-init-overlay" class="fixed inset-0 z-[10030] bg-[#040A10]/95 backdrop-blur-md flex-col items-center justify-center font-mono transition-opacity duration-300" style="display: none;">
+    <div class="text-[#ACDBFB] text-sm md:text-base tracking-[0.2em] mb-10 text-center px-6 leading-loose">
       [ 倾斜手机以使用陀螺仪操作此页面 ]<br/>
       <span class="text-neutral-500 text-[10px] mt-2 block tracking-widest">TILT DEVICE TO NAVIGATE</span>
     </div>
-    <button id="gyro-ok-btn" class="border border-[#8EDB35] bg-[#0a0a0a] text-[#8EDB35] px-12 py-3 hover:bg-[#8EDB35] hover:text-black transition-colors tracking-widest font-bold text-sm cursor-pointer shadow-[0_0_15px_rgba(142,219,53,0.2)]">
+    <button id="gyro-ok-btn" class="border border-[#ACDBFB] bg-[#090F15] text-[#ACDBFB] px-12 py-3 hover:bg-[#ACDBFB] hover:text-black transition-colors tracking-widest font-bold text-sm cursor-pointer shadow-[0_0_15px_rgba(172,219,251,0.2)]">
       OK
     </button>
   </div>
 
-  <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+  <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
     
     <div class="video-overlay-topbar absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
-      <div id="video-hud" class="text-[#8EDB35] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">STATUS: DECRYPTING_FILE</div>
-      <div id="close-video" class="text-[#8EDB35] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#0a0a0a] px-4 py-2 border border-[#8EDB35]/30 hover:border-[#8EDB35]">
+      <div id="video-hud" class="text-[#ACDBFB] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">STATUS: DECRYPTING_FILE</div>
+      <div id="close-video" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
         [ X ] TERMINATE_LINK
       </div>
     </div>
 
     <div id="video-stage" class="relative w-[85vw] aspect-video border border-neutral-900 group pointer-events-auto cursor-crosshair">
-      <div class="absolute -inset-[1px] border border-[#8EDB35]/20 pointer-events-none z-10"></div>
+      <div class="absolute -inset-[1px] border border-[#ACDBFB]/20 pointer-events-none z-10"></div>
       
       <video id="main-video" class="w-full h-full object-cover grayscale-[0.3] hover:grayscale-0 transition-all duration-700" src=""></video>
 
       <div id="play-hint" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-100 transition-opacity duration-300 z-20">
-        <div class="px-6 py-3 border border-[#8EDB35] text-[#8EDB35] text-xs tracking-[0.4em] bg-[#050505]/80 backdrop-blur-sm">
+        <div class="px-6 py-3 border border-[#ACDBFB] text-[#ACDBFB] text-xs tracking-[0.4em] bg-[#040A10]/80 backdrop-blur-sm">
           [ CLICK_TO_PLAY / PAUSE ]
         </div>
       </div>
@@ -46,12 +46,12 @@ import '../styles/global.css';
       <div class="video-controls absolute bottom-0 left-0 w-full p-8 flex flex-col gap-4 pointer-events-none z-30">
         <div class="relative w-full h-8 pointer-events-auto cursor-pointer" id="progress-container">
           <div class="absolute inset-x-0 top-1/2 h-[1px] -translate-y-1/2 bg-neutral-800"></div>
-          <div id="progress-bar" class="absolute top-1/2 left-0 h-[1px] -translate-y-1/2 bg-[#8EDB35] shadow-[0_0_10px_#8EDB35] w-0 pointer-events-none"></div>
+          <div id="progress-bar" class="absolute top-1/2 left-0 h-[1px] -translate-y-1/2 bg-[#ACDBFB] shadow-[0_0_10px_#ACDBFB] w-0 pointer-events-none"></div>
         </div>
 
         <div class="video-meta flex justify-between items-end">
           <div class="video-meta-primary flex flex-col gap-1">
-            <div class="text-[#8EDB35] text-[10px] tracking-widest opacity-80">● SIGNAL_LIVE</div>
+            <div class="text-[#ACDBFB] text-[10px] tracking-widest opacity-80">● SIGNAL_LIVE</div>
             <div id="overlay-title" class="text-white text-sm font-bold tracking-[0.2em]">FILE_NAME.MOV</div>
           </div>
           <div class="video-meta-secondary flex flex-col items-end gap-1 text-neutral-600 text-[10px] tracking-widest">
@@ -120,7 +120,7 @@ import '../styles/global.css';
 
     #main-video {
       object-fit: contain;
-      background: #050505;
+      background: #040A10;
     }
 
     #play-hint > div {
@@ -134,7 +134,7 @@ import '../styles/global.css';
     .video-controls {
       gap: 0.72rem;
       padding: 1rem;
-      background: linear-gradient(to top, rgba(5, 5, 5, 0.88), rgba(5, 5, 5, 0.38), rgba(5, 5, 5, 0));
+      background: linear-gradient(to top, rgba(4, 10, 16, 0.88), rgba(4, 10, 16, 0.38), rgba(4, 10, 16, 0));
     }
 
     #progress-container {
@@ -193,11 +193,13 @@ import '../styles/global.css';
 </style>
 
 <script>
+  import { asset } from '../data/assets';
+
   const canvas = document.getElementById('omni-canvas') as HTMLCanvasElement;
   canvas.style.visibility = 'hidden';
   const ctx = canvas.getContext('2d', { alpha: false })!; 
-  const GREEN = '#8EDB35';
-  const BG_COLOR = '#0a0a0a';
+  const ACCENT = '#ACDBFB';
+  const BG_COLOR = '#090F15';
   const SPEED_FACTOR = 0.02; 
   
   // 1. 基础尺寸定义（以桌面端为黄金标准）
@@ -244,47 +246,47 @@ import '../styles/global.css';
     { 
       slug: "liminal",
       title: "LIMINAL-临近边缘的幻想.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png",
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" 
+      posterSrc: asset('posters/Liminal封面.png'),
+      videoSrc: asset('videos/Liminal-临近边缘的幻想.mp4') 
     },
     { 
       slug: "never-extinguished",
       aliases: ["never"],
       title: "VR严肃游戏《未曾熄灭的》PV.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BD%9C%E5%93%81%E6%B5%B7%E6%8A%A5.jpg", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8BPV.mp4" 
+      posterSrc: asset('posters/作品海报.jpg'), 
+      videoSrc: asset('videos/VR严肃游戏《未曾熄灭的》PV.mp4') 
     },
     { 
       slug: "stare",
       aliases: ["stare-ewsn"],
       title: "STARE.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/starE%E5%B0%81%E9%9D%A2.png", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/starE.mp4" 
+      posterSrc: asset('posters/starE封面.png'), 
+      videoSrc: asset('videos/starE.mp4') 
     },
     { 
       slug: "ewsn",
       aliases: ["ren-er-ewsn"],
       title: "任尔EWSN风？.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E5%B0%81%E9%9D%A2.png", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F.mp4" 
+      posterSrc: asset('posters/任尔EWSN风？封面.png'), 
+      videoSrc: asset('videos/任尔EWSN风？.mp4') 
     },
     { 
       slug: "land-temple",
       title: "清迈良园土地庙微改造.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" 
+      posterSrc: asset('posters/土地庙改造封面.png'), 
+      videoSrc: asset('videos/清迈良园土地庙微改造.mp4') 
     },
     { 
       slug: "yuan",
       title: "缘.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" 
+      posterSrc: asset('posters/缘封面.png'), 
+      videoSrc: asset('videos/缘.mp4') 
     },
     { 
       slug: "nazhou-ar",
       title: "那洲村AR小游戏DEMO演示.MP4", 
-      posterSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png", 
-      videoSrc: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%B0%8F%E6%B8%B8%E6%88%8FDemo%E6%BC%94%E7%A4%BA.mp4" 
+      posterSrc: asset('posters/那洲村AR导览DEMO演示视频封面.png'), 
+      videoSrc: asset('videos/那洲村AR小游戏Demo演示.mp4') 
     }
   ];
 
@@ -508,21 +510,21 @@ import '../styles/global.css';
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img, sX, sY, sW, sH, cardLeft, cardTop, cardW, cardH);
         } else {
-          ctx.fillStyle = '#111'; ctx.fillRect(cardLeft, cardTop, cardW, cardH);
+          ctx.fillStyle = '#10161C'; ctx.fillRect(cardLeft, cardTop, cardW, cardH);
         }
 
         const shouldHighlight = hoveredNodeCoord && hoveredNodeCoord.ix === ix && hoveredNodeCoord.iy === iy;
         if (shouldHighlight) {
-          ctx.strokeStyle = GREEN; ctx.lineWidth = 2;
+          ctx.strokeStyle = ACCENT; ctx.lineWidth = 2;
           ctx.strokeRect(cardLeft, cardTop, cardW, cardH);
-          ctx.fillStyle = 'rgba(5,5,5,0.85)';
+          ctx.fillStyle = 'rgba(4,10,16,0.85)';
           ctx.fillRect(cardLeft, cardTop + cardH - 30, cardW, 30);
-          ctx.fillStyle = GREEN; ctx.font = '12px monospace'; ctx.textAlign = 'left';
+          ctx.fillStyle = ACCENT; ctx.font = '12px monospace'; ctx.textAlign = 'left';
           ctx.fillText(`> DECRYPT: ${project.title}`, cardLeft + 15, cardTop + cardH - 15);
         } else {
-          ctx.strokeStyle = '#222'; ctx.lineWidth = 1;
+          ctx.strokeStyle = '#21272D'; ctx.lineWidth = 1;
           ctx.strokeRect(cardLeft, cardTop, cardW, cardH);
-          ctx.fillStyle = 'rgba(5,5,5,0.6)';
+          ctx.fillStyle = 'rgba(4,10,16,0.6)';
           ctx.fillRect(cardLeft, cardTop + cardH - 25, cardW, 25);
           ctx.fillStyle = '#666'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
           ctx.fillText(project.title, cardLeft + 10, cardTop + cardH - 12);
@@ -532,7 +534,7 @@ import '../styles/global.css';
     
     if (isMobile) {
       ctx.save();
-      ctx.strokeStyle = 'rgba(142, 219, 83, 0.3)';
+      ctx.strokeStyle = 'rgba(172, 219, 251, 0.3)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(width / 2, height / 2, 8, 0, Math.PI * 2);

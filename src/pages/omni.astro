@@ -1,27 +1,10 @@
 ---
 // src/pages/omni.astro
-// 全向无限画廊全屏预览页 (完美修正版)
-import '../styles/global.css'; // 确保引入了全局 Reset 样式
+// 全向无限画廊全屏预览页
+import Layout from '../layouts/Layout.astro';
 import InfiniteOmniGallery from '../components/InfiniteOmniGallery.astro';
-import PureTransition from '../components/PureTransition.astro';
-import SiteHeader from '../components/SiteHeader.astro';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Omni Gallery | HAO</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com">
-  <script src="/scripts/font-loader.js" is:inline></script>
-</head>
-<body class="w-screen h-screen m-0 p-0 overflow-hidden bg-[#0a0a0a]">
-  <PureTransition />
-  <SiteHeader />
+<Layout title="Omni Gallery | HAO" bodyClass="w-screen h-screen m-0 p-0 overflow-hidden bg-[#090F15]">
   <InfiniteOmniGallery />
-</body>
-</html>
+</Layout>

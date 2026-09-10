@@ -14,15 +14,15 @@
   --font-mono-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --site-frame-inset: clamp(0.5rem, 1.1vw, 0.95rem);
   --site-frame-radius: clamp(0.5rem, 1vw, 0.9rem);
-  --site-frame-line: rgba(142, 219, 53, 0.34);
-  --site-scrollbar-line: rgba(142, 219, 53, 0.76);
-  --site-scrollbar-line-hover: rgba(142, 219, 53, 1);
+  --site-frame-line: rgba(172, 219, 251, 0.34);
+  --site-scrollbar-line: rgba(172, 219, 251, 0.76);
+  --site-scrollbar-line-hover: rgba(172, 219, 251, 1);
 }
 
 html[data-theme="light"] {
-  --site-frame-line: rgba(5, 5, 5, 0.28);
-  --site-scrollbar-line: rgba(5, 5, 5, 0.64);
-  --site-scrollbar-line-hover: rgba(5, 5, 5, 0.92);
+  --site-frame-line: rgba(4, 10, 16, 0.28);
+  --site-scrollbar-line: rgba(4, 10, 16, 0.64);
+  --site-scrollbar-line-hover: rgba(4, 10, 16, 0.92);
   background: #ffffff;
   color-scheme: light;
 }
@@ -59,7 +59,7 @@ body {
 
 html[data-theme="light"] body {
   background: #ffffff !important;
-  color: #111111 !important;
+  color: #10161C !important;
 }
 
 .font-mono {
@@ -126,14 +126,14 @@ html[data-theme="light"] :where(
   .profile-page,
   .omni-page,
   .dual-page,
-  .bg-\[\#050505\],
-  .bg-\[\#080808\],
-  .bg-\[\#0a0a0a\],
-  .bg-\[\#0d0d0d\],
-  .bg-\[\#0f0f0f\]
+  .bg-\[\#040A10\],
+  .bg-\[\#070D13\],
+  .bg-\[\#090F15\],
+  .bg-\[\#0C1218\],
+  .bg-\[\#0E141A\]
 ) {
   background-color: #ffffff !important;
-  color: #111111 !important;
+  color: #10161C !important;
 }
 
 html[data-theme="light"] :where(
@@ -152,26 +152,26 @@ html[data-theme="light"] :where(
   [class*="border-zinc"],
   [class*="border-stone"]
 ) {
-  border-color: rgba(5, 5, 5, 0.18) !important;
+  border-color: rgba(4, 10, 16, 0.18) !important;
 }
 
 html[data-theme="light"] .site-nav {
   background: rgba(255, 255, 255, 0.76) !important;
-  border-color: rgba(5, 5, 5, 0.34) !important;
-  box-shadow: 0 16px 46px rgba(5, 5, 5, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(4, 10, 16, 0.34) !important;
+  box-shadow: 0 16px 46px rgba(4, 10, 16, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
 }
 
 html[data-theme="light"] .site-nav-link {
-  color: rgba(5, 5, 5, 0.68) !important;
+  color: rgba(4, 10, 16, 0.68) !important;
 }
 
 html[data-theme="light"] .site-nav-link:hover,
 html[data-theme="light"] .site-nav-link:focus-visible,
 html[data-theme="light"] .site-nav-link.is-active {
-  color: #050505 !important;
-  border-color: rgba(142, 219, 53, 0.82) !important;
-  background: #8EDB35 !important;
-  box-shadow: 0 0 18px rgba(142, 219, 53, 0.18) !important;
+  color: #040A10 !important;
+  border-color: rgba(172, 219, 251, 0.82) !important;
+  background: #ACDBFB !important;
+  box-shadow: 0 0 18px rgba(172, 219, 251, 0.18) !important;
 }
 
 html[data-theme="light"] :where(
@@ -188,7 +188,7 @@ html[data-theme="light"] :where(
   .text-zinc-50,
   .text-zinc-100
 ) {
-  color: #050505 !important;
+  color: #040A10 !important;
 }
 
 html[data-theme="light"] :where(
@@ -204,7 +204,7 @@ html[data-theme="light"] :where(
   .text-zinc-400,
   .text-zinc-500
 ) {
-  color: rgba(5, 5, 5, 0.64) !important;
+  color: rgba(4, 10, 16, 0.64) !important;
 }
 
 html[data-theme="light"] body :where(
@@ -229,11 +229,11 @@ html[data-theme="light"] body :where(
 ):not(
   [class*="green"],
   [class*="lime"],
-  [style*="#8EDB35"],
-  [style*="#8edb35"],
-  [style*="142, 219, 53"]
+  [style*="#ACDBFB"],
+  [style*="#acdbfb"],
+  [style*="172, 219, 251"]
 ) {
-  color: #111111 !important;
+  color: #10161C !important;
 }
 
 html[data-theme="light"] :where(
@@ -256,12 +256,12 @@ html[data-theme="light"] :where(
   .profile-mini span,
   .profile-mini-link,
   .timeline-node > span,
-  .text-\[\#8EDB35\],
-  [style*="#8EDB35"],
-  [style*="#8edb35"],
-  [style*="142, 219, 53"]
+  .text-\[\#ACDBFB\],
+  [style*="#ACDBFB"],
+  [style*="#acdbfb"],
+  [style*="172, 219, 251"]
 ) {
-  color: #8EDB35 !important;
+  color: #ACDBFB !important;
 }
 
 html[data-theme="light"] body :is(
@@ -284,12 +284,12 @@ html[data-theme="light"] body :is(
   .profile-mini span,
   .profile-mini-link,
   .timeline-node > span,
-  .text-\[\#8EDB35\]
+  .text-\[\#ACDBFB\]
 ),
-html[data-theme="light"] body [style*="#8EDB35"],
-html[data-theme="light"] body [style*="#8edb35"],
-html[data-theme="light"] body [style*="142, 219, 53"] {
-  color: #8EDB35 !important;
+html[data-theme="light"] body [style*="#ACDBFB"],
+html[data-theme="light"] body [style*="#acdbfb"],
+html[data-theme="light"] body [style*="172, 219, 251"] {
+  color: #ACDBFB !important;
 }
 
 html[data-theme="light"] :where(.works-layer, .works-layer *) {
@@ -297,7 +297,7 @@ html[data-theme="light"] :where(.works-layer, .works-layer *) {
 }
 
 html[data-theme="light"] .works-layer {
-  background: #050505 !important;
+  background: #040A10 !important;
   color: #ffffff !important;
 }
 
@@ -314,7 +314,7 @@ html[data-theme="light"] :where(
   .works-layer-copy span,
   .works-layer-copy a
 ) {
-  color: #8EDB35 !important;
+  color: #ACDBFB !important;
 }
 
 html[data-theme="light"] .works-title-split .works-title-en {
@@ -347,7 +347,7 @@ html[data-theme="light"] body .works-section :is(
   .works-layer-copy span,
   .works-layer-copy a
 ) {
-  color: #8EDB35 !important;
+  color: #ACDBFB !important;
 }
 
 html[data-theme="light"] body .works-section .works-category.is-empty {
@@ -365,7 +365,7 @@ html[data-theme="light"] :where(
   .contact-card
 ) {
   background: rgba(255, 255, 255, 0.86) !important;
-  box-shadow: 0 18px 60px rgba(5, 5, 5, 0.08) !important;
+  box-shadow: 0 18px 60px rgba(4, 10, 16, 0.08) !important;
 }
 
 html[data-theme="light"] .project-stack .meta-grid {
@@ -381,14 +381,14 @@ html[data-theme="light"] .timeline-node:not(.is-current) {
 
 html[data-theme="light"] .timeline-node.is-current {
   background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(142, 219, 53, 0.62) !important;
-  box-shadow: 0 18px 60px rgba(5, 5, 5, 0.08) !important;
+  border-color: rgba(172, 219, 251, 0.62) !important;
+  box-shadow: 0 18px 60px rgba(4, 10, 16, 0.08) !important;
 }
 
 html[data-theme="light"] .profile-section::before {
   background:
-    linear-gradient(90deg, rgba(142, 219, 53, 0.14) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.055) 1px, transparent 1px) !important;
+    linear-gradient(90deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(4, 10, 16, 0.055) 1px, transparent 1px) !important;
   opacity: 0.38 !important;
 }
 
@@ -398,7 +398,7 @@ html[data-theme="light"] :where(
   .profile-detail-grid,
   .profile-mini div
 ) {
-  border-color: rgba(5, 5, 5, 0.18) !important;
+  border-color: rgba(4, 10, 16, 0.18) !important;
 }
 
 html[data-theme="light"] :where(
@@ -406,20 +406,20 @@ html[data-theme="light"] :where(
   .profile-detail-grid div + div,
   .profile-mini div + div
 ) {
-  border-left-color: rgba(5, 5, 5, 0.18) !important;
+  border-left-color: rgba(4, 10, 16, 0.18) !important;
 }
 
 html[data-theme="light"] .profile-model-panel {
   background-color: rgba(255, 255, 255, 0.72) !important;
   background-image:
-    radial-gradient(circle at 50% 45%, rgba(142, 219, 53, 0.08), transparent 34%),
-    linear-gradient(90deg, rgba(142, 219, 53, 0.14) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.08) 1px, transparent 1px) !important;
-  border-color: rgba(142, 219, 53, 0.42) !important;
+    radial-gradient(circle at 50% 45%, rgba(172, 219, 251, 0.08), transparent 34%),
+    linear-gradient(90deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(4, 10, 16, 0.08) 1px, transparent 1px) !important;
+  border-color: rgba(172, 219, 251, 0.42) !important;
 }
 
 html[data-theme="light"] .profile-model-panel::after {
-  border-color: rgba(5, 5, 5, 0.14) !important;
+  border-color: rgba(4, 10, 16, 0.14) !important;
 }
 
 html[data-theme="light"] :where(
@@ -430,8 +430,8 @@ html[data-theme="light"] :where(
   .grid-bg
 ) {
   background-image:
-    linear-gradient(rgba(5, 5, 5, 0.075) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(5, 5, 5, 0.075) 1px, transparent 1px) !important;
+    linear-gradient(rgba(4, 10, 16, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(4, 10, 16, 0.075) 1px, transparent 1px) !important;
 }
 
 html[data-theme="light"] .chronology-map::after {
@@ -462,8 +462,8 @@ html[data-theme="light"] :where(
 }
 
 .theme-dot-light.is-active {
-  border-color: #050505 !important;
-  box-shadow: 0 0 0 2px rgba(5, 5, 5, 0.08) !important;
+  border-color: #040A10 !important;
+  box-shadow: 0 0 0 2px rgba(4, 10, 16, 0.08) !important;
 }
 
 .theme-dot-dark.is-active {

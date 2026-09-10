@@ -99,7 +99,7 @@ const startsVisible = !shouldHideAtTop;
       overlay.style.setProperty('--theme-reveal-x', `${originX}px`);
       overlay.style.setProperty('--theme-reveal-y', `${originY}px`);
       overlay.style.setProperty('--theme-reveal-radius', `${radius}px`);
-      overlay.style.background = theme === 'light' ? '#ffffff' : '#050505';
+      overlay.style.background = theme === 'light' ? '#ffffff' : '#040A10';
       document.body.appendChild(overlay);
 
       window.requestAnimationFrame(() => {
@@ -243,9 +243,9 @@ const startsVisible = !shouldHideAtTop;
     max-width: calc(100vw - 2rem);
     overflow-x: auto;
     scrollbar-width: none;
-    border: 1px solid rgba(142, 219, 53, 0.34);
+    border: 1px solid rgba(172, 219, 251, 0.34);
     border-radius: 12px;
-    background: rgba(8, 8, 8, 0.62);
+    background: rgba(7, 13, 19, 0.62);
     padding: 0.38rem;
     backdrop-filter: blur(20px);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -277,10 +277,10 @@ const startsVisible = !shouldHideAtTop;
   .site-nav-link:hover,
   .site-nav-link:focus-visible,
   .site-nav-link.is-active {
-    color: #050505;
-    border-color: rgba(142, 219, 53, 0.78);
-    background: #8EDB35;
-    box-shadow: 0 0 22px rgba(142, 219, 53, 0.22);
+    color: #040A10;
+    border-color: rgba(172, 219, 251, 0.78);
+    background: #ACDBFB;
+    box-shadow: 0 0 22px rgba(172, 219, 251, 0.22);
     outline: none;
     transform: translateY(-1px);
   }
@@ -319,12 +319,12 @@ const startsVisible = !shouldHideAtTop;
   }
 
   .theme-dot-dark {
-    background: #050505;
+    background: #040A10;
   }
 
   .theme-dot-light.is-active {
-    border-color: #050505;
-    box-shadow: 0 0 0 2px rgba(5, 5, 5, 0.08);
+    border-color: #040A10;
+    box-shadow: 0 0 0 2px rgba(4, 10, 16, 0.08);
   }
 
   .theme-dot-light:not(.is-active) {

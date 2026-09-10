@@ -3,8 +3,10 @@
 // 终极完美版：已修复 Canvas 透明度叠加黑屏 Bug，视频通透透出！
 ---
 
-<div id="liquid-nav-root" class="relative w-screen h-screen bg-[#0a0a0a] overflow-hidden font-mono select-none">
+<div id="liquid-nav-root" class="relative w-screen h-screen bg-[#090F15] overflow-hidden font-mono select-none">
   
+  <!-- 注意：此原型使用的背景视频（15MB）已移出 public/，正式站点不再加载它。
+       如需重新启用，请先把 archive/showcase-bg.mp4 复制回 public/。 -->
   <video 
     id="bg-video"
     src="/showcase-bg.mp4" 
@@ -18,7 +20,7 @@
   ></video>
 
   <div class="absolute top-8 right-8 hidden text-right pointer-events-none z-20 md:block">
-    <div class="text-[#8EDB35] text-[10px] tracking-[0.4em] font-bold">SECTION // 02_WORKS_HUB</div>
+    <div class="text-[#ACDBFB] text-[10px] tracking-[0.4em] font-bold">SECTION // 02_WORKS_HUB</div>
     <div class="text-neutral-500 text-[10px] mt-1 tracking-widest">BACKGROUND: DYNAMIC_VIDEO</div>
   </div>
 
@@ -83,7 +85,7 @@
     layoutPills();
   }
 
-  const GREEN = '#8EDB35';
+  const ACCENT = '#ACDBFB';
   
   const FONT_STACK = '"Noto Sans SC Local", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif';
   const templates = [
@@ -300,7 +302,7 @@
     }
     // 👇 核心洗刷修复：先擦除，再画透明底，永保 75% 恒定透视率！
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.75)';
+    ctx.fillStyle = 'rgba(9, 15, 21, 0.75)';
     ctx.fillRect(0, 0, width, height);
 
     if (mobile) {
@@ -344,7 +346,7 @@
     }
 
     ctx.save();
-    ctx.fillStyle = GREEN;
+    ctx.fillStyle = ACCENT;
     if (mobile) {
       ctx.globalAlpha = 0.12;
       pills.forEach(p => {
@@ -393,15 +395,15 @@
       const isPressed = mobile && pressedPill === p;
 
       if (isPressed) {
-        ctx.fillStyle = GREEN;
-        ctx.shadowColor = GREEN;
+        ctx.fillStyle = ACCENT;
+        ctx.shadowColor = ACCENT;
         ctx.shadowBlur = 26;
         ctx.beginPath();
         ctx.roundRect(p.x - 3, p.y - 3, p.w + 6, p.h + 6, 18);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        ctx.fillStyle = '#050505';
+        ctx.fillStyle = '#040A10';
         ctx.font = `900 ${p.fontSize}px ${FONT_STACK}`;
         ctx.fillText(getPillText(p), cx, cy);
       } else if (p.locked && !mobile) {
@@ -410,9 +412,9 @@
         ctx.fillText(getPillText(p), cx, cy);
       } else {
         const radius = mobile ? 15 : 18;
-        ctx.strokeStyle = `rgba(142, 219, 53, ${0.45 + breath * 0.45})`;
+        ctx.strokeStyle = `rgba(172, 219, 251, ${0.45 + breath * 0.45})`;
         ctx.lineWidth = mobile ? 1.2 + breath * 1.1 : 1.25 + breath * 1.25;
-        ctx.shadowColor = GREEN;
+        ctx.shadowColor = ACCENT;
         ctx.shadowBlur = mobile ? 9 + breath * 14 : 12 + breath * 22;
         ctx.beginPath();
         ctx.roundRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1, radius);
@@ -427,7 +429,7 @@
     });
 
     if (!lockedPill && !mobile) {
-      ctx.fillStyle = '#0a0a0a';
+      ctx.fillStyle = '#090F15';
       ctx.beginPath();
       ctx.arc(bubbleX, bubbleY, 4, 0, Math.PI * 2);
       ctx.fill();

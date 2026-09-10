@@ -1,25 +1,9 @@
 ---
 // src/pages/dual.astro
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 import DualTrackGallery from '../components/DualTrackGallery.astro';
-import PureTransition from '../components/PureTransition.astro';
-import SiteHeader from '../components/SiteHeader.astro';
 ---
 
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dual Track Gallery</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com">
-  <script src="/scripts/font-loader.js" is:inline></script>
-</head>
-<body class="w-screen h-screen overflow-hidden bg-[#0a0a0a]">
-  <PureTransition />
-  <SiteHeader />
+<Layout title="Dual Track Gallery" bodyClass="w-screen h-screen overflow-hidden bg-[#090F15]">
   <DualTrackGallery />
-</body>
-</html>
+</Layout>

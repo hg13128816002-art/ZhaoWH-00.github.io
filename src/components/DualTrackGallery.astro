@@ -10,29 +10,29 @@ import '../styles/global.css';
   }
 </style>
 
-<div class="relative w-screen h-screen bg-[#0a0a0a] flex overflow-hidden select-none font-mono">
+<div class="relative w-screen h-screen bg-[#090F15] flex overflow-hidden select-none font-mono">
   
   <div id="gallery-container" class="relative w-[65%] h-full overflow-hidden border-r border-neutral-900 cursor-crosshair">
     <canvas id="gallery-canvas" class="absolute inset-0 block w-full h-full"></canvas>
   </div>
 
-  <div class="w-[35%] h-full bg-[#0a0a0a] flex flex-col justify-between p-12 pointer-events-none z-20">
+  <div class="w-[35%] h-full bg-[#090F15] flex flex-col justify-between p-12 pointer-events-none z-20">
     <div class="text-neutral-700 text-xs tracking-[0.3em]">
       <span>SYSTEM // CONVEYOR_TRACK_V3 (STABLE)</span>
     </div>
     
-    <div id="filename-display" class="text-[#8EDB35] text-xl font-bold tracking-tight opacity-0 transition-opacity duration-200"></div>
+    <div id="filename-display" class="text-[#ACDBFB] text-xl font-bold tracking-tight opacity-0 transition-opacity duration-200"></div>
 
     <div class="text-neutral-800 text-[10px] tracking-widest">
       <span>[ 65% VIEWPORT DOMINANCE // MASONRY_FLOW ]</span>
     </div>
   </div>
 
-  <div id="deep-zoom-overlay" class="fixed inset-0 z-[10020] bg-[#050505] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+  <div id="deep-zoom-overlay" class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
     
     <div class="absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
-      <div id="zoom-hud" class="text-[#8EDB35] text-[10px] tracking-[0.2em] opacity-80">ZOOM: 100% // DRAG_TO_PAN</div>
-      <div id="close-viewer" class="text-[#8EDB35] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#0a0a0a] px-4 py-2 border border-[#8EDB35]/30 hover:border-[#8EDB35]">
+      <div id="zoom-hud" class="text-[#ACDBFB] text-[10px] tracking-[0.2em] opacity-80">ZOOM: 100% // DRAG_TO_PAN</div>
+      <div id="close-viewer" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
         [ X ] TERMINATE_VIEW
       </div>
     </div>
@@ -45,6 +45,8 @@ import '../styles/global.css';
 </div>
 
 <script>
+  import { asset } from '../data/assets';
+
   // ================= 1. 基础引擎初始化 =================
   const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
   canvas.style.visibility = 'hidden';
@@ -66,45 +68,45 @@ import '../styles/global.css';
 
   const BASE_SPEED = 3.0;
   let currentSpeedMultiplier = 1.0; 
-  const GREEN = '#8EDB35';
+  const ACCENT = '#ACDBFB';
 
   const FONT_STACK = '"Noto Sans SC Local", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif';
 
   // ================= 2. 真实数据源 (33份机密档案) =================
   const projects = [
-    { title: "LIMINAL-临近边缘的幻想-海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3-%E6%B5%B7%E6%8A%A5.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》宣传海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF1%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景10", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF10%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF2%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF3%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景4", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF4%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景5", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF5%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景6", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF6%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景7", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF7%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景8", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF8%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "VR严肃游戏《未曾熄灭的》游戏场景9", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E6%B8%B8%E6%88%8F%E5%9C%BA%E6%99%AF9%20%E6%8B%B7%E8%B4%9D.webp" },
-    { title: "“婺源印象”画展导览册（节选）", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E2%80%9C%E5%A9%BA%E6%BA%90%E5%8D%B0%E8%B1%A1%E2%80%9D%E7%94%BB%E5%B1%95%E5%AF%BC%E8%A7%88%E5%86%8C%EF%BC%88%E8%8A%82%E9%80%89%EF%BC%89.webp" },
-    { title: "《人生是旷野，不是轨道》公益海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" },
-    { title: "《群体性孤独》公益海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" },
-    { title: "杂志排版练习", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%9D%82%E5%BF%97%E6%8E%92%E7%89%88%E7%BB%83%E4%B9%A0.webp" },
-    { title: "清迈良园导览路线图", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%AF%BC%E8%A7%88%E8%B7%AF%E7%BA%BF%E5%9B%BE.webp" },
-    { title: "艺术装置《starE》- P1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P1.webp" },
-    { title: "艺术装置《starE》- P2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P2.webp" },
-    { title: "艺术装置《starE》- P3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P3.webp" },
-    { title: "艺术装置《starE》- P4", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P4.webp" },
-    { title: "艺术装置《starE》- P5", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P5.webp" },
-    { title: "艺术装置《starE》- P6", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P6.webp" },
-    { title: "艺术装置《starE》- P7", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" },
-    { title: "艺术装置《starE》- P8", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P8.webp" },
-    { title: "艺术装置《starE》- P9", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P9.webp" },
-    { title: "艺术装置《任尔EWSN风？》- P1", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P1.webp" },
-    { title: "艺术装置《任尔EWSN风？》- P2", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P2.webp" },
-    { title: "艺术装置《任尔EWSN风？》- P3", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8A%E4%BB%BB%E5%B0%94EWSN%E9%A3%8E%EF%BC%9F%E3%80%8B-P3.webp" },
-    { title: "节气海报", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%8A%82%E6%B0%94%E6%B5%B7%E6%8A%A5.webp" },
-    { title: "《合成的沉默》Synthetic Silence", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E5%90%88%E6%88%90%E7%9A%84%E6%B2%89%E9%BB%98%E3%80%8B%20%28Synthetic%20Silence%29.webp" },
-    { title: "自画像", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" },
-    { title: "风景写生", src: "https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" }
+    { title: "LIMINAL-临近边缘的幻想-海报", src: asset('images/Liminal-临近边缘的幻想-海报.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》宣传海报", src: asset('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景1", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景10", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景10 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景2", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景2 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景3", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景3 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景4", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景4 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景5", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景5 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景6", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景6 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景7", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景7 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景8", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景8 拷贝.webp') },
+    { title: "VR严肃游戏《未曾熄灭的》游戏场景9", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景9 拷贝.webp') },
+    { title: "“婺源印象”画展导览册（节选）", src: asset('images/“婺源印象”画展导览册（节选）.webp') },
+    { title: "《人生是旷野，不是轨道》公益海报", src: asset('images/《人生是旷野，不是轨道》工艺海报.webp') },
+    { title: "《群体性孤独》公益海报", src: asset('images/《群体性孤独》公益海报.webp') },
+    { title: "杂志排版练习", src: asset('images/杂志排版练习.webp') },
+    { title: "清迈良园导览路线图", src: asset('images/清迈良园导览路线图.webp') },
+    { title: "艺术装置《starE》- P1", src: asset('images/艺术装置《starE》- P1.webp') },
+    { title: "艺术装置《starE》- P2", src: asset('images/艺术装置《starE》- P2.webp') },
+    { title: "艺术装置《starE》- P3", src: asset('images/艺术装置《starE》- P3.webp') },
+    { title: "艺术装置《starE》- P4", src: asset('images/艺术装置《starE》- P4.webp') },
+    { title: "艺术装置《starE》- P5", src: asset('images/艺术装置《starE》- P5.webp') },
+    { title: "艺术装置《starE》- P6", src: asset('images/艺术装置《starE》- P6.webp') },
+    { title: "艺术装置《starE》- P7", src: asset('images/艺术装置《starE》- P7.webp') },
+    { title: "艺术装置《starE》- P8", src: asset('images/艺术装置《starE》- P8.webp') },
+    { title: "艺术装置《starE》- P9", src: asset('images/艺术装置《starE》- P9.webp') },
+    { title: "艺术装置《任尔EWSN风？》- P1", src: asset('images/艺术装置《任尔EWSN风？》-P1.webp') },
+    { title: "艺术装置《任尔EWSN风？》- P2", src: asset('images/艺术装置《任尔EWSN风？》-P2.webp') },
+    { title: "艺术装置《任尔EWSN风？》- P3", src: asset('images/艺术装置《任尔EWSN风？》-P3.webp') },
+    { title: "节气海报", src: asset('images/节气海报.webp') },
+    { title: "《合成的沉默》Synthetic Silence", src: asset('images/《合成的沉默》 (Synthetic Silence).webp') },
+    { title: "自画像", src: asset('images/赵文浩自画像.webp') },
+    { title: "风景写生", src: asset('images/风景写生.webp') }
   ];
 
   projects.forEach((p: any) => {
@@ -162,7 +164,7 @@ import '../styles/global.css';
   });
 
   function animate() {
-    ctx.fillStyle = '#0a0a0a';
+    ctx.fillStyle = '#090F15';
     ctx.fillRect(0, 0, width, height);
     
     const colWidth = width / 2;
@@ -309,18 +311,18 @@ import '../styles/global.css';
     if (card.project.imgObj && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
       ctx.drawImage(card.project.imgObj, drawX, drawY, drawW, drawH);
     } else {
-      ctx.fillStyle = '#111';
+      ctx.fillStyle = '#10161C';
       ctx.fillRect(drawX, drawY, drawW, drawH);
     }
 
-    ctx.strokeStyle = card.hovered ? GREEN : '#2a2a2a';
+    ctx.strokeStyle = card.hovered ? ACCENT : '#292F35';
     ctx.lineWidth = card.hovered ? 2 : 1;
     ctx.strokeRect(drawX, drawY, drawW, drawH);
 
     if (card.hovered) {
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.8)';
+      ctx.fillStyle = 'rgba(4, 10, 16, 0.8)';
       ctx.fillRect(drawX, drawY + drawH - 35, drawW, 35);
-      ctx.fillStyle = GREEN;
+      ctx.fillStyle = ACCENT;
       ctx.font = `12px ${FONT_STACK}`;
       ctx.fillText("> " + card.project.title, drawX + 15, drawY + drawH - 12);
     }

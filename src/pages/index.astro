@@ -1,10 +1,10 @@
 ---
 // src/pages/index.astro
-// 终极无Bug生产版：严密三体 Staggered 宇宙 + 绝对单层信仰环 + 完美字符朝向 (头顶指心)
-import '../styles/global.css';
+// 首页：英雄区粒子宇宙 + 创作编年时间轴 + Works 作品叠层 + Profile 3D 模型
+import Layout from '../layouts/Layout.astro';
 import Preloader from '../components/Preloader.astro';
-import PureTransition from '../components/PureTransition.astro';
-import SiteHeader from '../components/SiteHeader.astro';
+import { timelineNodes } from '../data/timeline';
+import { workCategories, works } from '../data/works';
 ---
 
 <style>
@@ -41,18 +41,12 @@ import SiteHeader from '../components/SiteHeader.astro';
   }
 </style>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZHAO WENHAO // PORTFOLIO</title>
-  <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/NotoSansSC-Black.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com">
-  <script src="/scripts/font-loader.js" is:inline></script>
-  <script type="importmap" is:inline>
+<Layout
+  title="ZHAO WENHAO // PORTFOLIO"
+  bodyClass="w-full min-h-screen bg-[#040A10] overflow-x-hidden select-none relative"
+  bodyStyle="margin: 0; padding: 0; background-color: #040A10;"
+>
+  <script type="importmap" is:inline slot="head">
     {
       "imports": {
         "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
@@ -60,40 +54,37 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
     }
   </script>
-</head>
-<body class="w-full min-h-screen bg-[#050505] overflow-x-hidden select-none relative" style="margin: 0; padding: 0; background-color: #050505;">
-  <PureTransition />
-  <SiteHeader />
+
   <Preloader />
 
   <section id="home-hero" class="relative w-full h-screen overflow-hidden">
   <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex flex-col justify-center opacity-25">
     <div class="w-[280vw] -translate-x-[80vw] rotate-[-24deg] flex flex-col gap-2 select-none">
-      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-right text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
-      <div class="marquee-left text-[#262626] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
+      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
         ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
       </div>
     </div>
@@ -103,9 +94,9 @@ import SiteHeader from '../components/SiteHeader.astro';
 
   <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center">
     <div class="hero-title-stack flex flex-col items-center justify-center gap-2 select-none">
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">MAKE</h1>
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">SOMETHING</h1>
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#8EDB35] drop-shadow-[0_0_35px_rgba(142,219,53,0.4)]" style="color: #8EDB35;">DIFFERENT<span class="hero-dot">.</span></h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">MAKE</h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">SOMETHING</h1>
+      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">DIFFERENT<span class="hero-dot">.</span></h1>
     </div>
 
       <div class="absolute bottom-8 inset-x-0 z-20 px-5 text-center pointer-events-none md:bottom-10">
@@ -115,16 +106,18 @@ import SiteHeader from '../components/SiteHeader.astro';
     </div>
   </div>
 
-  <div id="warp-flash" class="absolute inset-0 bg-[#8EDB35] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  <div id="warp-flash" class="absolute inset-0 bg-[#ACDBFB] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
   </section>
 
   <main class="home-sections">
     <section class="home-section chronology-section" aria-labelledby="creative-chronology-title">
       <div class="chronology-pin">
         <div class="chronology-copy">
-          <div class="section-kicker">01 / CREATIVE CHRONOLOGY</div>
-          <div class="section-head">
-            <h2 id="creative-chronology-title">TIMELINE</h2>
+          <div class="chronology-heading">
+            <div class="section-kicker">01 / CREATIVE CHRONOLOGY</div>
+            <div class="section-head">
+              <h2 id="creative-chronology-title">TIMELINE</h2>
+            </div>
           </div>
           <div class="chronology-progress">
             <span data-timeline-current>00</span>
@@ -135,97 +128,69 @@ import SiteHeader from '../components/SiteHeader.astro';
 
         <div class="chronology-map" aria-label="创作编年时间轴">
           <div class="chronology-world" data-timeline-world>
-            <svg class="chronology-svg" viewBox="0 0 1000 2140" preserveAspectRatio="none" aria-hidden="true">
+            <svg class="chronology-svg" viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
               <defs>
                 <clipPath id="timeline-live-clip" clipPathUnits="userSpaceOnUse">
-                  <rect data-timeline-live-clip x="-100" y="-100" width="1200" height="100" />
+                  <rect data-timeline-live-clip x="-40" y="-40" width="0" height="520" />
                 </clipPath>
               </defs>
-              <path
-                class="chronology-path is-ghost"
-                d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
-              />
+              <path class="chronology-path is-ghost" d="M -40 300 L 1240 300" />
               <path
                 class="chronology-path is-live"
                 data-timeline-path
                 clip-path="url(#timeline-live-clip)"
-                d="M 500 -20 L 460 140 L 590 300 L 440 460 L 615 640 L 470 820 L 595 980 L 430 1140 L 610 1300 L 470 1460 L 620 1620 L 450 1780 L 585 1940 L 520 2140"
+                d="M -40 300 L 1240 300"
               />
             </svg>
             <span class="timeline-head" data-timeline-head aria-hidden="true"></span>
 
-            <a class="timeline-node node-1" href="/profile" data-timeline-node data-x="460" data-y="140">
-              <span>2007.01.06 / LIFE</span>
-              <strong>出生</strong>
-              <em>故事从这里开始。</em>
-            </a>
-            <a class="timeline-node node-2 has-media" href="/dual" data-timeline-node data-x="590" data-y="300">
-              <span>2020.03 / LIFE</span>
-              <strong>萌生艺术与设计的想法</strong>
-              <em>第一次认真把未来和创作联系在一起。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B9%85%E7%94%B5%E5%AD%90%E7%BB%98%E7%94%BB%E4%BD%9C%E5%93%81.webp" alt="我的第一幅电子绘画作品" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-3" href="/profile" data-timeline-node data-x="440" data-y="460">
-              <span>2021.08 / LIFE</span>
-              <strong>正式走上艺术道路</strong>
-              <em>与家人协商之后，选择把艺术作为真正要走的方向。</em>
-            </a>
-            <a class="timeline-node node-4 has-media" href="/dual" data-timeline-node data-x="615" data-y="640">
-              <span>2022-2025 / LIFE + WORKS</span>
-              <strong>深圳市盐田高级中学美术班</strong>
-              <em>初步接触设计，并完成一些早期视觉作品。</em>
-              <span class="timeline-media-pair">
-                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E4%BA%BA%E7%94%9F%E6%98%AF%E6%97%B7%E9%87%8E%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%BD%A8%E9%81%93%E3%80%8B%E5%B7%A5%E8%89%BA%E6%B5%B7%E6%8A%A5.webp" alt="人生是旷野，不是轨道公益海报" loading="lazy" decoding="async">
-                <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E7%BE%A4%E4%BD%93%E6%80%A7%E5%AD%A4%E7%8B%AC%E3%80%8B%E5%85%AC%E7%9B%8A%E6%B5%B7%E6%8A%A5.webp" alt="群体性孤独公益海报" loading="lazy" decoding="async">
-              </span>
-            </a>
-            <a class="timeline-node node-5" href="/profile" data-timeline-node data-x="470" data-y="820">
-              <span>2025.09 / LIFE</span>
-              <strong>进入北京师范大学珠海校区</strong>
-              <em>开始艺术设计学专业的学习。</em>
-            </a>
-            <a class="timeline-node node-6 has-media" href="/omni#yuan" data-timeline-node data-x="595" data-y="980">
-              <span>2025.11 / WORK</span>
-              <strong>纪录片《缘》</strong>
-              <em>影像练习与叙事氛围的阶段性尝试。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘短片封面" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-7 has-media" href="/project-detail#stare-ewsn" data-timeline-node data-x="430" data-y="1140">
-              <span>2025.12 / WORK</span>
-              <strong>《starE》/《任尔 EWSN 风？》</strong>
-              <em>围绕网络舆论场与磁场隐喻展开的装置艺术。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-8 has-media" href="/project-detail#liminal" data-timeline-node data-x="610" data-y="1300">
-              <span>2026.01 / WORK</span>
-              <strong>《Liminal-临近边缘的幻想》</strong>
-              <em>关于算法、虚构与真实边界的实验短片。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-9 has-media" href="/project-detail#never-extinguished" data-timeline-node data-x="470" data-y="1460">
-              <span>2026.01 / WORK</span>
-              <strong>VR 游戏《Never Extinguished》</strong>
-              <em>以东北下岗潮为背景的 VR 严肃游戏原型。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="Never Extinguished 宣传海报" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-10 has-media" href="/project-detail#nazhou-ar" data-timeline-node data-x="620" data-y="1620">
-              <span>2026.04 / WORK</span>
-              <strong>AR 游戏 Demo《画意那洲·文化寻根》</strong>
-              <em>把景区导览转化为带有探索循环的 AR 体验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="画意那洲 AR 导览 Demo 封面" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-11 has-media" href="/project-detail#miao-generator" data-timeline-node data-x="450" data-y="1780">
-              <span>2026.06 / WORK</span>
-              <strong>交互网页《施洞苗绣纹样生成器》</strong>
-              <em>以非遗纹样为素材的数字共创与交互生成实验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面" loading="lazy" decoding="async">
-            </a>
-            <a class="timeline-node node-12 has-media" href="/project-detail#shadow-shell" data-timeline-node data-x="585" data-y="1940">
-              <span>2026.06 / WORK</span>
-              <strong>建筑设计《Shadow Shell》</strong>
-              <em>围绕光影、遮蔽与临时结构展开的建筑模型实验。</em>
-              <img class="timeline-node-media" src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/Shadow%20Shell%201.webp" alt="Shadow Shell 建筑模型" loading="lazy" decoding="async">
-            </a>
+            {timelineNodes.map((node, index) => {
+              const [datePart = '', typePart = ''] = node.meta.split('/');
+              const media = node.media ?? [];
+              return (
+                <a
+                  class:list={['timeline-node', { 'has-media': media.length > 0 }]}
+                  href={node.href}
+                  data-timeline-node
+                  data-node-index={index}
+                  aria-label={`${node.meta.replace('/', '·')} — ${node.title}`}
+                >
+                  <span class="timeline-leader" aria-hidden="true"></span>
+                  <span class="timeline-tick" aria-hidden="true">
+                    <i></i>
+                    <b>{datePart.trim()}</b>
+                    <small>{typePart.trim()}</small>
+                  </span>
+                  <span class="timeline-node-body">
+                    <span class="timeline-node-meta">{node.meta}</span>
+                    <strong>{node.title}</strong>
+                    <em>{node.note}</em>
+                    {media.length === 1 && (
+                      <img
+                        class="timeline-node-media"
+                        src={media[0].src}
+                        alt={media[0].alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    {media.length > 1 && (
+                      <span class="timeline-media-pair">
+                        {media.map((item) => (
+                          <img
+                            class="timeline-node-media"
+                            src={item.src}
+                            alt={item.alt}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ))}
+                      </span>
+                    )}
+                  </span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -236,148 +201,61 @@ import SiteHeader from '../components/SiteHeader.astro';
         <div class="works-control">
           <h2 id="home-works-title"><span aria-hidden="true"></span>WORKS CATEGORY</h2>
           <div class="works-category-list" aria-label="作品分类">
-            <button class="works-category is-active" type="button" data-work-category="digital">
-              <span>1:</span> 数字艺术
-            </button>
-            <button class="works-category" type="button" data-work-category="film">
-              <span>2:</span> 短片
-            </button>
-            <button class="works-category" type="button" data-work-category="photo">
-              <span>3:</span> 摄影作品
-            </button>
-            <button class="works-category" type="button" data-work-category="other">
-              <span>4:</span> 其他
-            </button>
+            {workCategories.map((category) => (
+              <button
+                class:list={['works-category', { 'is-active': category.id === works[0].category }]}
+                type="button"
+                data-work-category={category.id}
+              >
+                <span>{category.index}:</span> {category.label}
+              </button>
+            ))}
           </div>
           <div class="works-progress" aria-live="polite">
             <span data-work-current>01</span>
             <i></i>
-            <span data-work-total>11</span>
+            <span data-work-total>{String(works.length).padStart(2, '0')}</span>
           </div>
         </div>
 
         <div class="works-stage" aria-label="首页作品预览叠层">
-          <article class="works-layer is-active" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="/synesthesia-canvas-cover.svg" alt="通感画布互动音乐创作界面预览" loading="eager" decoding="async">
-            <div class="works-layer-copy">
-              <span>互动音乐网页 / 2026</span>
-              <h3 class="works-title-split">
-                <span class="works-title-cn">通感画布</span>
-                <span class="works-title-en">Synesthesia Canvas</span>
-              </h3>
-              <p>把颜色、形状与位置实时翻译成音乐的浏览器乐器：在无限画布上绘制声音，编排节奏，并分享或导出自己的作品。</p>
-              <a href="https://synesthesia.zhaowenhao.design" target="_blank" rel="noopener noreferrer" aria-label="打开通感画布互动页面（新窗口）">打开互动页面 ↗</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/VR%E4%B8%A5%E8%82%83%E6%B8%B8%E6%88%8F%E3%80%8A%E6%9C%AA%E6%9B%BE%E7%86%84%E7%81%AD%E7%9A%84%E3%80%8B%E5%AE%A3%E4%BC%A0%E6%B5%B7%E6%8A%A5%20%E6%8B%B7%E8%B4%9D.webp" alt="未曾熄灭的作品海报" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>VR 严肃游戏 / 2026</span>
-              <h3>未曾熄灭的</h3>
-              <p>以 90 年代末东北车间为沉浸式场景，把历史创伤、怀旧疗法和自然交互整合进一套可体验的游戏叙事。</p>
-              <a href="/project-detail#never-extinguished">查看项目</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E9%82%A3%E6%B4%B2%E6%9D%91AR%E5%AF%BC%E8%A7%88DEMO%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2.png" alt="那洲村 AR 导览游戏 Demo" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>AR 导览游戏 / 2026</span>
-              <h3>画意那洲·文化寻根</h3>
-              <p>把景区导览转译为收集碎片的探索循环，让游客在移动和寻找中进入地方文化叙事。</p>
-              <a href="/project-detail#nazhou-ar">查看项目</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E6%96%BD%E6%B4%9E%E8%8B%97%E7%BB%A31.webp" alt="施洞苗绣纹样生成器界面" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>交互网页 / 2026</span>
-              <h3>施洞苗绣纹样生成器</h3>
-              <p>围绕施洞苗绣传统图腾展开的数字共创网页，用户可以组合纹样、调节构图与色板，并获得 AI 纹样评审反馈。</p>
-              <a href="/project-detail#miao-generator">查看项目</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="digital" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%89%BA%E6%9C%AF%E8%A3%85%E7%BD%AE%E3%80%8AstarE%E3%80%8B-%20P7.webp" alt="starE 装置作品" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>装置艺术 / 2025</span>
-              <h3>starE / 任尔 EWSN 风？</h3>
-              <p>以磁场隐喻网络舆论场，把抽象的公共讨论结构转化为可被观看和感知的实体装置。</p>
-              <a href="/project-detail#stare-ewsn">查看项目</a>
-            </div>
-          </article>
-
-          <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/Liminal%E5%B0%81%E9%9D%A2.png" alt="Liminal 短片封面" loading="lazy" decoding="async">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/Liminal-%E4%B8%B4%E8%BF%91%E8%BE%B9%E7%BC%98%E7%9A%84%E5%B9%BB%E6%83%B3.mp4" preload="none" muted playsinline></video>
-            <button class="works-play" type="button" aria-label="播放 Liminal">CLICK TO PLAY</button>
-            <div class="works-layer-copy">
-              <span>实验短片 / 2026</span>
-              <h3>Liminal 临近边缘的幻想</h3>
-              <p>围绕算法、虚构和真实边界展开的影像实验，讨论当代视觉经验中不断增殖的“非真实”。</p>
-              <a href="/project-detail#liminal">查看项目</a>
-            </div>
-          </article>
-
-          <article class="works-layer is-video" data-work-card data-work-category="film" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E7%BC%98%E5%B0%81%E9%9D%A2.png" alt="缘 短片封面" loading="lazy" decoding="async">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E7%BC%98.mp4" preload="none" muted playsinline></video>
-            <button class="works-play" type="button" aria-label="播放缘">CLICK TO PLAY</button>
-            <div class="works-layer-copy">
-              <span>影像练习</span>
-              <h3>缘</h3>
-              <p>从片段、节奏和情绪出发的短片作品，作为影像语言与叙事氛围的阶段性练习。</p>
-              <a href="/omni#yuan">进入视频页</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="photo" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E3%80%8A%E5%90%88%E6%88%90%E7%9A%84%E6%B2%89%E9%BB%98%E3%80%8B%20%28Synthetic%20Silence%29.webp" alt="《合成的沉默》摄影作品" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>摄影作品</span>
-              <h3 class="works-title-split">
-                <span class="works-title-cn">合成的沉默</span>
-                <span class="works-title-en">Synthetic Silence</span>
-              </h3>
-              <p>白色的三角几何体富有着一种无机质的情绪，在雨后湿润的、充满生活痕迹的砖块上，它们显得格格不入又极其安静。</p>
-              <a href="/dual">进入图片页</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E8%B5%B5%E6%96%87%E6%B5%A9%E8%87%AA%E7%94%BB%E5%83%8F.webp" alt="自画像" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>图像档案</span>
-              <h3>自画像</h3>
-              <p>以个人形象作为观察对象，尝试在静态图像中保留一种冷静、凝视和自我拆解的气质。</p>
-              <a href="/dual">进入图片页</a>
-            </div>
-          </article>
-
-          <article class="works-layer" data-work-card data-work-category="other" data-work-kind="image">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/images/%E9%A3%8E%E6%99%AF%E5%86%99%E7%94%9F.webp" alt="风景写生" loading="lazy" decoding="async">
-            <div class="works-layer-copy">
-              <span>图像档案</span>
-              <h3>风景写生</h3>
-              <p>从自然景观和现场观察中提取结构、色块与空间关系，为后续视觉系统积累素材。</p>
-              <a href="/dual">进入图片页</a>
-            </div>
-          </article>
-
-          <article class="works-layer is-video" data-work-card data-work-category="other" data-work-kind="video">
-            <img src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/posters/%E5%9C%9F%E5%9C%B0%E5%BA%99%E6%94%B9%E9%80%A0%E5%B0%81%E9%9D%A2.png" alt="清迈良园土地庙微改造封面" loading="lazy" decoding="async">
-            <video src="https://zhao-portfolio-assets.oss-cn-beijing.aliyuncs.com/videos/%E6%B8%85%E8%BF%88%E8%89%AF%E5%9B%AD%E5%9C%9F%E5%9C%B0%E5%BA%99%E5%BE%AE%E6%94%B9%E9%80%A0.mp4" preload="none" muted playsinline></video>
-            <button class="works-play" type="button" aria-label="播放清迈良园土地庙微改造">CLICK TO PLAY</button>
-            <div class="works-layer-copy">
-              <span>空间改造记录</span>
-              <h3>清迈良园土地庙微改造</h3>
-              <p>围绕小尺度公共空间的更新实践，记录场地、材料和地方信仰之间的关系。</p>
-              <a href="/omni#land-temple">进入视频页</a>
-            </div>
-          </article>
+          {works.map((item, index) => (
+            <article
+              class:list={['works-layer', { 'is-active': index === 0, 'is-video': item.kind === 'video' }]}
+              data-work-card
+              data-work-category={item.category}
+              data-work-kind={item.kind}
+            >
+              <img
+                src={item.image}
+                alt={item.imageAlt}
+                loading={item.eager ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              {item.video && <video src={item.video} preload="none" muted playsinline></video>}
+              {item.kind === 'video' && (
+                <button class="works-play" type="button" aria-label={item.playLabel}>CLICK TO PLAY</button>
+              )}
+              <div class="works-layer-copy">
+                <span>{item.era}</span>
+                {item.titleEn ? (
+                  <h3 class="works-title-split">
+                    <span class="works-title-cn">{item.title}</span>
+                    <span class="works-title-en">{item.titleEn}</span>
+                  </h3>
+                ) : (
+                  <h3>{item.title}</h3>
+                )}
+                <p>{item.description}</p>
+                <a
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  aria-label={item.linkLabel}
+                >{item.linkText}</a>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -615,7 +493,7 @@ import SiteHeader from '../components/SiteHeader.astro';
             n.y += (targetRingY - n.y) * 0.18;
 
             n.currentChar = creedString[n.targetCursorSlot];
-            ctx.fillStyle = '#8EDB35'; 
+            ctx.fillStyle = '#ACDBFB'; 
             ctx.font = 'bold 15px sans-serif'; 
 
             // ！！！完美几何秩序：头顶精确指心 ！！！
@@ -631,7 +509,7 @@ import SiteHeader from '../components/SiteHeader.astro';
             n.y += (cursorY - Math.sin(pullAngle) * 80 - n.y) * 0.1;
 
             n.currentChar = n.originalChar;
-            ctx.fillStyle = 'rgba(142, 219, 53, 0.4)'; 
+            ctx.fillStyle = 'rgba(172, 219, 251, 0.4)'; 
             ctx.font = `bold ${n.size * 0.8}px monospace`;
             ctx.translate(n.x, n.y);
             ctx.fillText(n.currentChar, 0, 0); 
@@ -642,7 +520,7 @@ import SiteHeader from '../components/SiteHeader.astro';
           n.y += (n.baseY - n.y) * 0.12;
           
           n.currentChar = n.originalChar;
-          ctx.fillStyle = n.type === 'ring' ? 'rgba(142, 219, 53, 0.25)' : 'rgba(120, 120, 120, 0.35)';
+          ctx.fillStyle = n.type === 'ring' ? 'rgba(172, 219, 251, 0.25)' : 'rgba(120, 120, 120, 0.35)';
           ctx.font = `bold ${n.size}px monospace`;
           ctx.translate(n.x, n.y);
           ctx.fillText(n.currentChar, 0, 0); 
@@ -702,6 +580,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     const chronologySection = document.querySelector('.chronology-section') as HTMLElement | null;
     const timelineMap = document.querySelector('.chronology-map') as HTMLElement | null;
     const timelineWorld = document.querySelector('[data-timeline-world]') as HTMLElement | null;
+    const timelineSvg = document.querySelector('.chronology-svg') as SVGSVGElement | null;
     const timelinePath = document.querySelector('[data-timeline-path]') as SVGPathElement | null;
     const timelineGhostPath = document.querySelector('.chronology-path.is-ghost') as SVGPathElement | null;
     const timelineLiveClip = document.querySelector('[data-timeline-live-clip]') as SVGRectElement | null;
@@ -709,36 +588,16 @@ import SiteHeader from '../components/SiteHeader.astro';
     const timelineNodes = Array.from(document.querySelectorAll('[data-timeline-node]')) as HTMLElement[];
     const timelineCurrent = document.querySelector('[data-timeline-current]') as HTMLElement | null;
     const mobileHomeQuery = window.matchMedia('(max-width: 899px)');
-    let timelineNodeStops = [] as number[];
     let timelineScrollRaf: number | undefined;
     let timelineSpringRaf: number | undefined;
     let timelineSpringTime = 0;
     let targetTimelineProgress = 0;
     let visualTimelineProgress = 0;
     let timelineVelocity = 0;
-    let lockedTimelineStopIndex = -1;
-    let lockedTimelineDirection = 0;
-    let isTimelineLockReady = false;
-    let visibleTimelineCardIndex = -1;
-    let releasedTimelineStopIndex = -1;
-    let releasedTimelineDirection = 0;
-    let timelineScrollAnimationRaf: number | undefined;
-    let timelineScrollAnimationTimeout: number | undefined;
-    let timelineCameraFocusRatio = 0.54;
-    let timelineVisibleCardSide: 'left' | 'right' = 'right';
-    let hasTimelineCameraFocus = false;
-    let timelineCameraRaf: number | undefined;
-    let timelineCameraTime = 0;
-    let hasTimelineCameraTransform = false;
-    let timelineCameraX = 0;
-    let timelineCameraY = 0;
-    let timelineCameraScale = 1;
-    let timelineCameraTargetX = 0;
-    let timelineCameraTargetY = 0;
-    let timelineCameraTargetScale = 1;
-    let timelineCameraVelocityX = 0;
-    let timelineCameraVelocityY = 0;
-    let timelineCameraVelocityScale = 0;
+    /** 轴线相对区块顶边的距离，用于把生长进度锚定到「轴线进入视口」的那一刻 */
+    let timelineContentOffset = 0;
+    /** 悬停/聚焦的节点索引；-1 表示回到「最后一个已生长节点」 */
+    let hoveredTimelineIndex = -1;
     let stableMobileViewportWidth = window.innerWidth;
     let stableMobileViewportHeight = window.innerHeight;
 
@@ -766,24 +625,9 @@ import SiteHeader from '../components/SiteHeader.astro';
       stableMobileViewportWidth = window.innerWidth;
       stableMobileViewportHeight = window.innerHeight;
       applyStableViewportMetrics();
-      hasTimelineCameraTransform = false;
-      hasTimelineCameraFocus = false;
-      timelineCameraVelocityX = 0;
-      timelineCameraVelocityY = 0;
-      timelineCameraVelocityScale = 0;
     }
 
     applyStableViewportMetrics();
-
-    function getTimelineSectionTop() {
-      if (!chronologySection) return 0;
-      return chronologySection.offsetTop;
-    }
-
-    function getTimelineTravelDistance() {
-      if (!chronologySection) return 1;
-      return Math.max(1, chronologySection.offsetHeight - getInteractionViewportHeight());
-    }
 
     function isNearInteractiveSection(section: HTMLElement, lead = 1.15, tail = 0.45) {
       const viewportHeight = getInteractionViewportHeight();
@@ -797,75 +641,149 @@ import SiteHeader from '../components/SiteHeader.astro';
         window.cancelAnimationFrame(timelineSpringRaf);
         timelineSpringRaf = undefined;
       }
-      if (timelineCameraRaf) {
-        window.cancelAnimationFrame(timelineCameraRaf);
-        timelineCameraRaf = undefined;
-      }
       timelineVelocity = 0;
-      timelineCameraVelocityX = 0;
-      timelineCameraVelocityY = 0;
-      timelineCameraVelocityScale = 0;
-      hasTimelineCameraTransform = false;
-      hasTimelineCameraFocus = false;
     }
 
+    /**
+     * 横向时间轴的几何：12 个节点在容器里等距铺开，纵向走一条明显的正弦折线。
+     * 每个节点都带一条引线牵回轴上的刻度；卡片分上下两排交错站位，
+     * 并跟着折线做半幅起伏，于是同屏 12 张既挤不到一起，也不会盖住轴线。
+     * 卡片本身不预先摆好，而是等生长头扫到该节点时才从引线末端长出来（见样式里的生长块）。
+     * 坐标全部取容器实测像素，SVG 路径与 HTML 刻度天然处在同一坐标空间。
+     */
     function setupTimelineGeometry() {
-      if (!timelinePath || !timelineNodes.length) return;
-      const points = timelineNodes.map((node) => ({
+      if (!timelinePath || !timelineMap || !timelineWorld || !timelineNodes.length) return;
+
+      const mapRect = timelineMap.getBoundingClientRect();
+      const width = Math.max(320, Math.round(mapRect.width));
+      const height = Math.max(240, Math.round(mapRect.height));
+      const lastIndex = Math.max(1, timelineNodes.length - 1);
+
+      // 卡片宽度 = 同一排里相邻卡片的中心距 - 间距；两端各留半张卡，首尾卡片正好贴住容器内边
+      const cardGap = Math.round(Math.min(26, Math.max(14, width * 0.016)));
+      const edgeInset = 6;
+      const pitch = Math.max(46, (width + cardGap - edgeInset * 2) / (lastIndex + 2));
+      const cardWidth = Math.max(96, Math.round(pitch * 2 - cardGap));
+      const padX = Math.round(cardWidth / 2 + edgeInset);
+      const span = Math.round(pitch * lastIndex);
+      const axisY = Math.round(height * 0.5);
+
+      timelineWorld.style.width = `${width}px`;
+      timelineWorld.style.height = `${height}px`;
+      // 先写入卡片宽度，下面量到的高度才是真实排版下的高度
+      timelineWorld.style.setProperty('--timeline-card-width', `${cardWidth}px`);
+
+      // 记录轴线在区块内的纵向位置，生长进度以「轴线刚进入视口底部」为 0
+      const sectionRect = chronologySection?.getBoundingClientRect();
+      if (sectionRect) {
+        timelineContentOffset = mapRect.top - sectionRect.top + axisY;
+      }
+
+      timelineSvg?.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      timelineLiveClip?.setAttribute('y', '-20');
+      timelineLiveClip?.setAttribute('height', String(height + 40));
+
+      // 卡片实测高度决定上下两排够不够放；不够就把起伏幅度与排间距等比收回来
+      const cardHeight = timelineNodes.reduce(
+        (max, node) =>
+          Math.max(max, node.querySelector<HTMLElement>('.timeline-node-body')?.offsetHeight ?? 0),
+        0
+      );
+      // 起伏幅度取容器高度的固定比例：小窗收紧、大屏放开，上限 5.5rem 免得夸张
+      const maxAmplitude = Math.max(16, Math.min(88, height * 0.105));
+      const baseGapUp = Math.max(18, Math.min(34, height * 0.065));
+      const baseGapDown = Math.max(22, Math.min(44, height * 0.085));
+      let amplitude = maxAmplitude;
+      let gapUp = baseGapUp;
+      let gapDown = baseGapDown;
+
+      if (cardHeight > 0) {
+        // 该侧所需高度 = 最高一张卡片底边离轴线的距离（1.5 × 幅度 + 间距）+ 卡片高度；
+        // 超出就按比例把幅度与间距一起收回来，收到「刚好放得下」为止
+        const fitScale = (room: number, gap: number) =>
+          Math.min(1, Math.max(0.3, (room - cardHeight) / Math.max(1, maxAmplitude * 1.5 + gap)));
+        const scale = Math.min(fitScale(axisY - 10, baseGapUp), fitScale(height - axisY - 10, baseGapDown));
+        if (scale < 1) {
+          amplitude = Math.max(12, maxAmplitude * scale);
+          gapUp = Math.max(10, baseGapUp * scale);
+          gapDown = Math.max(10, baseGapDown * scale);
+        }
+      }
+
+      // 约 1.4 个周期的正弦，起伏一眼可见；首尾各多取一个点，让波形在容器外自然延伸
+      const waveY = (index: number) => axisY + Math.sin(index * 0.78) * amplitude;
+
+      const points = timelineNodes.map((node, index) => ({
         node,
-        x: Number(node.dataset.x || 0),
-        y: Number(node.dataset.y || 0)
+        x: padX + (index / lastIndex) * span,
+        y: waveY(index)
       }));
-      const start = { x: 500, y: -20 };
-      const end = { x: 520, y: 2140 };
-      const pathD = `M ${start.x} ${start.y} ${points.map((point) => `L ${point.x} ${point.y}`).join(' ')} L ${end.x} ${end.y}`;
+
+      const start = { x: Math.max(0, padX - pitch), y: waveY(-1) };
+      const end = { x: Math.min(width, padX + span + pitch), y: waveY(lastIndex + 1) };
+      const pathPoints = [start, ...points, end];
+      const pathD = `M ${start.x} ${start.y} ${points
+        .map((point) => `L ${point.x} ${point.y}`)
+        .join(' ')} L ${end.x} ${end.y}`;
       timelinePath.setAttribute('d', pathD);
       timelineGhostPath?.setAttribute('d', pathD);
 
-      const pathPoints = [start, ...points, end];
       const segmentLengths = pathPoints.slice(1).map((point, index) => {
         const previous = pathPoints[index];
         return Math.hypot(point.x - previous.x, point.y - previous.y);
       });
-      const totalLength = segmentLengths.reduce((sum, length) => sum + length, 0);
+      const totalLength = segmentLengths.reduce((sum, length) => sum + length, 0) || 1;
       let accumulated = 0;
 
-      timelineNodeStops = points.map((point, index) => {
+      // 路径由左至右单调推进，数组索引与 timelineNodes 一一对应，无需再排序过滤
+      points.forEach((point, index) => {
         accumulated += segmentLengths[index];
-        const threshold = totalLength ? accumulated / totalLength : 0;
-        const previous = pathPoints[index];
-        const next = pathPoints[index + 2];
-        const protrudesRight = point.x >= (previous.x + next.x) / 2;
-        point.node.dataset.threshold = String(threshold);
-        point.node.dataset.cardSide = protrudesRight ? 'right' : 'left';
-        return threshold;
-      }).filter((stop) => stop > 0 && stop < 1).sort((a, b) => a - b);
+        // 偶数节点卡片在上、奇数在下；卡片跟着折线做半幅起伏，引线于是有长有短
+        const follow = (point.y - axisY) * 0.5;
+        const side = index % 2 === 0 ? 'up' : 'down';
+        const cardEdge =
+          side === 'up' ? axisY - amplitude - gapUp + follow : axisY + amplitude + gapDown + follow;
+
+        point.node.dataset.threshold = String(accumulated / totalLength);
+        point.node.dataset.cardSide = side;
+        point.node.style.setProperty('--node-x', `${point.x}px`);
+        point.node.style.setProperty('--node-y', `${point.y}px`);
+        point.node.style.setProperty(
+          '--leader-length',
+          `${Math.round(Math.max(14, Math.abs(cardEdge - point.y)))}px`
+        );
+      });
     }
 
-    function mapTimelineScrollProgress(rawProgress: number, direction = 0) {
-      const raw = Math.min(Math.max(rawProgress, 0), 1);
-      return raw;
+    /**
+     * 生长进度：轴线刚进入视口底部记 0，
+     * 区块中心与视口中心重合记 1 —— 访客把这一屏滚到页面正中时，时间轴刚好长完。
+     * 以轴线（而不是区块顶边）为锚点，生长过程才全程可见。
+     */
+    function getTimelineRevealProgress() {
+      if (!chronologySection) return 0;
+      const rect = chronologySection.getBoundingClientRect();
+      const viewportHeight = getInteractionViewportHeight();
+      const startTop = viewportHeight - timelineContentOffset;
+      const endTop = (viewportHeight - rect.height) / 2;
+      const travel = Math.max(1, startTop - endTop);
+      return Math.min(Math.max((startTop - rect.top) / travel, 0), 1);
     }
+
+    /** 移动端把 .chronology-world 还原成网格流，需要清掉脚本写入的像素尺寸 */
+    function releaseTimelineWorldSize() {
+      timelineWorld?.style.removeProperty('width');
+      timelineWorld?.style.removeProperty('height');
+    }
+
 
     function setTimelineTarget(progress: number, immediate = false) {
       targetTimelineProgress = Math.min(Math.max(progress, 0), 1);
-      const isMobileTimeline = window.innerWidth < 900;
-      const isMobileJump = isMobileTimeline && Math.abs(targetTimelineProgress - visualTimelineProgress) > 0.28;
 
-      if (immediate || isMobileTimeline || isMobileJump) {
+      if (immediate) {
         if (timelineSpringRaf) {
           window.cancelAnimationFrame(timelineSpringRaf);
           timelineSpringRaf = undefined;
-        }
-        if (isMobileTimeline || isMobileJump) {
-          if (timelineCameraRaf) {
-            window.cancelAnimationFrame(timelineCameraRaf);
-            timelineCameraRaf = undefined;
-          }
-          hasTimelineCameraTransform = false;
-          timelineCameraVelocityX = 0;
-          timelineCameraVelocityY = 0;
-          timelineCameraVelocityScale = 0;
         }
         visualTimelineProgress = targetTimelineProgress;
         timelineVelocity = 0;
@@ -911,318 +829,50 @@ import SiteHeader from '../components/SiteHeader.astro';
       if (!chronologySection) return;
       const clamped = Math.min(Math.max(progress, 0), 1);
       chronologySection.style.setProperty('--timeline-progress', String(clamped));
-      syncTimelineCamera(clamped);
+      syncTimelineReveal(clamped);
 
-      let activeCount = 0;
-      timelineNodes.forEach((node) => {
+      let revealedCount = 0;
+      let lastRevealedIndex = -1;
+      timelineNodes.forEach((node, index) => {
         const threshold = Number(node.dataset.threshold || 0);
-        const isActive = clamped + 0.002 >= threshold;
-        node.classList.toggle('is-active', isActive);
-        node.classList.remove('is-current');
-        node.classList.remove('is-timeline-locked');
-        if (isActive) activeCount += 1;
+        const isRevealed = clamped + 0.002 >= threshold;
+        node.classList.toggle('is-active', isRevealed);
+        if (isRevealed) {
+          revealedCount += 1;
+          lastRevealedIndex = index;
+        }
       });
 
-      if (visibleTimelineCardIndex >= 0 && window.innerWidth >= 900) {
-        timelineNodes[visibleTimelineCardIndex]?.classList.add('is-current', 'is-active');
-        activeCount = Math.max(activeCount, visibleTimelineCardIndex + 1);
-      }
-
-      const isMobileTimelineActive = window.innerWidth < 900 && (!worksSection || window.scrollY < worksSection.offsetTop - 4);
-      if (isMobileTimelineActive && timelineNodeStops.length) {
-        const nearestIndex = timelineNodeStops.reduce((closestIndex, stop, index) => (
-          Math.abs(stop - clamped) < Math.abs(timelineNodeStops[closestIndex] - clamped) ? index : closestIndex
-        ), 0);
-        timelineNodes[nearestIndex]?.classList.add('is-current', 'is-active');
-        activeCount = Math.max(activeCount, nearestIndex + 1);
-      }
-
-      if (lockedTimelineStopIndex >= 0 && isTimelineLockReady) {
-        timelineNodes[lockedTimelineStopIndex]?.classList.add('is-timeline-locked');
-      } else if (lockedTimelineStopIndex >= 0 && visibleTimelineCardIndex < 0) {
-        activeCount = Math.min(activeCount, lockedTimelineStopIndex);
-      }
-
-      if (timelineCurrent) timelineCurrent.textContent = String(activeCount).padStart(2, '0');
-    }
-
-    function smoothTimelineStep(edgeStart: number, edgeEnd: number, value: number) {
-      const range = Math.max(edgeEnd - edgeStart, 0.0001);
-      const t = Math.min(Math.max((value - edgeStart) / range, 0), 1);
-      return t * t * (3 - 2 * t);
-    }
-
-    function easeTimelineMotion(t: number) {
-      return t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    }
-
-    function hideTimelineVisibleCard() {
-      timelineNodes.forEach((node) => {
-        node.classList.remove('is-current');
-        node.classList.remove('is-timeline-locked');
+      // 详情卡：优先跟随悬停/聚焦的刻度（且只允许已经长出来的），否则停在最后一个已生长节点
+      const focusedIndex =
+        hoveredTimelineIndex >= 0 && hoveredTimelineIndex <= lastRevealedIndex
+          ? hoveredTimelineIndex
+          : lastRevealedIndex;
+      timelineNodes.forEach((node, index) => {
+        node.classList.toggle('is-current', index === focusedIndex);
       });
-      visibleTimelineCardIndex = -1;
+
+      if (timelineCurrent) timelineCurrent.textContent = String(revealedCount).padStart(2, '0');
     }
 
-    function clearTimelineLockClass() {
-      timelineNodes.forEach((node) => {
-        node.classList.remove('is-timeline-locked');
-      });
-    }
-
-    function revealTimelineLockedNode(index: number) {
-      isTimelineLockReady = lockedTimelineStopIndex === index;
-      if (!isTimelineLockReady) return;
-      visibleTimelineCardIndex = index;
-      const side = timelineNodes[index]?.dataset.cardSide;
-      timelineVisibleCardSide = side === 'left' ? 'left' : 'right';
-      setTimelineTarget(timelineNodeStops[index]);
-      setTimelineProgress(timelineNodeStops[index]);
-    }
-
-    function animateTimelineScrollTo(targetY: number, duration = 360, onComplete?: () => void) {
-      if (timelineScrollAnimationRaf) {
-        window.cancelAnimationFrame(timelineScrollAnimationRaf);
-        timelineScrollAnimationRaf = undefined;
-      }
-      if (timelineScrollAnimationTimeout) {
-        window.clearTimeout(timelineScrollAnimationTimeout);
-        timelineScrollAnimationTimeout = undefined;
-      }
-
-      const startY = window.scrollY;
-      const distance = targetY - startY;
-      const startedAt = performance.now();
-      let completed = false;
-
-      const finish = () => {
-        if (completed) return;
-        completed = true;
-        if (timelineScrollAnimationRaf) {
-          window.cancelAnimationFrame(timelineScrollAnimationRaf);
-          timelineScrollAnimationRaf = undefined;
-        }
-        if (timelineScrollAnimationTimeout) {
-          window.clearTimeout(timelineScrollAnimationTimeout);
-          timelineScrollAnimationTimeout = undefined;
-        }
-        window.scrollTo({ top: targetY, behavior: 'auto' });
-        requestTimelineScrollSync();
-        onComplete?.();
-      };
-
-      const tick = (timestamp: number) => {
-        if (completed) return;
-        const elapsed = timestamp - startedAt;
-        const t = Math.min(Math.max(elapsed / duration, 0), 1);
-        const eased = easeTimelineMotion(t);
-        window.scrollTo({ top: startY + distance * eased, behavior: 'auto' });
-        requestTimelineScrollSync();
-
-        if (t < 1) {
-          timelineScrollAnimationRaf = window.requestAnimationFrame(tick);
-          return;
-        }
-
-        finish();
-      };
-
-      timelineScrollAnimationTimeout = window.setTimeout(finish, duration + 120);
-      timelineScrollAnimationRaf = window.requestAnimationFrame(tick);
-    }
-
-    function lockTimelineNode(index: number, direction: number) {
-      lockedTimelineStopIndex = index;
-      lockedTimelineDirection = direction;
-      isTimelineLockReady = false;
-      hideTimelineVisibleCard();
-      setTimelineTarget(timelineNodeStops[index]);
-    }
-
-    function releaseTimelineNode(direction: number) {
-      if (lockedTimelineStopIndex < 0) return;
-      const releasedIndex = lockedTimelineStopIndex;
-      lockedTimelineStopIndex = -1;
-      lockedTimelineDirection = 0;
-      isTimelineLockReady = false;
-      releasedTimelineStopIndex = releasedIndex;
-      releasedTimelineDirection = direction;
-      clearTimelineLockClass();
-    }
-
-    function getTimelineCameraState(progress: number, currentStopIndex: number) {
-      return { progress, stopIndex: currentStopIndex };
-    }
-
-    function snapToDevicePixel(value: number) {
-      const ratio = Math.max(1, window.devicePixelRatio || 1);
-      return Math.round(value * ratio) / ratio;
-    }
-
-    function applyTimelineCameraTransform() {
-      if (!chronologySection) return;
-      const shouldSnap = window.innerWidth < 900;
-      const cameraX = shouldSnap ? snapToDevicePixel(timelineCameraX) : timelineCameraX;
-      const cameraY = shouldSnap ? snapToDevicePixel(timelineCameraY) : timelineCameraY;
-      const gridX = shouldSnap ? Math.round(cameraX * 0.08) : cameraX * 0.08;
-      const gridY = shouldSnap ? Math.round(cameraY * 0.08) : cameraY * 0.08;
-
-      chronologySection.style.setProperty('--timeline-camera-x', `${cameraX}px`);
-      chronologySection.style.setProperty('--timeline-camera-y', `${cameraY}px`);
-      chronologySection.style.setProperty('--timeline-camera-scale', String(timelineCameraScale));
-      chronologySection.style.setProperty('--timeline-grid-x', `${gridX}px`);
-      chronologySection.style.setProperty('--timeline-grid-y', `${gridY}px`);
-    }
-
-    function setTimelineCameraTarget(x: number, y: number, scale: number) {
-      timelineCameraTargetX = x;
-      timelineCameraTargetY = y;
-      timelineCameraTargetScale = scale;
-
-      if (window.innerWidth < 900) {
-        if (timelineCameraRaf) {
-          window.cancelAnimationFrame(timelineCameraRaf);
-          timelineCameraRaf = undefined;
-        }
-        hasTimelineCameraTransform = true;
-        timelineCameraX = x;
-        timelineCameraY = y;
-        timelineCameraScale = scale;
-        timelineCameraVelocityX = 0;
-        timelineCameraVelocityY = 0;
-        timelineCameraVelocityScale = 0;
-        applyTimelineCameraTransform();
-        return;
-      }
-
-      if (!hasTimelineCameraTransform) {
-        hasTimelineCameraTransform = true;
-        timelineCameraX = x;
-        timelineCameraY = y;
-        timelineCameraScale = scale;
-        applyTimelineCameraTransform();
-        return;
-      }
-
-      if (!timelineCameraRaf) {
-        timelineCameraTime = performance.now();
-        timelineCameraRaf = window.requestAnimationFrame(updateTimelineCameraSpring);
-      }
-    }
-
-    function updateTimelineCameraSpring(timestamp: number) {
-      const deltaTime = Math.min(0.032, Math.max(0.001, (timestamp - timelineCameraTime) / 1000));
-      timelineCameraTime = timestamp;
-
-      const tension = 105;
-      const damping = 24;
-      const scaleTension = 105;
-      const scaleDamping = 22;
-      const displacementX = timelineCameraTargetX - timelineCameraX;
-      const displacementY = timelineCameraTargetY - timelineCameraY;
-      const displacementScale = timelineCameraTargetScale - timelineCameraScale;
-
-      timelineCameraVelocityX += displacementX * tension * deltaTime;
-      timelineCameraVelocityY += displacementY * tension * deltaTime;
-      timelineCameraVelocityScale += displacementScale * scaleTension * deltaTime;
-      timelineCameraVelocityX *= Math.exp(-damping * deltaTime);
-      timelineCameraVelocityY *= Math.exp(-damping * deltaTime);
-      timelineCameraVelocityScale *= Math.exp(-scaleDamping * deltaTime);
-      const maxCameraVelocity = 820;
-      if (Math.abs(timelineCameraVelocityX) > maxCameraVelocity) {
-        timelineCameraVelocityX = Math.sign(timelineCameraVelocityX) * maxCameraVelocity;
-      }
-      if (Math.abs(timelineCameraVelocityY) > maxCameraVelocity) {
-        timelineCameraVelocityY = Math.sign(timelineCameraVelocityY) * maxCameraVelocity;
-      }
-      timelineCameraX += timelineCameraVelocityX * deltaTime;
-      timelineCameraY += timelineCameraVelocityY * deltaTime;
-      timelineCameraScale += timelineCameraVelocityScale * deltaTime;
-
-      applyTimelineCameraTransform();
-
-      const isSettled =
-        Math.abs(displacementX) < 0.12 &&
-        Math.abs(displacementY) < 0.12 &&
-        Math.abs(displacementScale) < 0.0004 &&
-        Math.abs(timelineCameraVelocityX) < 0.12 &&
-        Math.abs(timelineCameraVelocityY) < 0.12 &&
-        Math.abs(timelineCameraVelocityScale) < 0.0004;
-
-      if (isSettled) {
-        timelineCameraX = timelineCameraTargetX;
-        timelineCameraY = timelineCameraTargetY;
-        timelineCameraScale = timelineCameraTargetScale;
-        applyTimelineCameraTransform();
-        timelineCameraRaf = undefined;
-        return;
-      }
-
-      timelineCameraRaf = window.requestAnimationFrame(updateTimelineCameraSpring);
-    }
-
-    function syncTimelineCamera(progress: number) {
-      if (!chronologySection || !timelineMap || !timelineWorld || !timelinePath) return;
+    /** 生长头与揭示裁剪都只沿横轴推进 */
+    function syncTimelineReveal(progress: number) {
+      if (!timelinePath) return;
       const pathLength = timelinePath.getTotalLength();
+      if (!pathLength) return;
       const headPoint = timelinePath.getPointAtLength(pathLength * progress);
-      const mapRect = timelineMap.getBoundingClientRect();
-      const isMobile = window.innerWidth < 900;
-      const scale = isMobile ? 1.02 : window.innerWidth >= 1440 ? 1.72 : 1.55;
-      const currentStopIndex = timelineNodeStops.reduce((activeIndex, stop, index) => (
-        progress + 0.002 >= stop ? index : activeIndex
-      ), -1);
-      const cameraState = getTimelineCameraState(progress, currentStopIndex);
-      const cameraPoint = timelinePath.getPointAtLength(pathLength * cameraState.progress);
-      const targetFocusXRatio = isMobile ? 0.5 : timelineVisibleCardSide === 'right' ? 0.44 : 0.64;
-      if (!hasTimelineCameraFocus) {
-        timelineCameraFocusRatio = targetFocusXRatio;
-        hasTimelineCameraFocus = true;
-      } else {
-        timelineCameraFocusRatio += (targetFocusXRatio - timelineCameraFocusRatio) * 0.16;
-      }
-      const focusXRatio = timelineCameraFocusRatio;
-      const focusX = window.innerWidth * focusXRatio - mapRect.left;
-      const focusY = getInteractionViewportHeight() * (isMobile ? 0.5 : 0.66) - mapRect.top;
-      const worldX = cameraPoint.x;
-      const worldY = cameraPoint.y;
 
       if (timelineHead) {
         timelineHead.style.left = `${headPoint.x}px`;
         timelineHead.style.top = `${headPoint.y}px`;
       }
 
-      // Clip in the same SVG coordinate system as the moving head. This keeps the
-      // highlighted line aligned across camera zoom and high-DPI displays, where
-      // non-scaling-stroke dash lengths otherwise drift from path geometry.
-      timelineLiveClip?.setAttribute('height', String(Math.max(0, headPoint.y + 100)));
-
-      timelineNodes.forEach((node) => {
-        const threshold = Number(node.dataset.threshold || 0);
-        const nodePoint = timelinePath.getPointAtLength(pathLength * threshold);
-        node.style.setProperty('--node-x', `${nodePoint.x}px`);
-        node.style.setProperty('--node-y', `${nodePoint.y}px`);
-      });
-
-      setTimelineCameraTarget(focusX - worldX * scale, focusY - worldY * scale, scale);
+      // 裁剪矩形与线头同处一个 SVG 坐标系，高分屏缩放下边缘也能精确对齐
+      timelineLiveClip?.setAttribute('width', String(Math.max(0, headPoint.x + 2)));
     }
 
     function syncTimelineToScroll() {
-      if (!chronologySection) return;
-      const rawProgress = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
-      if (
-        releasedTimelineStopIndex >= 0 &&
-        Math.abs(rawProgress - timelineNodeStops[releasedTimelineStopIndex]) > 0.025
-      ) {
-        releasedTimelineStopIndex = -1;
-        releasedTimelineDirection = 0;
-      }
-
-      const progress = lockedTimelineStopIndex >= 0
-        ? timelineNodeStops[lockedTimelineStopIndex]
-        : mapTimelineScrollProgress(rawProgress);
-      setTimelineTarget(progress);
+      setTimelineTarget(getTimelineRevealProgress());
     }
 
     function requestTimelineScrollSync() {
@@ -1234,97 +884,19 @@ import SiteHeader from '../components/SiteHeader.astro';
       });
     }
 
-    function handleTimelineWheel(event: WheelEvent) {
-      if (!chronologySection || window.innerWidth < 900) return;
-      const sectionTop = getTimelineSectionTop();
-      const sectionBottom = sectionTop + chronologySection.offsetHeight - window.innerHeight;
-      const scrollY = window.scrollY;
-      const rawDelta = normalizeWheelDelta(event);
-      const isInsideTimeline = scrollY >= sectionTop - 2 && scrollY <= sectionBottom + 2;
-      const isLeavingUp = scrollY <= sectionTop + 2 && rawDelta < 0;
-      const isLeavingDown = scrollY >= sectionBottom - 2 && rawDelta > 0;
-
-      if (!isInsideTimeline || isLeavingUp || isLeavingDown || Math.abs(rawDelta) < 1) return;
-
-      event.preventDefault();
-      const direction = Math.sign(rawDelta);
-      const travelDistance = getTimelineTravelDistance();
-      const currentRawProgress = (scrollY - sectionTop) / travelDistance;
-
-      if (lockedTimelineStopIndex >= 0) {
-        if (!isTimelineLockReady) {
-          const lockedStop = timelineNodeStops[lockedTimelineStopIndex];
-          const lockedStopY = sectionTop + travelDistance * lockedStop;
-          if (Math.abs(scrollY - lockedStopY) <= 3 || Math.abs(currentRawProgress - lockedStop) <= 0.003) {
-            revealTimelineLockedNode(lockedTimelineStopIndex);
-          } else {
-            setTimelineTarget(lockedStop);
-            if (!timelineScrollAnimationRaf) {
-              animateTimelineScrollTo(lockedStopY, 280, () => {
-                window.scrollTo({ top: lockedStopY, behavior: 'auto' });
-                revealTimelineLockedNode(lockedTimelineStopIndex);
-                requestTimelineScrollSync();
-              });
-            }
-          }
-          return;
-        }
-
-        const stopIndex = lockedTimelineStopIndex;
-        const releaseDirection = direction;
-        const stopY = sectionTop + travelDistance * timelineNodeStops[stopIndex];
-        setTimelineTarget(timelineNodeStops[lockedTimelineStopIndex]);
-        releaseTimelineNode(releaseDirection);
-        animateTimelineScrollTo(
-          Math.min(Math.max(stopY + releaseDirection * Math.max(32, window.innerHeight * 0.055), sectionTop), sectionBottom),
-          420,
-          () => {
-            requestTimelineScrollSync();
-          }
-        );
-
-        return;
-      }
-
-      if (releasedTimelineStopIndex >= 0 && timelineScrollAnimationRaf) {
-        return;
-      }
-
-      const maxStep = Math.max(30, Math.min(window.innerHeight * 0.07, 58));
-      const cappedDelta = direction * Math.min(Math.abs(rawDelta), maxStep);
-      let nextY = Math.min(Math.max(scrollY + cappedDelta, sectionTop), sectionBottom);
-      let stopToLock = -1;
-
-      timelineNodeStops.forEach((stop, index) => {
-        if (stopToLock >= 0) return;
-        const isRecentlyReleasedStop = releasedTimelineStopIndex === index;
-        if (
-          isRecentlyReleasedStop &&
-          (releasedTimelineDirection === direction || Math.abs(currentRawProgress - stop) < 0.04)
-        ) return;
-
-        const stopY = sectionTop + travelDistance * stop;
-        const crossesDown = direction > 0 && scrollY < stopY && nextY >= stopY;
-        const crossesUp = direction < 0 && scrollY > stopY && nextY <= stopY;
-        const arrivalWindow = Math.max(64, window.innerHeight * 0.08);
-        const approachesDown = direction > 0 && scrollY < stopY && stopY - scrollY <= arrivalWindow;
-        const approachesUp = direction < 0 && scrollY > stopY && scrollY - stopY <= arrivalWindow;
-        if (crossesDown || crossesUp || approachesDown || approachesUp) stopToLock = index;
+    /** 悬停/聚焦刻度即切换详情卡；点击仍然是原链接跳转，不改变无障碍语义 */
+    function bindTimelineNodeFocus() {
+      timelineNodes.forEach((node, index) => {
+        const apply = (value: number) => () => {
+          if (hoveredTimelineIndex === value) return;
+          hoveredTimelineIndex = value;
+          setTimelineProgress(visualTimelineProgress);
+        };
+        node.addEventListener('mouseenter', apply(index));
+        node.addEventListener('mouseleave', apply(-1));
+        node.addEventListener('focus', apply(index));
+        node.addEventListener('blur', apply(-1));
       });
-
-      if (stopToLock >= 0) {
-        const stopY = sectionTop + travelDistance * timelineNodeStops[stopToLock];
-        lockTimelineNode(stopToLock, direction);
-        animateTimelineScrollTo(stopY, 360, () => {
-          window.scrollTo({ top: stopY, behavior: 'auto' });
-          revealTimelineLockedNode(stopToLock);
-          requestTimelineScrollSync();
-        });
-        return;
-      }
-
-      window.scrollTo({ top: nextY, behavior: 'auto' });
-      requestTimelineScrollSync();
     }
 
     const worksSection = document.querySelector('.works-section') as HTMLElement | null;
@@ -1332,7 +904,6 @@ import SiteHeader from '../components/SiteHeader.astro';
     const worksStage = document.querySelector('.works-stage') as HTMLElement | null;
     const worksCards = Array.from(document.querySelectorAll('[data-work-card]')) as HTMLElement[];
     const worksCategories = Array.from(document.querySelectorAll('[data-work-category].works-category')) as HTMLButtonElement[];
-    const worksNotes = Array.from(document.querySelectorAll('[data-work-note]')) as HTMLElement[];
     const worksCurrent = document.querySelector('[data-work-current]') as HTMLElement | null;
     const worksTotal = document.querySelector('[data-work-total]') as HTMLElement | null;
     let activeWorkIndex = 0;
@@ -1393,10 +964,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       worksCategories.forEach((button) => {
         button.classList.toggle('is-active', button.dataset.workCategory === activeCategory);
-      });
-
-      worksNotes.forEach((note) => {
-        note.classList.toggle('is-active', note.dataset.workNote === activeCategory);
       });
 
       if (worksCurrent) worksCurrent.textContent = String(activeWorkIndex + 1).padStart(2, '0');
@@ -1592,32 +1159,36 @@ import SiteHeader from '../components/SiteHeader.astro';
       if (isMobileAddressBarResize) return;
 
       if (!isMobileHomeFallback()) {
+        setupTimelineGeometry();
         requestTimelineScrollSync();
         requestWorksScrollSync();
       } else {
+        releaseTimelineWorldSize();
+        activateMobileTimelineFallback();
         updateWorksStack();
       }
     }
 
     function activateMobileTimelineFallback() {
       stopTimelineMotion();
+      hoveredTimelineIndex = -1;
       chronologySection?.style.setProperty('--timeline-progress', '1');
       timelineNodes.forEach((node) => {
-        node.classList.remove('is-current', 'is-timeline-locked');
+        node.classList.remove('is-current');
         node.classList.add('is-active');
       });
       if (timelineCurrent) timelineCurrent.textContent = String(timelineNodes.length).padStart(2, '0');
     }
 
     if (chronologySection) {
-      setupTimelineGeometry();
+      bindTimelineNodeFocus();
       if (isMobileHomeFallback()) {
+        releaseTimelineWorldSize();
         activateMobileTimelineFallback();
       } else {
-        const initialTimelineRaw = (window.scrollY - getTimelineSectionTop()) / getTimelineTravelDistance();
-        setTimelineTarget(mapTimelineScrollProgress(initialTimelineRaw), true);
+        setupTimelineGeometry();
+        setTimelineTarget(getTimelineRevealProgress(), true);
         window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
-        window.addEventListener('wheel', handleTimelineWheel, { passive: false });
       }
     }
 
@@ -1731,14 +1302,14 @@ import SiteHeader from '../components/SiteHeader.astro';
       keyLight.position.set(3.5, 4.2, 4.5);
       scene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x8edb35, 1.55);
+      const rimLight = new THREE.DirectionalLight(0xacdbfb, 1.55);
       rimLight.position.set(-3.6, 2.6, -2.4);
       scene.add(rimLight);
 
-      const fillLight = new THREE.HemisphereLight(0xa6ff5a, 0x080808, 1.15);
+      const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x080808, 1.15);
       scene.add(fillLight);
 
-      const grid = new THREE.GridHelper(5.6, 18, 0x8edb35, 0x243315);
+      const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x152633);
       grid.position.y = -1.35;
       grid.material.transparent = true;
       grid.material.opacity = 0.2;
@@ -1858,7 +1429,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .home-sections {
-      background: #050505;
+      background: #040A10;
       color: #f5f5f5;
       font-family: var(--font-sans-cn);
       overflow: visible;
@@ -1874,7 +1445,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .section-kicker {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -1914,9 +1485,9 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .section-link {
       align-items: center;
-      border: 1px solid rgba(142, 219, 53, 0.55);
+      border: 1px solid rgba(172, 219, 251, 0.55);
       border-radius: 15px;
-      color: #8EDB35;
+      color: #ACDBFB;
       display: inline-flex;
       font-family: "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, var(--font-sans-cn), sans-serif;
       font-size: 0.95rem;
@@ -1930,20 +1501,17 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .section-link:hover,
     .section-link:focus-visible {
-      background: #8EDB35;
-      color: #050505;
+      background: #ACDBFB;
+      color: #040A10;
       outline: none;
       transform: translateY(-1px);
     }
 
+    /* 时间轴不再要求访客在区块内反复滚动：区块只占一屏，
+       横向生长进度由「区块中心与视口中心重合」决定（见脚本 getTimelineRevealProgress）。 */
     .chronology-section {
-      --timeline-camera-scale: 1.42;
-      --timeline-camera-x: 0px;
-      --timeline-camera-y: 0px;
-      --timeline-grid-x: 0px;
-      --timeline-grid-y: 0px;
       --timeline-progress: 0;
-      min-height: 760vh;
+      min-height: 92vh;
       margin-left: 0;
       margin-right: 0;
       padding: 0;
@@ -1953,31 +1521,32 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .chronology-pin {
       box-sizing: border-box;
-      height: 100vh;
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      min-height: 92vh;
       overflow: hidden;
-      padding: clamp(5.2rem, 8vh, 7rem) clamp(1.4rem, 3vw, 3.4rem) clamp(1.2rem, 3vh, 2.2rem);
-      position: sticky;
-      top: 0;
+      padding: clamp(5.2rem, 9vh, 7.4rem) clamp(1.4rem, 3vw, 3.4rem) clamp(1.6rem, 4vh, 2.8rem);
+      position: relative;
       width: 100%;
     }
 
     .chronology-copy {
-      left: clamp(1.4rem, 3vw, 3.4rem);
-      max-width: min(31rem, 33vw);
-      position: absolute;
-      top: clamp(5.2rem, 11vh, 7.2rem);
+      align-items: flex-end;
+      display: flex;
+      gap: clamp(1.2rem, 3vw, 2.6rem);
+      justify-content: space-between;
+      position: relative;
       z-index: 3;
     }
 
     .chronology-copy .section-head {
       gap: 0.9rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0;
     }
 
     .chronology-copy h2 {
       color: #ffffff;
-      font-size: clamp(2.5rem, 5.4vw, 5.7rem);
+      font-size: clamp(2.2rem, 4.4vw, 4.4rem);
       font-weight: 600;
       line-height: 0.92;
     }
@@ -1996,7 +1565,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       font-size: 0.74rem;
       gap: 0.7rem;
       letter-spacing: 0.16em;
-      margin-top: clamp(1.2rem, 3vh, 2rem);
+      padding-bottom: 0.55rem;
     }
 
     .chronology-progress i {
@@ -2005,12 +1574,12 @@ import SiteHeader from '../components/SiteHeader.astro';
       height: 1px;
       overflow: hidden;
       position: relative;
-      width: 4.25rem;
+      width: clamp(7rem, 16vw, 14rem);
     }
 
     .chronology-progress i::after {
-      background: #8EDB35;
-      box-shadow: 0 0 14px rgba(142, 219, 53, 0.7);
+      background: #ACDBFB;
+      box-shadow: 0 0 14px rgba(172, 219, 251, 0.7);
       content: "";
       inset: 0;
       position: absolute;
@@ -2020,33 +1589,31 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .chronology-map {
-      inset: clamp(4.5rem, 8vh, 6.5rem) clamp(1.4rem, 3vw, 3.4rem) clamp(1.2rem, 3vh, 2.2rem);
-      overflow: hidden;
-      position: absolute;
+      flex: 1 1 auto;
+      margin-top: clamp(1.4rem, 4vh, 2.6rem);
+      min-height: 19rem;
+      overflow: visible;
+      position: relative;
       z-index: 1;
     }
 
     .chronology-map::before {
       background:
-        linear-gradient(90deg, rgba(142, 219, 53, 0.22) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(142, 219, 53, 0.18) 1px, transparent 1px);
-      background-position:
-        var(--timeline-grid-x) var(--timeline-grid-y),
-        var(--timeline-grid-x) var(--timeline-grid-y);
+        linear-gradient(90deg, rgba(172, 219, 251, 0.17) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px);
       background-size:
-        48px 48px,
-        48px 48px;
+        46px 46px,
+        46px 46px;
       content: "";
-      inset: -18%;
-      opacity: 0.64;
+      inset: 0;
+      opacity: 0.68;
       pointer-events: none;
       position: absolute;
-      will-change: background-position;
       z-index: 0;
     }
 
     .chronology-map::after {
-      background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5, 5, 5, 0.16) 72%, rgba(5, 5, 5, 0.72) 100%);
+      background: radial-gradient(ellipse at 50% 74%, transparent 0%, rgba(4, 10, 16, 0.14) 60%, rgba(4, 10, 16, 0.6) 100%);
       content: "";
       inset: 0;
       pointer-events: none;
@@ -2054,16 +1621,12 @@ import SiteHeader from '../components/SiteHeader.astro';
       z-index: 0;
     }
 
+    /* 宽高由脚本按容器实测像素写入，于是 SVG 与节点处在同一坐标空间，
+       不再需要「相机」平移/缩放的跟随逻辑。 */
     .chronology-world {
-      height: 2140px;
       left: 0;
       position: absolute;
       top: 0;
-      transform: translate3d(var(--timeline-camera-x), var(--timeline-camera-y), 0) scale(var(--timeline-camera-scale));
-      transform-origin: 0 0;
-      transition: none;
-      width: 1000px;
-      will-change: transform;
       z-index: 1;
     }
 
@@ -2084,23 +1647,23 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .chronology-path.is-ghost {
-      stroke: rgba(142, 219, 53, 0.045);
+      stroke: rgba(172, 219, 251, 0.045);
       stroke-width: 4;
     }
 
     .chronology-path.is-live {
-      filter: drop-shadow(0 0 12px rgba(142, 219, 53, 0.66));
-      stroke: #8EDB35;
+      filter: drop-shadow(0 0 12px rgba(172, 219, 251, 0.66));
+      stroke: #ACDBFB;
       stroke-width: 6;
       transition: none;
     }
 
     .timeline-head {
-      background: #8EDB35;
+      background: #ACDBFB;
       border-radius: 50%;
       box-shadow:
-        0 0 0 8px rgba(142, 219, 53, 0.1),
-        0 0 28px rgba(142, 219, 53, 0.82);
+        0 0 0 8px rgba(172, 219, 251, 0.1),
+        0 0 28px rgba(172, 219, 251, 0.82);
       height: 0.72rem;
       left: 50%;
       pointer-events: none;
@@ -2113,120 +1676,218 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .timeline-head::after {
       animation: timelineHeadPulse 1.2s ease-in-out infinite;
-      border: 1px solid rgba(142, 219, 53, 0.7);
+      border: 1px solid rgba(172, 219, 251, 0.7);
       border-radius: inherit;
       content: "";
       inset: -0.55rem;
       position: absolute;
     }
 
+    /* ---- 节点锚点：零尺寸，落在轴线坐标点上，子元素都相对它定位 ---- */
     .timeline-node {
-      --node-card-x: calc(-100% - 4rem);
-      --node-card-y: -50%;
-      --node-x: 50%;
-      --node-y: 50%;
-      background: rgba(5, 5, 5, 0.76);
-      border: 1px solid rgba(142, 219, 53, 0.24);
-      border-radius: 14px;
-      box-sizing: border-box;
-      color: rgba(245, 245, 245, 0.72);
-      display: grid;
-      gap: 0.34rem;
-      left: var(--node-x);
-      min-height: 0;
-      min-width: 0;
-      max-width: 18.5rem;
-      opacity: 0;
-      padding: 0;
-      pointer-events: none;
+      height: 0;
+      left: var(--node-x, 0px);
       position: absolute;
       text-decoration: none;
-      top: var(--node-y);
-      transform: translate(-50%, -50%) scale(0.82);
-      transform-origin: 50% 50%;
-      transition: opacity 180ms ease, border-color 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
+      top: var(--node-y, 0px);
       width: 0;
       z-index: 3;
     }
 
-    .timeline-node[data-card-side="right"] {
-      --node-card-x: 4rem;
-    }
-
-    .timeline-node::before {
-      background: #050505;
-      border: 2px solid rgba(142, 219, 53, 0.72);
-      border-radius: 50%;
-      box-shadow: 0 0 18px rgba(142, 219, 53, 0.36);
-      content: "";
-      height: 0.78rem;
-      left: 50%;
-      opacity: 0.42;
+    /* ---- 引线：把卡片牵回轴上的刻度，长度由脚本按折线起伏算出；
+           生长时由 0 沿自身方向撑开（见下方的生长样式块） ---- */
+    .timeline-leader {
+      background: linear-gradient(180deg, rgba(172, 219, 251, 0.78), rgba(172, 219, 251, 0.14));
+      left: 0;
       position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 0.78rem;
-      z-index: 2;
-    }
-
-    .timeline-node::after {
-      background: rgba(142, 219, 53, 0.58);
-      box-shadow: 0 0 12px rgba(142, 219, 53, 0.38);
-      content: "";
-      height: 1px;
-      left: 100%;
-      opacity: 0;
-      pointer-events: none;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%) scaleX(0);
-      transform-origin: left center;
-      transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-      width: 4rem;
+      transform: translateX(-50%);
+      width: 1px;
       z-index: 1;
     }
 
-    .timeline-node > span,
-    .timeline-node strong,
-    .timeline-node em,
-    .timeline-node-media,
-    .timeline-media-pair {
-      opacity: 0;
-      transition: opacity 150ms ease;
+    .timeline-node[data-card-side="up"] .timeline-leader {
+      bottom: 0;
+      height: var(--leader-length, 3rem);
     }
 
-    .timeline-node > span,
-    .timeline-node em {
-      color: #8EDB35;
+    .timeline-node[data-card-side="down"] .timeline-leader {
+      background: linear-gradient(0deg, rgba(172, 219, 251, 0.78), rgba(172, 219, 251, 0.14));
+      height: var(--leader-length, 3rem);
+      top: 0;
+    }
+
+    /* 引线末端的小横杠，像图表里的引出提示 */
+    .timeline-leader::after {
+      background: rgba(172, 219, 251, 0.85);
+      content: "";
+      height: 1px;
+      left: 0;
+      position: absolute;
+      transform: translateX(-50%);
+      width: 0.62rem;
+    }
+
+    .timeline-node[data-card-side="up"] .timeline-leader::after {
+      top: 0;
+    }
+
+    .timeline-node[data-card-side="down"] .timeline-leader::after {
+      bottom: 0;
+    }
+
+    /* ---- 刻度：轴上的圆点 + 年月，放大热区方便悬停/点击 ---- */
+    .timeline-tick {
+      height: 0;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 0;
+    }
+
+    .timeline-tick::before {
+      content: "";
+      height: 3.6rem;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 3.6rem;
+      z-index: 1;
+    }
+
+    .timeline-tick i {
+      background: #040A10;
+      border: 2px solid rgba(172, 219, 251, 0.34);
+      border-radius: 50%;
+      display: block;
+      height: 0.62rem;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      width: 0.62rem;
+      z-index: 2;
+    }
+
+    .timeline-tick b,
+    .timeline-tick small {
+      display: block;
+      font-family: var(--font-mono-cn);
+      left: 0;
+      position: absolute;
+      text-align: center;
+      transform: translateX(-50%);
+      transition: color 200ms ease;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .timeline-tick b {
+      color: rgba(245, 245, 245, 0.38);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      top: 0.76rem;
+    }
+
+    .timeline-tick small {
+      color: rgba(245, 245, 245, 0.24);
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      top: 1.62rem;
+    }
+
+    /* ---- 年月永远待在轴线的另一侧，给引线让出通道 ---- */
+    .timeline-node[data-card-side="down"] .timeline-tick b {
+      bottom: 0.76rem;
+      top: auto;
+    }
+
+    .timeline-node[data-card-side="down"] .timeline-tick small {
+      bottom: 1.62rem;
+      top: auto;
+    }
+
+    /* ---- 详情卡：12 张分上下两排交错站位；未长出来的形态见生长样式块 ---- */
+    .timeline-node-body {
+      align-items: start;
+      background: rgba(7, 13, 19, 0.94);
+      border: 1px solid rgba(172, 219, 251, 0.22);
+      border-radius: 14px;
+      box-shadow: 0 20px 54px rgba(4, 10, 16, 0.5);
+      box-sizing: border-box;
+      column-gap: 0.7rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      left: 0;
+      padding: 0.8rem 0.85rem 0.85rem;
+      position: absolute;
+      row-gap: 0.28rem;
+      transform: translateX(-50%);
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+      width: var(--timeline-card-width, 15rem);
+      z-index: 4;
+    }
+
+    /* 卡片就贴在引线末端：上排看底边，下排看顶边 */
+    .timeline-node[data-card-side="up"] .timeline-node-body {
+      bottom: var(--leader-length, 3rem);
+    }
+
+    .timeline-node[data-card-side="down"] .timeline-node-body {
+      top: var(--leader-length, 3rem);
+    }
+
+    /* 卡片很窄，缩略图会把标题与说明挤到截断；配图在下方 WORKS 区块另有整幅展示，
+       因此桌面端只留文字，移动端再恢复大图（见文件末尾的断点覆盖）。 */
+    .timeline-node-body > .timeline-node-media,
+    .timeline-node-body > .timeline-media-pair {
+      display: none;
+    }
+
+    .timeline-node-body > .timeline-node-meta {
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
-      font-style: normal;
       font-weight: 700;
       letter-spacing: 0.14em;
     }
 
-    .timeline-node strong {
+    .timeline-node-body strong {
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       color: #ffffff;
-      font-size: clamp(0.94rem, 1.15vw, 1.08rem);
+      display: -webkit-box;
+      font-size: clamp(0.86rem, 0.96vw, 0.98rem);
       font-weight: 600;
-      line-height: 1.32;
+      line-height: 1.36;
+      overflow: hidden;
     }
 
-    .timeline-node em {
-      color: rgba(245, 245, 245, 0.5);
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
+    .timeline-node-body em {
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      color: rgba(245, 245, 245, 0.52);
+      display: -webkit-box;
+      font-family: var(--font-mono-cn);
+      font-size: 0.6rem;
+      font-style: normal;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+      overflow: hidden;
     }
 
     .timeline-node-media,
     .timeline-media-pair {
-      margin-top: 0.32rem;
+      margin-top: 0.34rem;
     }
 
+    /* 卡片很窄，缩略图收成小方块；两张图时上下叠放 */
     .timeline-node-media {
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 1 / 1;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
+      border-radius: 9px;
       display: block;
       filter: grayscale(0.25) contrast(1.08);
       object-fit: cover;
@@ -2236,69 +1897,47 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .timeline-media-pair {
       display: grid;
-      gap: 0.42rem;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.3rem;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .timeline-media-pair .timeline-node-media {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 1 / 1;
       margin: 0;
     }
 
-    .timeline-node.is-active {
-      background: transparent;
-      border-color: transparent;
-      opacity: 1;
-      pointer-events: none;
-      transform: translate(-50%, -50%) scale(1);
+    /* 已生长：刻度与文字转成高亮色（尺寸上的生长交给生长样式块的过渡） */
+    .timeline-node.is-active .timeline-tick i {
+      background: #ACDBFB;
+      border-color: #ACDBFB;
+      box-shadow: 0 0 16px rgba(172, 219, 251, 0.55);
     }
 
-    .timeline-node.is-active::before {
-      background: #8EDB35;
-      opacity: 1;
+    .timeline-node.is-active .timeline-tick b {
+      color: rgba(245, 245, 245, 0.86);
     }
 
+    .timeline-node.is-active .timeline-tick small {
+      color: rgba(172, 219, 251, 0.7);
+    }
+
+    /* 当前节点：刻度放大 + 卡片提亮描边 */
     .timeline-node.is-current {
-      background: rgba(10, 14, 8, 0.92);
-      border-color: rgba(142, 219, 53, 0.62);
-      min-width: 18.5rem;
-      opacity: 1;
-      padding: 0.82rem 0.95rem 0.92rem;
-      pointer-events: auto;
-      transform: translate(var(--node-card-x), var(--node-card-y)) scale(1);
-      width: 18.5rem;
       z-index: 5;
     }
 
-    .timeline-node.is-timeline-locked {
+    .timeline-node.is-current .timeline-tick i {
       box-shadow:
-        inset 0 -1px 0 rgba(142, 219, 53, 0.24),
-        0 0 28px rgba(142, 219, 53, 0.08);
+        0 0 0 6px rgba(172, 219, 251, 0.12),
+        0 0 26px rgba(172, 219, 251, 0.8);
+      transform: translate(-50%, -50%) scale(1.45);
     }
 
-    .timeline-node.is-current::before {
-      left: calc(100% + 4rem);
-    }
-
-    .timeline-node.is-current::after {
-      opacity: 1;
-      transform: translateY(-50%) scaleX(1);
-    }
-
-    .timeline-node[data-card-side="right"].is-current::before {
-      left: -4rem;
-    }
-
-    .timeline-node[data-card-side="right"].is-current::after {
-      left: -4rem;
-      transform-origin: right center;
-    }
-
-    .timeline-node.is-current > span,
-    .timeline-node.is-current strong,
-    .timeline-node.is-current em,
-    .timeline-node.is-current .timeline-node-media,
-    .timeline-node.is-current .timeline-media-pair {
+    .timeline-node.is-current .timeline-node-body {
+      border-color: rgba(172, 219, 251, 0.62);
+      box-shadow:
+        0 26px 64px rgba(4, 10, 16, 0.62),
+        0 0 0 1px rgba(172, 219, 251, 0.16);
       opacity: 1;
     }
 
@@ -2314,24 +1953,174 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
     }
 
-    .node-1 {
-      --node-x: 49%;
-      --node-y: 22%;
+    /* ---- 生长：卡片不是「点亮」，而是随着轴线扫过从轴上真正长出来 ----
+       .is-active 的时机完全由生长头是否越过该节点决定（见脚本 setTimelineProgress），
+       于是「轴线扫过 → 就地生长」是先后关系，而不是提前摆好再调透明度。
+       未生长的节点在视觉上等于不存在（0 尺寸的索引锚点仍然待在原位）：
+       引线沿自身方向由 0 长度撑开，卡片从贴着引线的那条边向外展开（裁剪 + 轻微拉伸 + 外移），
+       刻度圆点从 0 缩放冒出来，年月像被写出来一样横向展开。
+       这一整套只在桌面端生效；移动端是静态竖排列表，另有断点覆盖。 */
+    @media (min-width: 901px) {
+      /* 还没长出来的卡片不接收鼠标与点击，免得摸到看不见的东西 */
+      .timeline-node {
+        pointer-events: none;
+      }
+
+      .timeline-node:where(.is-active) {
+        pointer-events: auto;
+      }
+
+      /* 两侧各自的生长方向与生根边：上排卡片从底边往上涨，下排从顶边往下长；
+         被裁剪掉的一侧正好是贴着引线的那一侧，所以看起来是从引线末端长出来的 */
+      .timeline-node[data-card-side="up"] {
+        --growth-lift: 16px;
+        --tick-lift: -0.3rem;
+        --card-clip-hidden: inset(100% -64px -64px -64px round 14px);
+      }
+
+      .timeline-node[data-card-side="down"] {
+        --growth-lift: -16px;
+        --tick-lift: 0.3rem;
+        --card-clip-hidden: inset(-64px -64px 100% -64px round 14px);
+      }
+
+      .timeline-node[data-card-side="up"] .timeline-node-body {
+        transform-origin: 50% 100%;
+      }
+
+      .timeline-node[data-card-side="down"] .timeline-node-body {
+        transform-origin: 50% 0%;
+      }
+
+      /* 未生长：引线零长度、卡片缩在轴线一侧、刻度日期还没写出来 */
+      .timeline-leader {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(0);
+        transition: transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .timeline-node[data-card-side="up"] .timeline-leader {
+        transform-origin: 50% 100%;
+      }
+
+      .timeline-node[data-card-side="down"] .timeline-leader {
+        transform-origin: 50% 0%;
+      }
+
+      /* 裁剪范围比卡片本身大 64px，生长完成后四周的投影与当前态描边才不会被一起裁掉 */
+      .timeline-node-body {
+        clip-path: var(--card-clip-hidden, inset(100% -64px -64px -64px round 14px));
+        opacity: 0;
+        transform: translate(-50%, var(--growth-lift, 16px)) scaleY(0.88);
+        transition:
+          clip-path 520ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
+          opacity 200ms linear 60ms,
+          transform 560ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
+          border-color 200ms ease,
+          box-shadow 200ms ease;
+      }
+
+      .timeline-tick i {
+        transform: translate(-50%, -50%) scale(0);
+      }
+
+      .timeline-tick b,
+      .timeline-tick small {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+        transform: translate(-50%, var(--tick-lift, 0px));
+        transition:
+          color 200ms ease,
+          clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms,
+          opacity 160ms linear 120ms,
+          transform 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms;
+      }
+
+      /* 已生长：引线撑满、卡片展开归位、圆点弹出、日期写完。
+         圆点的缩放要留出位置给 .is-current 的 1.45 倍放大态，
+         所以这一组用 :where() 把权重压到低于 .is-current，只压得住未生长态。 */
+      .timeline-node:where(.is-active) .timeline-leader {
+        transform: translateX(-50%) scaleY(1);
+      }
+
+      .timeline-node:where(.is-active) .timeline-node-body {
+        clip-path: inset(-64px round 14px);
+        opacity: 1;
+        transform: translate(-50%, 0) scaleY(1);
+      }
+
+      .timeline-node:where(.is-active) .timeline-tick i {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .timeline-node:where(.is-active) .timeline-tick b,
+      .timeline-node:where(.is-active) .timeline-tick small {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
     }
 
-    .node-2 {
-      --node-x: 74%;
-      --node-y: 43%;
+    /* 窄桌面：12 张卡片同屏时单张列宽有限，先收起说明，保住标题完整可读 */
+    @media (min-width: 901px) and (max-width: 1319px) {
+      .timeline-node-body em {
+        display: none;
+      }
     }
 
-    .node-3 {
-      --node-x: 51%;
-      --node-y: 60%;
-    }
+    /* 浅色主题：全局规则会把卡片文字压成深色，卡片必须换成白底才不会深底深字 */
+    @media (min-width: 901px) {
+      html[data-theme="light"] .timeline-node-body {
+        background: rgba(255, 255, 255, 0.94);
+        border-color: rgba(4, 10, 16, 0.14);
+        box-shadow: 0 18px 44px rgba(16, 22, 28, 0.12);
+      }
 
-    .node-4 {
-      --node-x: 30%;
-      --node-y: 82%;
+      html[data-theme="light"] .timeline-node-body .timeline-node-meta {
+        color: #2E6A96;
+      }
+
+      html[data-theme="light"] .timeline-node.is-current .timeline-node-body {
+        border-color: rgba(4, 10, 16, 0.44);
+        box-shadow:
+          0 22px 52px rgba(16, 22, 28, 0.18),
+          0 0 0 1px rgba(4, 10, 16, 0.1);
+      }
+
+      html[data-theme="light"] .timeline-leader {
+        background: linear-gradient(180deg, rgba(4, 10, 16, 0.44), rgba(4, 10, 16, 0.08));
+      }
+
+      html[data-theme="light"] .timeline-node[data-card-side="down"] .timeline-leader {
+        background: linear-gradient(0deg, rgba(4, 10, 16, 0.44), rgba(4, 10, 16, 0.08));
+      }
+
+      html[data-theme="light"] .timeline-leader::after {
+        background: rgba(4, 10, 16, 0.5);
+      }
+
+      /* 刻度文字在浅色底上要压深，浅蓝在白色上几乎看不见 */
+      html[data-theme="light"] .timeline-tick b {
+        color: rgba(4, 10, 16, 0.68);
+      }
+
+      html[data-theme="light"] .timeline-tick small {
+        color: rgba(4, 10, 16, 0.46);
+      }
+
+      html[data-theme="light"] .timeline-node.is-active .timeline-tick b {
+        color: rgba(4, 10, 16, 0.82);
+      }
+
+      html[data-theme="light"] .timeline-node.is-active .timeline-tick small {
+        color: #2E6A96;
+      }
+
+      html[data-theme="light"] .timeline-node.is-active .timeline-tick i {
+        background: #2E6A96;
+        border-color: #2E6A96;
+        box-shadow: 0 0 14px rgba(46, 106, 150, 0.42);
+      }
     }
 
     .works-section {
@@ -2350,7 +2139,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .works-section::before {
       background:
-        linear-gradient(90deg, rgba(142, 219, 53, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(172, 219, 251, 0.1) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
       background-size: 72px 72px;
       content: "";
@@ -2401,12 +2190,12 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .works-control h2 span {
       background: rgba(245, 245, 245, 0.92);
-      border: 1px solid rgba(142, 219, 53, 0.72);
+      border: 1px solid rgba(172, 219, 251, 0.72);
       border-radius: 999px;
       box-shadow:
         -1px 0 #ff3048,
         1px 0 #00f0ff,
-        0 0 12px rgba(142, 219, 53, 0.24);
+        0 0 12px rgba(172, 219, 251, 0.24);
       display: block;
       height: 1.05rem;
       width: 1.35rem;
@@ -2436,14 +2225,14 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-category span {
-      color: rgba(142, 219, 53, 0.66);
+      color: rgba(172, 219, 251, 0.66);
       display: inline-block;
       min-width: 1.6rem;
     }
 
     .works-category.is-active {
-      color: #8EDB35;
-      text-shadow: 0 0 14px rgba(142, 219, 53, 0.42);
+      color: #ACDBFB;
+      text-shadow: 0 0 14px rgba(172, 219, 251, 0.42);
     }
 
     .works-category.is-empty {
@@ -2452,7 +2241,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-category.is-empty span {
-      color: rgba(142, 219, 53, 0.34);
+      color: rgba(172, 219, 251, 0.34);
     }
 
     .works-progress {
@@ -2477,8 +2266,8 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-progress i::after {
-      background: #8EDB35;
-      box-shadow: 0 0 12px rgba(142, 219, 53, 0.62);
+      background: #ACDBFB;
+      box-shadow: 0 0 12px rgba(172, 219, 251, 0.62);
       content: "";
       inset: 0;
       position: absolute;
@@ -2498,7 +2287,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       --offset: 0;
       --abs-offset: 0;
       --stack-order: 1;
-      background: #050505;
+      background: #040A10;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 22px;
       box-shadow: 0 34px 110px rgba(0, 0, 0, 0.58);
@@ -2548,8 +2337,8 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-layer.is-active .works-layer-copy::before {
-      background: #8EDB35;
-      box-shadow: 0 0 14px rgba(142, 219, 53, 0.7);
+      background: #ACDBFB;
+      box-shadow: 0 0 14px rgba(172, 219, 251, 0.7);
       content: "";
       height: 2px;
       left: 0;
@@ -2609,11 +2398,11 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .works-play {
       appearance: none;
-      background: rgba(5, 5, 5, 0.78);
-      border: 1px solid rgba(142, 219, 53, 0.54);
+      background: rgba(4, 10, 16, 0.78);
+      border: 1px solid rgba(172, 219, 251, 0.54);
       border-radius: 999px;
       bottom: clamp(1.25rem, 3vh, 2rem);
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.7rem;
       font-weight: 700;
@@ -2657,7 +2446,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-layer-copy span {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -2713,7 +2502,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .works-layer-copy a {
-      color: rgba(142, 219, 53, 0.9);
+      color: rgba(172, 219, 251, 0.9);
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -2731,7 +2520,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .profile-section::before {
       background:
-        linear-gradient(90deg, rgba(142, 219, 53, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(172, 219, 251, 0.12) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
       background-size: 84px 84px;
       content: "";
@@ -2793,8 +2582,8 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .profile-copy h2::after {
       animation: profileCursorBlink 1s steps(2, start) infinite;
-      background: #8EDB35;
-      box-shadow: 0 0 16px rgba(142, 219, 53, 0.8);
+      background: #ACDBFB;
+      box-shadow: 0 0 16px rgba(172, 219, 251, 0.8);
       content: "";
       display: inline-block;
       height: 0.12em;
@@ -2819,7 +2608,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .profile-brief-list span {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -2854,7 +2643,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .profile-detail-grid span {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
       font-weight: 700;
@@ -2891,7 +2680,7 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     .profile-mini span {
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
       font-weight: 700;
@@ -2907,7 +2696,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .profile-mini-link {
       align-self: end;
-      color: #8EDB35;
+      color: #ACDBFB;
       font-family: var(--font-mono-cn);
       font-size: clamp(0.78rem, 0.95vw, 0.9rem);
       font-weight: 700;
@@ -2924,12 +2713,12 @@ import SiteHeader from '../components/SiteHeader.astro';
 
     .profile-model-panel {
       background:
-        radial-gradient(circle at 50% 45%, rgba(142, 219, 53, 0.12), transparent 34%),
-        linear-gradient(90deg, rgba(142, 219, 53, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 50% 45%, rgba(172, 219, 251, 0.12), transparent 34%),
+        linear-gradient(90deg, rgba(172, 219, 251, 0.08) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        rgba(5, 5, 5, 0.28);
+        rgba(4, 10, 16, 0.28);
       background-size: auto, 62px 62px, 62px 62px, auto;
-      border: 1px solid rgba(142, 219, 53, 0.24);
+      border: 1px solid rgba(172, 219, 251, 0.24);
       border-radius: 16px;
       height: 100%;
       min-height: 100%;
@@ -3015,7 +2804,6 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .chronology-section {
-        --timeline-camera-scale: 1.02;
         --timeline-progress: 0;
         border-top: 0;
         margin-left: 0;
@@ -3088,14 +2876,11 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       .chronology-world {
         display: block;
-        height: 2140px;
         left: 0;
         padding: 0;
         position: absolute;
         top: 0;
-        transform: translate3d(var(--timeline-camera-x), var(--timeline-camera-y), 0) scale(var(--timeline-camera-scale)) !important;
-        transform-origin: 0 0;
-        width: 1000px;
+        width: 100%;
       }
 
       .chronology-world::before {
@@ -3112,110 +2897,8 @@ import SiteHeader from '../components/SiteHeader.astro';
         width: 0.62rem;
       }
 
-      .timeline-node,
-      .timeline-node.is-active,
-      .timeline-node.is-current {
-        border-radius: 12px;
-        display: grid;
-        gap: 0.32rem;
-        left: var(--node-x);
-        max-width: min(17.5rem, 74vw);
-        min-width: 0;
-        padding: 0;
-        position: absolute;
-        top: var(--node-y);
-        width: 0;
-      }
-
-      .timeline-node {
-        opacity: 0;
-        pointer-events: none;
-        transform: translate(-50%, -50%) scale(0.82);
-      }
-
-      .timeline-node.is-active {
-        background: transparent;
-        border-color: transparent;
-        box-shadow: none;
-        opacity: 1;
-        pointer-events: none;
-        transform: translate(-50%, -50%) scale(1);
-      }
-
-      .timeline-node.is-current {
-        background: rgba(10, 14, 8, 0.93);
-        border: 1px solid rgba(142, 219, 53, 0.62);
-        box-shadow: 0 14px 42px rgba(0, 0, 0, 0.48);
-        opacity: 1;
-        padding: 0.76rem 0.82rem 0.82rem;
-        pointer-events: auto;
-        transform: translate(-50%, -50%) scale(1);
-        width: min(17.5rem, 74vw);
-        z-index: 6;
-      }
-
-      .timeline-node::before {
-        background: #8EDB35;
-        box-shadow: 0 0 14px rgba(142, 219, 53, 0.72);
-        display: block;
-        height: 0.52rem;
-        left: 50%;
-        opacity: 1;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 0.52rem;
-      }
-
-      .timeline-node.is-current::before,
-      .timeline-node[data-card-side="right"].is-current::before {
-        left: 50%;
-        top: 50%;
-      }
-
-      .timeline-node::after,
-      .timeline-node.is-current::after,
-      .timeline-node[data-card-side="right"].is-current::after {
-        display: none;
-      }
-
-      .timeline-node > span,
-      .timeline-node strong,
-      .timeline-node em,
-      .timeline-node .timeline-node-media,
-      .timeline-node .timeline-media-pair {
-        opacity: 0;
-      }
-
-      .timeline-node.is-current > span,
-      .timeline-node.is-current strong,
-      .timeline-node.is-current em,
-      .timeline-node.is-current .timeline-node-media,
-      .timeline-node.is-current .timeline-media-pair {
-        opacity: 1;
-      }
-
-      .timeline-node > span,
-      .timeline-node em {
-        font-size: 0.62rem;
-      }
-
-      .timeline-node strong {
-        font-size: clamp(1rem, 4.8vw, 1.28rem);
-        line-height: 1.24;
-      }
-
-      .timeline-node em {
-        line-height: 1.55;
-      }
-
-      .timeline-node .timeline-node-media {
-        aspect-ratio: 16 / 10;
-        border-radius: 9px;
-        margin-top: 0.35rem;
-        max-height: 9.6rem;
-        object-fit: cover;
-        width: 100%;
-      }
+      /* 这一组节点样式已被同断点的后一段（.timeline-node-body 版本）完全覆盖，
+         保留会留下 opacity:0 / pointer-events:none 之类的隐患，故移除。 */
 
       .timeline-media-pair {
         display: grid;
@@ -3255,8 +2938,8 @@ import SiteHeader from '../components/SiteHeader.astro';
 
       .works-control {
         align-items: start;
-        background: rgba(5, 5, 5, 0.62);
-        border: 1px solid rgba(142, 219, 53, 0.26);
+        background: rgba(4, 10, 16, 0.62);
+        border: 1px solid rgba(172, 219, 251, 0.26);
         border-radius: 12px;
         gap: 0.7rem;
         grid-template-columns: 1fr;
@@ -3531,7 +3214,7 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .chronology-map {
-        border: 1px solid rgba(142, 219, 53, 0.22);
+        border: 1px solid rgba(172, 219, 251, 0.22);
         border-radius: 18px;
         inset: auto;
         min-height: 0;
@@ -3565,63 +3248,115 @@ import SiteHeader from '../components/SiteHeader.astro';
         will-change: auto;
       }
 
+      /* 移动端恢复成静态竖向卡片列表：刻度收起，卡片本体回到常规流 */
       .timeline-node,
       .timeline-node.is-active,
       .timeline-node.is-current {
-        background: rgba(8, 12, 6, 0.82);
-        border: 1px solid rgba(142, 219, 53, 0.3);
-        border-radius: 13px;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
         box-shadow: none;
-        display: grid;
-        gap: 0.34rem;
+        display: block;
+        height: auto;
         left: auto;
-        max-width: none;
-        min-width: 0;
         opacity: 1;
-        padding: 0.85rem 0.9rem;
+        padding: 0;
         pointer-events: auto;
         position: relative;
         top: auto;
         transform: none !important;
-        transition: border-color 160ms ease, background 160ms ease;
         width: 100%;
       }
 
-      .timeline-node::before {
-        background: #8EDB35;
-        border: 0;
-        box-shadow: 0 0 14px rgba(142, 219, 53, 0.52);
-        display: block;
-        height: 0.48rem;
-        left: 0.78rem !important;
-        opacity: 1;
-        top: 1.06rem !important;
-        transform: none !important;
-        width: 0.48rem;
-      }
-
-      .timeline-node::after {
+      .timeline-tick {
         display: none !important;
       }
 
-      .timeline-node > span,
-      .timeline-node strong,
-      .timeline-node em,
-      .timeline-node .timeline-node-media,
-      .timeline-node .timeline-media-pair {
-        opacity: 1;
+      /* 移动端不做上下分排，引线一并收起 */
+      .timeline-leader {
+        display: none !important;
       }
 
-      .timeline-node > span {
+      .timeline-node-body {
+        background: rgba(7, 13, 19, 0.82);
+        border: 1px solid rgba(172, 219, 251, 0.3);
+        border-radius: 13px;
+        bottom: auto !important;
+        box-shadow: none;
+        display: grid;
+        gap: 0.34rem;
+        grid-template-columns: minmax(0, 1fr);
+        left: auto;
+        opacity: 1;
+        padding: 0.85rem 0.9rem;
+        pointer-events: auto;
+        position: relative;
+        top: auto !important;
+        transform: none !important;
+        translate: 0 0;
+        transition: border-color 160ms ease, background 160ms ease;
+        visibility: visible;
+        width: 100%;
+        z-index: auto;
+      }
+
+      /* 桌面端为了窄卡片而隐藏的配图，在移动端恢复成整幅大图 */
+      .timeline-node-body > .timeline-node-media {
+        display: block;
+        margin-top: 0.34rem;
+      }
+
+      .timeline-node-body > .timeline-media-pair {
+        display: grid;
+        margin-top: 0.34rem;
+      }
+
+      .timeline-node-body > .timeline-node-meta {
         padding-left: 1rem;
       }
 
-      .timeline-node strong {
+      /* 移动端卡片占满整幅宽度，解除桌面端为窄卡片做的行数截断 */
+      .timeline-node-body strong {
+        -webkit-line-clamp: none;
+        display: block;
         font-size: clamp(1rem, 5.2vw, 1.28rem);
+        overflow: visible;
       }
 
-      .timeline-node .timeline-node-media {
+      .timeline-node-body em {
+        -webkit-line-clamp: none;
+        display: block;
+        overflow: visible;
+      }
+
+      /* 缩略图恢复成整幅大图 */
+      .timeline-node-body .timeline-node-media {
+        aspect-ratio: 16 / 9;
         max-height: 12rem;
+      }
+
+      .timeline-node-body .timeline-media-pair {
+        gap: 0.42rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .timeline-node-body .timeline-media-pair .timeline-node-media {
+        aspect-ratio: 4 / 5;
+        margin: 0;
+      }
+
+      /* 卡片左上角的小圆点标记（移动端没有刻度，靠它做视觉锚点） */
+      .timeline-node-body::before {
+        background: #ACDBFB;
+        border-radius: 50%;
+        box-shadow: 0 0 14px rgba(172, 219, 251, 0.52);
+        content: "";
+        display: block;
+        height: 0.48rem;
+        left: 0.82rem;
+        position: absolute;
+        top: 1.1rem;
+        width: 0.48rem;
       }
 
       .works-section {
@@ -3645,8 +3380,8 @@ import SiteHeader from '../components/SiteHeader.astro';
       }
 
       .works-control {
-        background: rgba(5, 5, 5, 0.72);
-        border: 1px solid rgba(142, 219, 53, 0.3);
+        background: rgba(4, 10, 16, 0.72);
+        border: 1px solid rgba(172, 219, 251, 0.3);
         border-radius: 14px;
         left: auto;
         margin-bottom: 0.95rem;
@@ -3745,18 +3480,23 @@ import SiteHeader from '../components/SiteHeader.astro';
     }
 
     @media (max-width: 900px) {
-      html[data-theme="light"] .timeline-node,
-      html[data-theme="light"] .timeline-node.is-active,
-      html[data-theme="light"] .timeline-node.is-current {
+      html[data-theme="light"] .timeline-node-body {
         background: rgba(255, 255, 255, 0.86) !important;
-        border-color: rgba(5, 5, 5, 0.16) !important;
+        border-color: rgba(4, 10, 16, 0.16) !important;
+      }
+
+      html[data-theme="light"] .timeline-node-body strong {
+        color: #040A10;
+      }
+
+      html[data-theme="light"] .timeline-node-body em {
+        color: rgba(4, 10, 16, 0.62);
       }
 
       html[data-theme="light"] .works-control {
         background: rgba(255, 255, 255, 0.76) !important;
-        border-color: rgba(5, 5, 5, 0.18) !important;
+        border-color: rgba(4, 10, 16, 0.18) !important;
       }
     }
   </style>
-</body>
-</html>
+</Layout>
