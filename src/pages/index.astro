@@ -1287,12 +1287,14 @@ import { workCategories, works } from '../data/works';
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      // 曝光由下面的 applyLightingTheme() 按主题统一设置（深色 1.0 / 浅色 1.02）
+      // 曝光由下面的 applyLightingTheme() 按主题统一设置（深色 1.03 / 浅色 1.02）
 
       // 模型自身没有材质定义（GLTFLoader 补的是 metalness 1 / roughness 1 的纯白材质），
       // 没有环境贴图时金属度只会吃掉漫反射，整只着陆器就是一团发白的平面。
-      // 这里自制一张「影棚」等距柱状贴图：左上柔光箱、右上冷光带、地面反弹光、四周压暗。
+      // 这里自制一张「影棚」等距柱状贴图：上边缘是天顶、横向是方位角，画上的亮块就是空中的灯。
       // 金属切面正是靠反射这些明暗块才分得出层次，均匀的室内环境只会把它照平。
+      // 方位角 0° 落在贴图 u = 0.75 处，配合 frame() 里的 environmentRotation，
+      // 渲染时正好停在屏幕右侧 —— 与主光同侧，反光才不会和灯光互相打架。
       function makeStudioEnvTexture(size = 1024) {
         const width = size;
         const height = size / 2;
@@ -1301,15 +1303,20 @@ import { workCategories, works } from '../data/works';
         surface.height = height;
         const paint = surface.getContext('2d');
 
+        // 四周压到接近全黑：只有几块灯是有亮度的，金属才有干净的「亮面—暗面」可反射，
+        // 环境整体一灰，再强的灯也会被糊掉（这是之前发白的根源）
         const background = paint.createLinearGradient(0, 0, 0, height);
-        background.addColorStop(0, '#16202f');
-        background.addColorStop(0.5, '#080e18');
-        background.addColorStop(1, '#03060b');
+        background.addColorStop(0, '#0d1725');
+        background.addColorStop(0.46, '#050a12');
+        background.addColorStop(1, '#02040a');
         paint.fillStyle = background;
         paint.fillRect(0, 0, width, height);
 
-        // 等距柱状贴图的上边缘是天顶、下边缘是天底，横向为方位角，画上的软光斑就是空中的柔光箱
-        function softbox(cx, cy, rx, ry, color, alpha) {
+        // 画面上的一点 = 一个方向：cx 是方位角（0° 屏幕右方），cy 是仰角（正上方为天顶）
+        const uOf = (azimuthDeg) => 0.5 + (90 - azimuthDeg) / 360;
+        const vOf = (elevationDeg) => 0.5 - elevationDeg / 180;
+
+        function lightBox(cx, cy, rx, ry, color, alpha) {
           paint.save();
           paint.globalAlpha = alpha;
           paint.translate(cx * width, cy * height);
@@ -1325,11 +1332,30 @@ import { workCategories, works } from '../data/works';
           paint.restore();
         }
 
-        softbox(0.24, 0.2, 0.16, 0.28, '#ffffff', 1); // 主柔光箱
-        softbox(0.62, 0.26, 0.12, 0.2, '#cfe8ff', 0.85); // 冷色反光板
-        softbox(0.9, 0.42, 0.08, 0.14, '#ffd9a8', 0.45); // 一点暖色，免得整机全是冷调
-        softbox(0.36, 0.92, 0.24, 0.16, '#41566f', 0.55); // 地面反弹，托住下半身
-        softbox(0.02, 0.98, 0.3, 0.22, '#2b3d52', 0.5);
+        // 贴图首尾相接，靠近接缝的灯要补画到另一侧，否则会在 u = 0 处被切断
+        function light(azimuthDeg, elevationDeg, rx, ry, color, alpha) {
+          const cx = uOf(azimuthDeg);
+          const cy = vOf(elevationDeg);
+          lightBox(cx, cy, rx, ry, color, alpha);
+          if (cx - rx < 0) lightBox(cx + 1, cy, rx, ry, color, alpha);
+          if (cx + rx > 1) lightBox(cx - 1, cy, rx, ry, color, alpha);
+        }
+
+        // 右侧主柔光箱：一块不太大的白灯 + 更小更亮的内芯；
+        // 尺寸必须克制，铺太大整机都会变成一片白，暗面根本留不下来
+        light(0, 32, 0.085, 0.14, '#ffffff', 0.62);
+        light(0, 30, 0.035, 0.06, '#ffffff', 1);
+        light(34, 22, 0.055, 0.11, '#eaf4ff', 0.22); // 主光右上方垫一小块，亮面不至于断得太生硬
+        // 左侧冷光板：小、暗、饱和度高，暗面那条蓝边才够纯；
+        // 它一旦又大又亮，左右亮度就抵消了，整机立刻发闷
+        light(180, 20, 0.07, 0.13, '#5fb6ff', 0.5);
+        // 背后顶光：给背面切面留一点亮度，压得很低以免吃掉暗部
+        light(104, 42, 0.11, 0.14, '#a8d4ff', 0.28);
+        // 一点饱和的暖色点缀，免得整机只剩冷调
+        light(288, 6, 0.06, 0.1, '#ffae5e', 0.34);
+        // 地面反弹，托住下半身
+        light(0, -42, 0.36, 0.13, '#2c4a68', 0.38);
+        light(180, -38, 0.32, 0.12, '#243c56', 0.38);
 
         const texture = new THREE.CanvasTexture(surface);
         texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -1343,13 +1369,16 @@ import { workCategories, works } from '../data/works';
 
       scene.environment = makeStudioEnvTexture();
 
-      // 浅色底比深色底要反射得更亮才不会发灰，两套主题各给一组光比
+      // 浅色底比深色底要反射得更亮才不会发灰，两套主题各给一组光比；
+      // 主光与边光的强度也分主题：浅色面板本身更亮，光源不跟上就压不住
       const themeLighting = {
-        dark: { exposure: 1.0, envIntensity: 1.5, hemisphere: 0.16, glowOpacity: 0.42 },
-        light: { exposure: 1.02, envIntensity: 1.6, hemisphere: 0.2, glowOpacity: 0.16 },
+        dark: { exposure: 1.03, envIntensity: 1.45, hemisphere: 0.05, key: 2.15, rim: 1.55, glowOpacity: 0.34 },
+        light: { exposure: 1.02, envIntensity: 1.15, hemisphere: 0.05, key: 2.5, rim: 1.9, glowOpacity: 0.14 },
       };
       const modelMaterials = [];
       let glowBaseOpacity = themeLighting.dark.glowOpacity;
+      let keyBaseIntensity = themeLighting.dark.key;
+      let rimBaseIntensity = themeLighting.dark.rim;
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -1360,33 +1389,62 @@ import { workCategories, works } from '../data/works';
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.72;
 
-      // 主光：右前上方，负责切面之间的明暗分层（环境贴图已经很亮，直射光压到 1.5 量级即可）
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-      keyLight.position.set(3.6, 3.5, 4.8);
-      scene.add(keyLight);
+      // 光组挂在相机上：用相机空间坐标描述光源位置（+X 屏幕右、+Y 屏幕上、-Z 屏幕里），
+      // 这样 OrbitControls 自转或用户拖拽时，主光始终停在屏幕右侧，而不是绕到模型背后。
+      const lightRig = new THREE.Group();
+      lightRig.name = 'profile-light-rig';
+      camera.add(lightRig);
+      scene.add(camera); // 相机要进场景图，挂在它下面的光源才会跟着更新世界矩阵
 
-      // 冷边光：左后方，勾出蓝色轮廓
-      const rimLight = new THREE.DirectionalLight(0xacdbfb, 1.25);
-      rimLight.position.set(-4.3, 1.7, -3.4);
-      scene.add(rimLight);
+      // 方向光的瞄准点放在相机正前方这么远处，约等于模型中心的距离
+      const RIG_AIM_DISTANCE = 7.2;
 
-      // 反向轮廓光：与边光对侧，保证模型自转到任意角度都还有一条亮边
-      const counterRim = new THREE.DirectionalLight(0x8fc8f4, 0.75);
-      counterRim.position.set(4.4, 1.1, -3.7);
-      scene.add(counterRim);
+      // 方位角 0° 在相机正前方，正值为屏幕右侧；仰角正值为上
+      function rigPosition(azimuthDeg, elevationDeg, distance) {
+        const azimuth = THREE.MathUtils.degToRad(azimuthDeg);
+        const elevation = THREE.MathUtils.degToRad(elevationDeg);
+        const horizontal = Math.cos(elevation) * distance;
+        return new THREE.Vector3(
+          Math.sin(azimuth) * horizontal,
+          Math.sin(elevation) * distance,
+          Math.cos(azimuth) * horizontal - RIG_AIM_DISTANCE
+        );
+      }
 
-      // 底部反弹光：托住着陆支架与底面，避免下半身糊成一片黑
-      const bounceLight = new THREE.DirectionalLight(0xdbeaf8, 0.45);
-      bounceLight.position.set(-0.9, -3.2, 2.6);
-      scene.add(bounceLight);
+      // 瞄准点也放进光组：光照方向只取决于两者在相机空间的相对关系，
+      // 所以拖拽、缩放都不会改变打光角度，只改变从哪个角度看这只「被照亮」的模型
+      function makeRigLight(color, intensity, azimuthDeg, elevationDeg, distance) {
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.copy(rigPosition(azimuthDeg, elevationDeg, distance));
+        const aim = new THREE.Object3D();
+        aim.position.set(0, 0, -RIG_AIM_DISTANCE);
+        light.target = aim;
+        light.userData.basePosition = light.position.clone();
+        lightRig.add(aim);
+        lightRig.add(light);
+        return light;
+      }
 
-      // 镜头侧点光：在金属切面上打出一颗会跟着旋转移动的小高光
-      const glintLight = new THREE.PointLight(0xffffff, 5, 16, 2);
-      glintLight.position.set(2.3, 1.3, 3.9);
-      scene.add(glintLight);
+      // 主光：屏幕右上方最亮最纯的一束白光，负责切面之间的明暗分层
+      const keyLight = makeRigLight(0xffffff, keyBaseIntensity, 38, 28, 6.4);
 
-      // 环境补光：压得比原来低，把明暗对比让给主光与边光
-      const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x060a10, 0.16);
+      // 左侧冷边光：饱和度很足的冷蓝，在暗面上勾出那条蓝边
+      const rimLight = makeRigLight(0x7cc4ff, rimBaseIntensity, -70, 12, 7.2);
+
+      // 背后顶光：给背面切面留一条细亮边，强度压低，免得把暗部对比吃掉
+      const backLight = makeRigLight(0x6cb4ff, 0.5, 166, 32, 7.6);
+
+      // 底部反弹光：只托住着陆支架与底面，几乎不参与塑形
+      const bounceLight = makeRigLight(0x9ec6ea, 0.3, -6, -44, 6.8);
+
+      // 镜头侧点光：贴着右前方，模型自转时在金属切面上扫出一颗流动的高光
+      const glintLight = new THREE.PointLight(0xffffff, 7, 26, 2);
+      glintLight.position.copy(rigPosition(30, 8, 4.2));
+      glintLight.userData.basePosition = glintLight.position.clone();
+      lightRig.add(glintLight);
+
+      // 环境补光：只用来兜住暗部下限，明暗对比交给主光与边光
+      const fillLight = new THREE.HemisphereLight(0xacdbfb, 0x040a12, 0.045);
       scene.add(fillLight);
 
       const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x1d3a4d);
@@ -1440,7 +1498,7 @@ import { workCategories, works } from '../data/works';
           ]),
           color: 0x000000,
           transparent: true,
-          opacity: 0.46,
+          opacity: 0.58,
           depthWrite: false,
         })
       );
@@ -1459,11 +1517,16 @@ import { workCategories, works } from '../data/works';
           : themeLighting.dark;
       }
 
-      // 曝光、反射强度、辉光浓淡都跟着主题走；模型材质是异步加载的，所以两处都要能重复调用
+      // 曝光、反射强度、辉光浓淡、主光/边光亮度都跟着主题走；
+      // 模型材质是异步加载的，所以两处都要能重复调用
       function applyLightingTheme() {
         const preset = currentThemeLighting();
         renderer.toneMappingExposure = preset.exposure;
         fillLight.intensity = preset.hemisphere;
+        keyLight.intensity = preset.key;
+        rimLight.intensity = preset.rim;
+        keyBaseIntensity = preset.key;
+        rimBaseIntensity = preset.rim;
         glowBaseOpacity = preset.glowOpacity;
         backdropGlow.material.opacity = preset.glowOpacity;
         modelMaterials.forEach((material) => {
@@ -1501,23 +1564,20 @@ import { workCategories, works } from '../data/works';
           modelRoot.rotation.y += 0.0022;
         }
 
-        // 灯光缓慢漂移 + 边光呼吸：让高光在自转时持续流动，而不是一成不变
+        // 光源在相机空间里小幅漂移 + 边光呼吸：高光会流动，但整束光始终留在屏幕右侧
+        const keyBase = keyLight.userData.basePosition;
         keyLight.position.set(
-          3.6 + Math.sin(lightClock * 0.33) * 0.85,
-          3.5 + Math.cos(lightClock * 0.24) * 0.55,
-          4.8 + Math.sin(lightClock * 0.19) * 0.45
+          keyBase.x + Math.sin(lightClock * 0.33) * 0.5,
+          keyBase.y + Math.cos(lightClock * 0.24) * 0.34,
+          keyBase.z + Math.sin(lightClock * 0.19) * 0.3
         );
-        rimLight.position.set(
-          -4.3 + Math.cos(lightClock * 0.27) * 0.75,
-          1.7 + Math.sin(lightClock * 0.31) * 0.45,
-          -3.4 + Math.sin(lightClock * 0.22) * 0.35
-        );
-        rimLight.intensity = 1.25 + Math.sin(lightClock * 0.5) * 0.22;
-        counterRim.intensity = 0.75 + Math.cos(lightClock * 0.42 + 1.1) * 0.16;
+        keyLight.intensity = keyBaseIntensity * (1 + Math.sin(lightClock * 0.5) * 0.05);
+        rimLight.intensity = rimBaseIntensity * (1 + Math.cos(lightClock * 0.42 + 1.1) * 0.08);
+        const glintBase = glintLight.userData.basePosition;
         glintLight.position.set(
-          2.3 + Math.sin(lightClock * 0.37 + 0.6) * 0.9,
-          1.3 + Math.cos(lightClock * 0.29) * 0.5,
-          3.9
+          glintBase.x + Math.sin(lightClock * 0.37 + 0.6) * 0.7,
+          glintBase.y + Math.cos(lightClock * 0.29) * 0.4,
+          glintBase.z + Math.sin(lightClock * 0.23) * 0.5
         );
         // 辉光按主题基准值做呼吸，浅色主题几乎看不出，深色主题才明显
         backdropGlow.material.opacity = glowBaseOpacity * (1 + Math.sin(lightClock * 0.45) * 0.24);
@@ -1525,6 +1585,13 @@ import { workCategories, works } from '../data/works';
         backdropGlow.scale.set(glowScale, glowScale, 1);
 
         controls.update();
+
+        // 环境贴图里的亮块跟着相机一起转：否则相机自转到某个角度时，
+        // 反光会跑到屏幕左侧，与「光源固定在右侧」自相矛盾。
+        // 着色器里取样方向是 envMapRotation * worldNormal，PMREM 贴图还会把欧拉角取负，
+        // 于是「世界方位角 = 贴图方位角 + environmentRotation.y」，+90° 正是屏幕右侧。
+        scene.environmentRotation.y = Math.atan2(camera.position.x, camera.position.z) + Math.PI / 2;
+
         renderer.render(scene, camera);
         frameId = window.requestAnimationFrame(frame);
       }
