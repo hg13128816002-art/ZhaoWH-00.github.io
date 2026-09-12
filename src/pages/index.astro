@@ -900,7 +900,6 @@ import { workCategories, works } from '../data/works';
     }
 
     const worksSection = document.querySelector('.works-section') as HTMLElement | null;
-    const worksPin = document.querySelector('.works-pin') as HTMLElement | null;
     const worksStage = document.querySelector('.works-stage') as HTMLElement | null;
     const worksCards = Array.from(document.querySelectorAll('[data-work-card]')) as HTMLElement[];
     const worksCategories = Array.from(document.querySelectorAll('[data-work-category].works-category')) as HTMLButtonElement[];
@@ -974,7 +973,9 @@ import { workCategories, works } from '../data/works';
       }
     }
 
-    function renderWorksStack(progress = activeWorkIndex) {
+    // 调用处仍会把进度传进来，但整个函数是按 activeWorkIndex 算位置的，
+    // 形参目前用不上；名字加下划线前缀，免得被类型检查当成「声明了却没用」
+    function renderWorksStack(_progress = activeWorkIndex) {
       if (!worksCards.length) return;
 
       worksCards.forEach((card, index) => {
@@ -1432,10 +1433,12 @@ import { workCategories, works } from '../data/works';
       const rimLight = makeRigLight(0x7cc4ff, rimBaseIntensity, -70, 12, 7.2);
 
       // 背后顶光：给背面切面留一条细亮边，强度压低，免得把暗部对比吃掉
-      const backLight = makeRigLight(0x6cb4ff, 0.5, 166, 32, 7.6);
+      // （这两盏灯只挂进 lightRig、不做逐帧调整，所以不必留变量引用——
+      //  makeRigLight 内部已经把它加进光组，灯照样生效）
+      makeRigLight(0x6cb4ff, 0.5, 166, 32, 7.6);
 
       // 底部反弹光：只托住着陆支架与底面，几乎不参与塑形
-      const bounceLight = makeRigLight(0x9ec6ea, 0.3, -6, -44, 6.8);
+      makeRigLight(0x9ec6ea, 0.3, -6, -44, 6.8);
 
       // 镜头侧点光：贴着右前方，模型自转时在金属切面上扫出一颗流动的高光
       // （扫动来自模型自己在转，灯本身不动）
