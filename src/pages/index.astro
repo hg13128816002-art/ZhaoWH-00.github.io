@@ -598,6 +598,10 @@ import { workCategories, works } from '../data/works';
     let timelineContentOffset = 0;
     /** 悬停/聚焦的节点索引；-1 表示回到「最后一个已生长节点」 */
     let hoveredTimelineIndex = -1;
+    /** 揭示裁剪矩形的固定左边界（与标记里 rect 的 x 默认值一致），轴线左端圆头不会被裁掉 */
+    const TIMELINE_CLIP_LEFT = -40;
+    /** 裁剪右边缘越过生长头的余量：灯条钻到亮点下方，衔接处不留缝 */
+    const TIMELINE_CLIP_OVERLAP = 2;
     let stableMobileViewportWidth = window.innerWidth;
     let stableMobileViewportHeight = window.innerHeight;
 
@@ -680,6 +684,7 @@ import { workCategories, works } from '../data/works';
       }
 
       timelineSvg?.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      timelineLiveClip?.setAttribute('x', String(TIMELINE_CLIP_LEFT));
       timelineLiveClip?.setAttribute('y', '-20');
       timelineLiveClip?.setAttribute('height', String(height + 40));
 
@@ -867,8 +872,12 @@ import { workCategories, works } from '../data/works';
         timelineHead.style.top = `${headPoint.y}px`;
       }
 
-      // 裁剪矩形与线头同处一个 SVG 坐标系，高分屏缩放下边缘也能精确对齐
-      timelineLiveClip?.setAttribute('width', String(Math.max(0, headPoint.x + 2)));
+      // 裁剪矩形与线头同处一个 SVG 坐标系，高分屏缩放下边缘也能精确对齐；
+      // 右边缘由「矩形左边界 + 宽度」决定，所以宽度要把左边界补回来，否则灯条会停在亮点前面断开
+      timelineLiveClip?.setAttribute(
+        'width',
+        String(Math.max(0, headPoint.x + TIMELINE_CLIP_OVERLAP - TIMELINE_CLIP_LEFT))
+      );
     }
 
     function syncTimelineToScroll() {
