@@ -423,8 +423,6 @@ html[data-theme="light"] .profile-model-panel::after {
 }
 
 html[data-theme="light"] :where(
-  .chronology-grid,
-  .chronology-map,
   .profile-model-panel,
   .profile-visual,
   .grid-bg

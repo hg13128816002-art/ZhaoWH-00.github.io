@@ -1853,21 +1853,8 @@ import { workCategories, works } from '../data/works';
       z-index: 1;
     }
 
-    .chronology-map::before {
-      background:
-        linear-gradient(90deg, rgba(172, 219, 251, 0.17) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px);
-      background-size:
-        46px 46px,
-        46px 46px;
-      content: "";
-      inset: 0;
-      opacity: 0.68;
-      pointer-events: none;
-      position: absolute;
-      z-index: 0;
-    }
-
+    /* 时间轴不再铺网格底纹：之前的 46px 渐变网格会在节点与卡片下方形成大片亮线，
+       与正弦轴线的视觉层级打架，这里整块去掉（::after 的压边渐隐保留）。 */
     .chronology-map::after {
       background: radial-gradient(ellipse at 50% 74%, transparent 0%, rgba(4, 10, 16, 0.14) 60%, rgba(4, 10, 16, 0.6) 100%);
       content: "";
@@ -3229,13 +3216,6 @@ import { workCategories, works } from '../data/works';
         position: absolute;
       }
 
-      .chronology-map::before {
-        background-size: 40px 40px, 40px 40px;
-        display: block;
-        inset: -18%;
-        opacity: 0.68;
-      }
-
       .chronology-map::after {
         display: block;
       }
@@ -3587,13 +3567,6 @@ import { workCategories, works } from '../data/works';
         overflow: visible;
         padding: 0.85rem;
         position: relative;
-      }
-
-      .chronology-map::before {
-        background-size: 38px 38px, 38px 38px;
-        inset: 0;
-        opacity: 0.4;
-        transform: none;
       }
 
       .chronology-map::after,
