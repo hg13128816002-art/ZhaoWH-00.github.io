@@ -1,113 +1,34 @@
 ---
-// src/components/PureTransition.astro
-// 终极先锋版跨页转场：错落矩阵切片 (Staggered Slices) + 激光边缘 + 系统级标识
+import geometrySource from '../scripts/opening/z-loading.js?raw';
+import rendererSource from '../scripts/page-transition-renderer.js?raw';
+import controllerSource from '../scripts/page-transition.js?raw';
+
+const { skipInitialReveal = false } = Astro.props;
+// Inline this small runtime so a new document paints the carried-over Z phase synchronously.
+const runtime = [geometrySource, rendererSource, controllerSource]
+  .map(source => source.replace(/^export /gm, '')).join('\n');
 ---
 
-<div id="diy-transition-gate" class="fixed inset-0 z-[10080] flex w-screen h-screen pointer-events-none select-none overflow-hidden">
-  
-  <div class="slice relative w-1/5 h-full bg-[#040A10] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] origin-bottom">
-     <div class="absolute bottom-0 w-full h-[2px] bg-[#ACDBFB] shadow-[0_0_15px_#ACDBFB]"></div>
-  </div>
-  <div class="slice relative w-1/5 h-full bg-[#040A10] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[75ms] origin-bottom border-l border-neutral-900/50">
-     <div class="absolute bottom-0 w-full h-[2px] bg-[#ACDBFB] shadow-[0_0_15px_#ACDBFB]"></div>
-  </div>
-  <div class="slice relative w-1/5 h-full bg-[#040A10] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[150ms] origin-bottom border-l border-neutral-900/50">
-     <div class="absolute bottom-0 w-full h-[2px] bg-[#ACDBFB] shadow-[0_0_15px_#ACDBFB]"></div>
-  </div>
-  <div class="slice relative w-1/5 h-full bg-[#040A10] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[225ms] origin-bottom border-l border-neutral-900/50">
-     <div class="absolute bottom-0 w-full h-[2px] bg-[#ACDBFB] shadow-[0_0_15px_#ACDBFB]"></div>
-  </div>
-  <div class="slice relative w-1/5 h-full bg-[#040A10] translate-y-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] delay-[300ms] origin-bottom border-l border-neutral-900/50">
-     <div class="absolute bottom-0 w-full h-[2px] bg-[#ACDBFB] shadow-[0_0_15px_#ACDBFB]"></div>
-  </div>
-
-  <div id="transition-logo" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#ACDBFB] font-mono text-[10px] md:text-xs tracking-[0.5em] font-bold opacity-0 transition-opacity duration-300 delay-[400ms]">
-    // SYSTEM_OVERRIDE_ACTIVE
-  </div>
-  
+<div id="diy-transition-gate" data-page-transition data-skip-initial={String(skipInitialReveal)} hidden={skipInitialReveal} aria-hidden="true">
+  <svg viewBox="0 0 1280 534" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"></svg>
 </div>
+<script is:inline set:html={`(() => {
+${runtime}
+const root = document.getElementById('diy-transition-gate');
+initPageTransition(root, createPageTransitionRenderer(root, createZLoadingGeometry()));
+})();`} />
+<noscript><style>#diy-transition-gate { display: none !important; }</style></noscript>
 
-<script>
-  const gate = document.getElementById('diy-transition-gate');
-  const slices = document.querySelectorAll('.slice');
-  const logo = document.getElementById('transition-logo');
-  let isTransitioning = false;
-  const warmedRoutes = new Set<string>();
-
-  const warmRoute = (targetUrl: string) => {
-    try {
-      const url = new URL(targetUrl, window.location.href);
-      if (url.origin !== window.location.origin) return;
-      url.hash = '';
-      const href = url.href;
-      if (warmedRoutes.has(href)) return;
-      warmedRoutes.add(href);
-
-      const prefetchLink = document.createElement('link');
-      prefetchLink.rel = 'prefetch';
-      prefetchLink.href = href;
-      document.head.appendChild(prefetchLink);
-    } catch {
-      // 无效 URL 交给浏览器原生导航处理。
-    }
-  };
-
-  // 1. 【进场动效】：页面骨架挂载完毕后立即开启，不等待图片/视频等重资源。
-  const revealPage = () => {
-    requestAnimationFrame(() => {
-      slices.forEach((slice: any) => {
-        slice.style.transform = 'translateY(-100%)';
-      });
-      if (logo) logo.style.opacity = '0';
-      if (gate) gate.style.pointerEvents = 'none';
-      isTransitioning = false;
-    });
-  };
-
-  // 页面本身仍由本地字体门控可见性；只等待字体，不再被图片、视频等资源拖住。
-  const fontsReady = window.fontsReadyPromise;
-  if (fontsReady) {
-    fontsReady.then(revealPage, revealPage);
-  } else {
-    revealPage();
+<style>
+  #diy-transition-gate {
+    position: fixed; inset: 0; z-index: 10080;
+    width: 100%; height: 100%; overflow: hidden;
+    pointer-events: auto; user-select: none;
+    visibility: visible !important;
+    background: #040A10;
+    contain: layout paint;
   }
-
-  // 从浏览器的前进/后退缓存恢复时，脚本不会重新执行，需要重新打开遮罩。
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) revealPage();
-  });
-
-  // 2. 【退场动效】：接收全局跃迁指令，阵列从天而降
-  (window as any).triggerPureTransition = function(targetUrl: string) {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    warmRoute(targetUrl);
-    if (gate) gate.style.pointerEvents = 'auto';
-
-    // 强行移除之前向上抽离的形变，使其恢复至 translateY(0)，即顺滑降下覆盖全屏
-    slices.forEach((slice: any) => {
-      slice.style.transform = 'translateY(0)';
-    });
-    // 中央字符在幕布快要合拢时高级亮起
-    if (logo) logo.style.opacity = '1';
-
-    // 引擎精密计时：基础动画时长 600ms + 最后一个切片的最大延迟 300ms = 900ms 彻底闭合
-    // 我们设定 950ms 后执行底层物理暗转跳页
-    setTimeout(() => {
-      window.location.href = targetUrl;
-    }, 950);
-  };
-
-  // 3. 【全站智能自动拦截】
-  document.addEventListener('click', (e) => {
-    const link = (e.target as HTMLElement).closest('a');
-    if (link && link.href && link.href.startsWith(window.location.origin) && !link.target && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
-      const nextUrl = new URL(link.href);
-      const isSamePageHash = nextUrl.pathname === window.location.pathname && nextUrl.hash;
-      if (isSamePageHash) return;
-
-      e.preventDefault();
-      (window as any).triggerPureTransition(link.href);
-    }
-  });
-</script>
+  #diy-transition-gate[data-renderer-ready="true"] { background: transparent; }
+  #diy-transition-gate[hidden] { display: none !important; }
+  #diy-transition-gate svg { display: block; width: 100%; height: 100%; }
+</style>

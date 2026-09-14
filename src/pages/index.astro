@@ -2,49 +2,143 @@
 // src/pages/index.astro
 // 首页：英雄区粒子宇宙 + 创作编年时间轴 + Works 作品叠层 + Profile 3D 模型
 import Layout from '../layouts/Layout.astro';
-import Preloader from '../components/Preloader.astro';
+import HeroOpening from '../components/HeroOpening.astro';
+import HomeSectionNav from '../components/HomeSectionNav.astro';
+import BackToTop from '../components/BackToTop.astro';
 import { timelineNodes } from '../data/timeline';
 import { workCategories, works } from '../data/works';
 ---
 
 <style>
-  :root {
-    --stable-app-height: 100vh;
-  }
-  
-  .font-mono {
-    font-family: var(--font-mono-cn) !important;
-  }
+  :root { --stable-app-height: 100vh; }
+  .font-mono { font-family: var(--font-mono-cn); }
 
-  #home-hero {
-    contain: paint;
+  .home-hero {
+    height: 100svh;
+    min-height: 42rem;
+    display: flex;
+    flex-direction: column;
   }
-
-  .hero-title-stack {
-    font-family: var(--font-sans-cn);
-    transform: translateY(clamp(-2.9rem, -5.2vh, -1.7rem));
+  .hero-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
   }
-
-  .hero-dot {
-    animation: heroDotBlink 1.05s steps(2, start) infinite;
+  .hero-canvas {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 0;
+    width: 100%;
+    height: var(--hero-canvas-height, 75svh);
+    background: #ACDBFB;
+    pointer-events: none;
+  }
+  .hero-decoration {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 0;
+    width: 100%;
+    height: var(--hero-canvas-height, 75svh);
+    pointer-events: none;
+    color: #244e6c;
+  }
+  .hero-decoration text {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 899px) {
+    .hero-decoration .hero-annotations { display: none; }
+  }
+  .hero-band {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: clamp(1.6rem, 3vh, 2.4rem) clamp(1.5rem, 3.5vw, 4rem);
+    padding-bottom: calc(clamp(1.6rem, 3vh, 2.4rem) + 1.25rem);
+    background: #040A10;
+    color: #ACDBFB;
+  }
+  .hero-wordmark {
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(3.2rem, 7.3vw, 7.6rem);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+    white-space: nowrap;
+  }
+  .hero-intro {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: clamp(0.7rem, 0.85vw, 0.86rem);
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+  }
+  .hero-intro p { margin: 0; }
+  .hero-intro .hero-scroll-hint {
+    margin-top: 1rem;
+    opacity: 0.55;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+  }
+  .home-statement {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    min-height: 44svh;
+    padding: 5rem 1.5rem;
+    background: #040A10;
+  }
+  .statement-text {
+    margin: 0;
+    text-align: center;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1.45rem, 3.2vw, 3rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.035em;
+    color: #ACDBFB;
+  }
+  .statement-word {
     display: inline-block;
+    opacity: 0.22;
+    transition: opacity 180ms ease, color 180ms ease;
+  }
+  .statement-word.is-lit { opacity: 1; color: #e8f3fd; }
+  :global(html[data-theme="light"]) .hero-band,
+  :global(html[data-theme="light"]) .home-statement { background: #fff; }
+  :global(html[data-theme="light"]) .hero-band .hero-wordmark { color: #040A10 !important; }
+  /* 首页外框从信息带内侧开始，随内容上移；覆盖首屏后恢复视口边距。 */
+  :global(body.home-page::before) {
+    top: max(var(--site-frame-inset), calc(var(--home-cover-top, 75svh) + var(--site-frame-inset)));
   }
 
-  @keyframes heroDotBlink {
-    0%, 48% {
-      opacity: 1;
-    }
-
-    49%, 100% {
-      opacity: 0;
-    }
+  @media (max-width: 1100px) {
+    .hero-band { padding-bottom: 6.75rem; }
+  }
+  @media (max-width: 899px) {
+    .home-hero { min-height: 36rem; }
+    .hero-band { align-items: flex-start; flex-direction: column; gap: 1.25rem; padding: 1.6rem 1.5rem 6.75rem; }
+    .hero-wordmark { font-size: clamp(2.7rem, 10.8vw, 5.4rem); }
+    .hero-intro { text-align: left; font-size: 0.72rem; }
+    .hero-intro .hero-scroll-hint { margin-top: 0.75rem; }
+    .home-statement { min-height: 35svh; padding: 4rem 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .statement-word { opacity: 1; transition: none; }
   }
 </style>
 
 <Layout
   title="ZHAO WENHAO // PORTFOLIO"
-  bodyClass="w-full min-h-screen bg-[#040A10] overflow-x-hidden select-none relative"
+  bodyClass="home-page w-full min-h-screen bg-[#040A10] overflow-x-hidden select-none relative"
   bodyStyle="margin: 0; padding: 0; background-color: #040A10;"
+  skipInitialTransition
 >
   <script type="importmap" is:inline slot="head">
     {
@@ -55,62 +149,51 @@ import { workCategories, works } from '../data/works';
     }
   </script>
 
-  <Preloader />
+  <HomeSectionNav />
+  <BackToTop />
 
-  <section id="home-hero" class="relative w-full h-screen overflow-hidden">
-  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex flex-col justify-center opacity-25">
-    <div class="w-[280vw] -translate-x-[80vw] rotate-[-24deg] flex flex-col gap-2 select-none">
-      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-right text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
-      </div>
-      <div class="marquee-left text-[#252B31] font-black text-6xl md:text-8xl tracking-tighter whitespace-nowrap">
-        ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO // ZHAOWENHAO //
+  <section id="home-hero" class="home-hero" aria-label="赵文浩个人主页">
+    <div class="hero-stage">
+      <canvas id="omni-universe" class="hero-canvas" aria-hidden="true"></canvas>
+      <svg class="hero-decoration" viewBox="0 0 1440 760" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.24">
+          <g data-orbit><ellipse rx="330" ry="108" stroke-dasharray="190 22 4 22" /></g>
+          <g data-orbit><ellipse rx="178" ry="58" stroke-dasharray="100 18 3 18" /></g>
+          <g data-orbit><ellipse rx="104" ry="33" stroke-dasharray="60 14 3 14" /></g>
+        </g>
+        <g class="hero-annotations" fill="currentColor" opacity="0.5">
+          <text x="1110" y="555">01 / EXPERIMENTAL ART</text>
+          <text x="155" y="83">02 / HCI</text>
+          <text x="505" y="624">03 / GAME DESIGN</text>
+          <g fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6">
+            <path d="M 1070 514 L 1100 540 H 1140 M 226 129 L 193 93 H 155 M 470 584 L 495 610 H 532" />
+            <path d="M 640 102 h 10 m -5 -5 v 10 M 1205 180 h 10 m -5 -5 v 10" />
+          </g>
+        </g>
+      </svg>
+      <HeroOpening />
+    </div>
+    <div class="hero-band">
+      <h1 class="hero-wordmark">Zhao Wenhao</h1>
+      <div class="hero-intro">
+        <p>赵文浩</p>
+        <p>北京师范大学珠海校区 · 未来设计学院</p>
+        <p>实验艺术 / 人机交互 / 游戏设计</p>
+        <p class="hero-scroll-hint">SCROLL FOR MORE ↓</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <canvas id="omni-universe" class="absolute inset-0 block w-full h-full z-10 pointer-events-none"></canvas>
-
-  <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center">
-    <div class="hero-title-stack flex flex-col items-center justify-center gap-2 select-none">
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">MAKE</h1>
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">SOMETHING</h1>
-      <h1 class="font-bold text-6xl md:text-[9.5rem] tracking-tight leading-none text-[#ACDBFB] drop-shadow-[0_0_35px_rgba(172,219,251,0.4)]" style="color: #ACDBFB;">DIFFERENT<span class="hero-dot">.</span></h1>
-    </div>
-
-      <div class="absolute bottom-8 inset-x-0 z-20 px-5 text-center pointer-events-none md:bottom-10">
-      <span class="block whitespace-nowrap text-neutral-600 text-[clamp(0.72rem,3.1vw,1.125rem)] md:text-2xl tracking-[0.16em] md:tracking-[0.4em] animate-pulse font-mono">
-        [ ⬇ 向下滑动 探索更多 ⬇ ]
-      </span>
-    </div>
-  </div>
-
-  <div id="warp-flash" class="absolute inset-0 bg-[#ACDBFB] z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  <section class="home-statement" aria-label="创作信条">
+    <p class="statement-text" data-home-statement>
+      <span class="statement-word">MAKE</span>{' '}
+      <span class="statement-word">SOMETHING</span>{' '}
+      <span class="statement-word">DIFFERENT.</span>
+    </p>
   </section>
 
   <main class="home-sections">
-    <section class="home-section chronology-section" aria-labelledby="creative-chronology-title">
+    <section id="timeline" class="home-section chronology-section" aria-labelledby="creative-chronology-title">
       <div class="chronology-pin">
         <div class="chronology-copy">
           <div class="chronology-heading">
@@ -196,7 +279,7 @@ import { workCategories, works } from '../data/works';
       </div>
     </section>
 
-    <section class="home-section works-section" aria-labelledby="home-works-title">
+    <section id="works" class="home-section works-section" aria-labelledby="home-works-title">
       <div class="works-pin">
         <div class="works-control">
           <h2 id="home-works-title"><span aria-hidden="true"></span>WORKS CATEGORY</h2>
@@ -260,7 +343,7 @@ import { workCategories, works } from '../data/works';
       </div>
     </section>
 
-    <section class="home-section profile-section" aria-labelledby="home-profile-title">
+    <section id="profile" class="home-section profile-section" aria-labelledby="home-profile-title">
       <div class="profile-layout">
         <div class="profile-copy">
           <div class="profile-copy-main">
@@ -311,271 +394,46 @@ import { workCategories, works } from '../data/works';
   </main>
 
   <script>
-    // ================= 终极全域 Canvas 粒子引擎 =================
+    import { initHeroUniverse } from '../scripts/hero-universe';
+    import { initHeroOpening } from '../scripts/hero-opening';
+    import { createTimelineAnchors, isSectionNearViewport, getTimelineScrollProgress } from '../scripts/timeline-geometry.js';
+
     const canvas = document.getElementById('omni-universe') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d')!;
+    const heroBand = document.querySelector<HTMLElement>('.hero-band')!;
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const opening = document.querySelector<HTMLElement>('[data-hero-opening-root]');
+    const universe = initHeroUniverse(canvas, { paused: !!opening });
+    if (opening) initHeroOpening(opening, universe);
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    const mobileMotionQuery = window.matchMedia('(max-width: 899px)');
-    function resize() {
-      width = window.innerWidth; height = window.innerHeight;
-      canvas.width = width; canvas.height = height;
-      if (mobileMotionQuery.matches) {
-        ctx.clearRect(0, 0, width, height);
-        canvas.style.visibility = 'hidden';
-      }
+    function syncHomeFrame() {
+      document.body.style.setProperty('--home-cover-top', `${heroBand.getBoundingClientRect().top}px`);
     }
-    window.addEventListener('resize', resize);
-    resize();
-    // 默认隐藏 canvas，待字体加载完毕再显示并开始渲染，避免回退字体被绘制到画布上
-    canvas.style.visibility = 'hidden';
+    new ResizeObserver(syncHomeFrame).observe(heroBand);
+    syncHomeFrame();
 
-    let mouseX = width / 2;
-    let mouseY = height / 2;
-    let cursorX = mouseX;
-    let cursorY = mouseY;
-
-    if (window.matchMedia('(pointer: fine)').matches) {
-      window.addEventListener('pointermove', (event) => {
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-      }, { passive: true });
-    }
-
-    // 信仰链目标定义 (尾部加入适量空格完美分布圆周)
-    const creedString = "INTEGRATE THINKING INTO DESIGN • ";
-    const targetLength = creedString.length;
-
-    interface OmniParticle {
-      x: number; y: number;
-      baseX: number; baseY: number;
-      originalChar: string;
-      currentChar: string;
-      size: number;
-      angle: number; speed: number;
-      clusterIndex: number;
-      type: 'core' | 'ring';
-      
-      orbitR?: number;
-      ringRX?: number; ringRY?: number; ringTilt?: number;
-      
-      // ！！！终极单层与指心控制属性 ！！！
-      targetCursorSlot: number; // 预分配在信条环上的专属独立槽位 (0 - 32)
-      isRingAssigned: boolean;  // 核心标记：该粒子是否被选中组成那绝对唯一的“单层光环”
-      isCaptured: boolean;
-    }
-
-    const baseChars = ['设', '计', '思', '维', '先', '锋', '0', '1', '+', '#', '×', '•'];
-    const particles: OmniParticle[] = [];
-    const homeHero = document.getElementById('home-hero');
-    let universeFrameId = 0;
-    let isUniverseReady = false;
-    let isUniverseVisible = true;
-    
-    // ！！！极其核心修复：精准映射手绘图的三体布局与大小节奏 ！！！
-    const planets = [
-      // 01. 红色区域：超巨型主星 (左上至中左)。极大画幅，拥有辽阔顺时针星环，长轴略微右偏。
-      { cx: width * 0.28, cy: height * 0.45, coreR: 176, ringRX: 418, ringRY: 132, tilt: 0.35, orbitRotation: Math.PI / 12, dir: 1, pCore: 220, pRing: 260, baseSize: 16 },
-      // 02. 黄色区域：中型伴星 (右下偏中)。适中画幅，逆时针偏转大星环，长轴左倾。
-      { cx: width * 0.78, cy: height * 0.75, coreR: 90, ringRX: 240, ringRY: 75, tilt: -0.4, orbitRotation: -Math.PI / 6, dir: -1, pCore: 120, pRing: 150, baseSize: 13 },
-      // 03. 蓝色区域：微型远星 (右上深空)。极其精致紧凑，点缀深空景深。
-      { cx: width * 0.82, cy: height * 0.22, coreR: 50, ringRX: 140, ringRY: 40, tilt: 0.2, orbitRotation: Math.PI / 8, dir: 1, pCore: 70, pRing: 90, baseSize: 10 }
-    ];
-
-    // 全量安全天体灌注 (修复底层死锁)
-    planets.forEach((p, pIdx) => {
-      // 灌注自转内核
-      for (let i = 0; i < p.pCore; i++) {
-        // 确保每个星球平均只有前 targetLength 个粒子被标记为“单层组成者”，多余的仅作普通飞溅物
-        const slot = i % targetLength;
-        const isAssigned = i < targetLength; 
-        particles.push({
-          x: 0, y: 0, baseX: 0, baseY: 0,
-          originalChar: baseChars[Math.floor(Math.random() * baseChars.length)],
-          currentChar: '', size: Math.random() * 6 + p.baseSize,
-          angle: Math.random() * Math.PI * 2, speed: (Math.random() * 0.004 + 0.002) * p.dir,
-          clusterIndex: pIdx, type: 'core', orbitR: Math.sqrt(Math.random()) * p.coreR,
-          targetCursorSlot: slot, isRingAssigned: isAssigned, isCaptured: false
-        });
-      }
-      // 灌注宏大星环
-      for (let i = 0; i < p.pRing; i++) {
-        const slot = i % targetLength;
-        // 让星环也贡献一层备用骨架，确保视觉极其丰满但绝不重叠乱码
-        const isAssigned = i < targetLength; 
-        particles.push({
-          x: 0, y: 0, baseX: 0, baseY: 0,
-          originalChar: baseChars[Math.floor(Math.random() * baseChars.length)],
-          currentChar: '', size: Math.random() * 4 + p.baseSize * 0.8,
-          angle: (i / p.pRing) * Math.PI * 2, speed: (0.0015 + Math.random() * 0.0015) * p.dir,
-          clusterIndex: pIdx, type: 'ring', 
-          ringRX: p.ringRX * (0.82 + Math.random() * 0.36), ringRY: p.ringRY * (0.82 + Math.random() * 0.36),
-          ringTilt: p.tilt,
-          targetCursorSlot: slot, isRingAssigned: isAssigned, isCaptured: false
-        });
-      }
-    });
-
-    let cursorSpinAngle = 0;
-
-    function renderUniverse() {
-      universeFrameId = 0;
-      if (!isUniverseReady || !isUniverseVisible || document.hidden) return;
-
-      if (mobileMotionQuery.matches) {
-        ctx.clearRect(0, 0, width, height);
-        canvas.style.visibility = 'hidden';
-        return;
-      }
-
-      ctx.clearRect(0, 0, width, height);
-
-      // 光标物理缓动更新
-      cursorX += (mouseX - cursorX) * 0.15;
-      cursorY += (mouseY - cursorY) * 0.15;
-      
-      // 光标环自转极速驱动
-      cursorSpinAngle += 0.015;
-
-      // 实时计算三体核心响应视口变化
-      planets[0].cx = width * 0.28; planets[0].cy = height * 0.45;
-      planets[1].cx = width * 0.78; planets[1].cy = height * 0.75;
-      planets[2].cx = width * 0.82; planets[2].cy = height * 0.22;
-
-      particles.forEach(n => {
-        const p = planets[n.clusterIndex];
-
-        // --- 独立天体矩阵轨道演算 ---
-        n.angle += n.speed;
-        let localX = 0; let localY = 0;
-
-        if (n.type === 'core') {
-          localX = Math.cos(n.angle) * n.orbitR!;
-          localY = Math.sin(n.angle) * n.orbitR!;
-        } else {
-          const ux = Math.cos(n.angle) * n.ringRX!;
-          const uy = Math.sin(n.angle) * n.ringRY!;
-          localX = ux * Math.cos(n.ringTilt!) - uy * Math.sin(n.ringTilt!);
-          localY = ux * Math.sin(n.ringTilt!) + uy * Math.cos(n.ringTilt!);
-        }
-
-        // 叠加天体偏转角形成彻底独立的朝向错落感
-        n.baseX = p.cx + (localX * Math.cos(p.orbitRotation) - localY * Math.sin(p.orbitRotation));
-        n.baseY = p.cy + (localX * Math.sin(p.orbitRotation) + localY * Math.cos(p.orbitRotation));
-
-        // --- 物理场域干涉判定 ---
-        const distToPlanet = Math.hypot(cursorX - p.cx, cursorY - p.cy);
-        const domainRadius = n.clusterIndex === 0 ? 500 : (n.clusterIndex === 1 ? 320 : 250);
-
-        if (distToPlanet < domainRadius) {
-          const distToCursor = Math.hypot(cursorX - n.baseX, cursorY - n.baseY);
-          const pullRange = 250; 
-
-          if (distToCursor < pullRange) {
-            n.isCaptured = true;
-          }
-        } else {
-          n.isCaptured = false;
-        }
-
-        // --- ！！！极致显像输出：应用绝对单层与头顶指心矩阵 ！！！ ---
-        ctx.save();
-        
-        if (n.isCaptured) {
-          if (n.isRingAssigned) {
-            // 【主干信条层】：被选中的粒子极其精准地嵌入基准位，形成绝对唯一单层光环
-            const targetSlotAngle = cursorSpinAngle + (n.targetCursorSlot / targetLength) * Math.PI * 2;
-            const targetRingX = cursorX + Math.cos(targetSlotAngle) * 125; // 轨道半径加大至 125px 确保绝佳间距
-            const targetRingY = cursorY + Math.sin(targetSlotAngle) * 125;
-
-            n.x += (targetRingX - n.x) * 0.18;
-            n.y += (targetRingY - n.y) * 0.18;
-
-            n.currentChar = creedString[n.targetCursorSlot];
-            ctx.fillStyle = '#ACDBFB'; 
-            ctx.font = 'bold 15px sans-serif'; 
-
-            // ！！！完美几何秩序：头顶精确指心 ！！！
-            // 将字符输出原点移至当前坐标，旋转角度锁定为目标夹角 + $\pi/2$ (90度)
-            ctx.translate(n.x, n.y);
-            ctx.rotate(targetSlotAngle + Math.PI / 2);
-            ctx.fillText(n.currentChar, 0, 0); 
-          } else {
-            // 【外围飞溅游离层】：未被选入文字环的多余粒子，仅作为被吸引的光带飞散在中心周围
-            // 绝不直接拼成乱序文字干扰圆环阅读，保证画面既有被掠夺的宏大动感又绝对干净！
-            const pullAngle = Math.atan2(cursorY - n.baseY, cursorX - n.baseX);
-            n.x += (cursorX - Math.cos(pullAngle) * 80 - n.x) * 0.1;
-            n.y += (cursorY - Math.sin(pullAngle) * 80 - n.y) * 0.1;
-
-            n.currentChar = n.originalChar;
-            ctx.fillStyle = 'rgba(172, 219, 251, 0.4)'; 
-            ctx.font = `bold ${n.size * 0.8}px monospace`;
-            ctx.translate(n.x, n.y);
-            ctx.fillText(n.currentChar, 0, 0); 
-          }
-        } else {
-          // 【母星引力崩溃回吸态】：干净利落地自动吸回原始星系阵地
-          n.x += (n.baseX - n.x) * 0.12;
-          n.y += (n.baseY - n.y) * 0.12;
-          
-          n.currentChar = n.originalChar;
-          ctx.fillStyle = n.type === 'ring' ? 'rgba(172, 219, 251, 0.25)' : 'rgba(120, 120, 120, 0.35)';
-          ctx.font = `bold ${n.size}px monospace`;
-          ctx.translate(n.x, n.y);
-          ctx.fillText(n.currentChar, 0, 0); 
-        }
-
-        ctx.restore();
+    const statement = document.querySelector<HTMLElement>('[data-home-statement]');
+    const statementWords = Array.from(statement?.querySelectorAll('.statement-word') ?? []);
+    let statementFrame = 0;
+    function updateStatement() {
+      statementFrame = 0;
+      syncHomeFrame();
+      if (!statement) return;
+      const start = window.innerHeight * 0.85;
+      const end = window.innerHeight * 0.25;
+      const progress = Math.min(1, Math.max(0, (start - statement.getBoundingClientRect().top) / (start - end)));
+      const litCount = Math.floor(progress * statementWords.length);
+      statementWords.forEach((word, index) => {
+        word.classList.toggle('is-lit', reducedMotionQuery.matches || index <= litCount);
       });
-
-      universeFrameId = requestAnimationFrame(renderUniverse);
     }
-
-    function syncUniversePlayback() {
-      const shouldRender = isUniverseReady && isUniverseVisible && !document.hidden && !mobileMotionQuery.matches;
-
-      if (!shouldRender) {
-        if (universeFrameId) {
-          cancelAnimationFrame(universeFrameId);
-          universeFrameId = 0;
-        }
-
-        if (mobileMotionQuery.matches) {
-          canvas.style.visibility = 'hidden';
-          ctx.clearRect(0, 0, width, height);
-        }
-        return;
-      }
-
-      canvas.style.visibility = 'visible';
-      if (!universeFrameId) universeFrameId = requestAnimationFrame(renderUniverse);
+    function scheduleStatement() {
+      if (!statementFrame) statementFrame = requestAnimationFrame(updateStatement);
     }
-
-    function startUniverse() {
-      isUniverseReady = true;
-      syncUniversePlayback();
-    }
-
-    if (homeHero) {
-      const heroVisibilityObserver = new IntersectionObserver(([entry]) => {
-        isUniverseVisible = Boolean(entry?.isIntersecting);
-        syncUniversePlayback();
-      });
-      heroVisibilityObserver.observe(homeHero);
-    }
-
-    document.addEventListener('visibilitychange', syncUniversePlayback);
-    mobileMotionQuery.addEventListener('change', syncUniversePlayback);
-
-    // 等待字体加载完毕再开始渲染
-    if (window.fontsReadyPromise) {
-      window.fontsReadyPromise.then(startUniverse);
-    } else if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(startUniverse);
-    } else {
-      startUniverse();
-    }
+    window.addEventListener('scroll', scheduleStatement, { passive: true });
+    window.addEventListener('resize', scheduleStatement, { passive: true });
+    reducedMotionQuery.addEventListener('change', scheduleStatement);
+    window.fontsReadyPromise?.then(scheduleStatement);
+    updateStatement();
 
     const chronologySection = document.querySelector('.chronology-section') as HTMLElement | null;
     const timelineMap = document.querySelector('.chronology-map') as HTMLElement | null;
@@ -587,7 +445,7 @@ import { workCategories, works } from '../data/works';
     const timelineHead = document.querySelector('[data-timeline-head]') as HTMLElement | null;
     const timelineNodes = Array.from(document.querySelectorAll('[data-timeline-node]')) as HTMLElement[];
     const timelineCurrent = document.querySelector('[data-timeline-current]') as HTMLElement | null;
-    const mobileHomeQuery = window.matchMedia('(max-width: 899px)');
+    const mobileHomeQuery = window.matchMedia('(max-width: 900px)');
     let timelineScrollRaf: number | undefined;
     let timelineSpringRaf: number | undefined;
     let timelineSpringTime = 0;
@@ -635,9 +493,7 @@ import { workCategories, works } from '../data/works';
 
     function isNearInteractiveSection(section: HTMLElement, lead = 1.15, tail = 0.45) {
       const viewportHeight = getInteractionViewportHeight();
-      const sectionTop = section.offsetTop;
-      const sectionBottom = sectionTop + section.offsetHeight;
-      return window.scrollY >= sectionTop - viewportHeight * lead && window.scrollY <= sectionBottom + viewportHeight * tail;
+      return isSectionNearViewport(section.getBoundingClientRect(), viewportHeight, lead, tail);
     }
 
     function stopTimelineMotion() {
@@ -648,28 +504,15 @@ import { workCategories, works } from '../data/works';
       timelineVelocity = 0;
     }
 
-    /**
-     * 横向时间轴的几何：12 个节点在容器里等距铺开，纵向走一条明显的正弦折线。
-     * 每个节点都带一条引线牵回轴上的刻度；卡片分上下两排交错站位，
-     * 并跟着折线做半幅起伏，于是同屏 12 张既挤不到一起，也不会盖住轴线。
-     * 卡片本身不预先摆好，而是等生长头扫到该节点时才从引线末端长出来（见样式里的生长块）。
-     * 坐标全部取容器实测像素，SVG 路径与 HTML 刻度天然处在同一坐标空间。
-     */
+    /** 不等距折线节点与交错卡片共用实测坐标；卡片间距由同排最近邻决定。 */
     function setupTimelineGeometry() {
       if (!timelinePath || !timelineMap || !timelineWorld || !timelineNodes.length) return;
 
       const mapRect = timelineMap.getBoundingClientRect();
       const width = Math.max(320, Math.round(mapRect.width));
       const height = Math.max(240, Math.round(mapRect.height));
-      const lastIndex = Math.max(1, timelineNodes.length - 1);
-
-      // 卡片宽度 = 同一排里相邻卡片的中心距 - 间距；两端各留半张卡，首尾卡片正好贴住容器内边
-      const cardGap = Math.round(Math.min(26, Math.max(14, width * 0.016)));
-      const edgeInset = 6;
-      const pitch = Math.max(46, (width + cardGap - edgeInset * 2) / (lastIndex + 2));
-      const cardWidth = Math.max(96, Math.round(pitch * 2 - cardGap));
-      const padX = Math.round(cardWidth / 2 + edgeInset);
-      const span = Math.round(pitch * lastIndex);
+      const layout = createTimelineAnchors(timelineNodes.length, width);
+      const cardWidth = layout.cardWidth;
       const axisY = Math.round(height * 0.5);
 
       timelineWorld.style.width = `${width}px`;
@@ -694,8 +537,8 @@ import { workCategories, works } from '../data/works';
           Math.max(max, node.querySelector<HTMLElement>('.timeline-node-body')?.offsetHeight ?? 0),
         0
       );
-      // 起伏幅度取容器高度的固定比例：小窗收紧、大屏放开，上限 5.5rem 免得夸张
-      const maxAmplitude = Math.max(16, Math.min(88, height * 0.105));
+      // 转折留出足够的纵向幅度；小窗口仍按卡片实测高度收紧。
+      const maxAmplitude = Math.max(16, Math.min(88, height * 0.12));
       const baseGapUp = Math.max(18, Math.min(34, height * 0.065));
       const baseGapDown = Math.max(22, Math.min(44, height * 0.085));
       let amplitude = maxAmplitude;
@@ -715,17 +558,13 @@ import { workCategories, works } from '../data/works';
         }
       }
 
-      // 约 1.4 个周期的正弦，起伏一眼可见；首尾各多取一个点，让波形在容器外自然延伸
-      const waveY = (index: number) => axisY + Math.sin(index * 0.78) * amplitude;
-
       const points = timelineNodes.map((node, index) => ({
         node,
-        x: padX + (index / lastIndex) * span,
-        y: waveY(index)
+        x: layout.points[index].x,
+        y: axisY + layout.points[index].level * amplitude
       }));
-
-      const start = { x: Math.max(0, padX - pitch), y: waveY(-1) };
-      const end = { x: Math.min(width, padX + span + pitch), y: waveY(lastIndex + 1) };
+      const start = { x: 0, y: points[0].y + amplitude * .25 };
+      const end = { x: width, y: points[points.length-1].y - amplitude * .16 };
       const pathPoints = [start, ...points, end];
       const pathD = `M ${start.x} ${start.y} ${points
         .map((point) => `L ${point.x} ${point.y}`)
@@ -758,6 +597,8 @@ import { workCategories, works } from '../data/works';
           `${Math.round(Math.max(14, Math.abs(cardEdge - point.y)))}px`
         );
       });
+      // Resizing changes the path even when scroll progress stays at the same endpoint.
+      setTimelineProgress(visualTimelineProgress);
     }
 
     /**
@@ -769,10 +610,7 @@ import { workCategories, works } from '../data/works';
       if (!chronologySection) return 0;
       const rect = chronologySection.getBoundingClientRect();
       const viewportHeight = getInteractionViewportHeight();
-      const startTop = viewportHeight - timelineContentOffset;
-      const endTop = (viewportHeight - rect.height) / 2;
-      const travel = Math.max(1, startTop - endTop);
-      return Math.min(Math.max((startTop - rect.top) / travel, 0), 1);
+      return getTimelineScrollProgress(rect.top, rect.height, viewportHeight, timelineContentOffset);
     }
 
     /** 移动端把 .chronology-world 还原成网格流，需要清掉脚本写入的像素尺寸 */
@@ -881,11 +719,17 @@ import { workCategories, works } from '../data/works';
     }
 
     function syncTimelineToScroll() {
-      setTimelineTarget(getTimelineRevealProgress());
+      if (!isMobileHomeFallback()) setTimelineTarget(getTimelineRevealProgress());
     }
 
     function requestTimelineScrollSync() {
-      if (chronologySection && !isNearInteractiveSection(chronologySection)) return;
+      if (!chronologySection || isMobileHomeFallback()) return;
+      if (!isNearInteractiveSection(chronologySection)) {
+        // Fast scrolls and anchor jumps must still settle the first/last frame.
+        const progress = getTimelineRevealProgress();
+        if (progress !== visualTimelineProgress || timelineSpringRaf) setTimelineTarget(progress, true);
+        return;
+      }
       if (timelineScrollRaf) return;
       timelineScrollRaf = window.requestAnimationFrame(() => {
         timelineScrollRaf = undefined;
@@ -1054,7 +898,7 @@ import { workCategories, works } from '../data/works';
 
     function getWorksSectionTop() {
       if (!worksSection) return 0;
-      return worksSection.offsetTop;
+      return worksSection.getBoundingClientRect().top + window.scrollY;
     }
 
     function getWorksTravelDistance() {
@@ -1198,8 +1042,13 @@ import { workCategories, works } from '../data/works';
       } else {
         setupTimelineGeometry();
         setTimelineTarget(getTimelineRevealProgress(), true);
-        window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
       }
+      window.addEventListener('scroll', requestTimelineScrollSync, { passive: true });
+      window.addEventListener('pageshow', requestTimelineScrollSync);
+      window.addEventListener('page-transition-end', requestTimelineScrollSync);
+      window.fontsReadyPromise?.then(() => {
+        if (!isMobileHomeFallback()) { setupTimelineGeometry(); requestTimelineScrollSync(); }
+      });
     }
 
     if (worksCards.length) {
@@ -1271,7 +1120,7 @@ import { workCategories, works } from '../data/works';
     const profileModelPanel = document.querySelector('.profile-model-panel');
     const profileModelCanvas = document.getElementById('profile-model-canvas');
 
-    if (profileModelPanel && profileModelCanvas && !window.matchMedia('(max-width: 899px)').matches) {
+    if (profileModelPanel && profileModelCanvas && !window.matchMedia('(max-width: 900px)').matches) {
       let modelLoadStarted = false;
 
       const initProfileModel = async () => {
@@ -1854,7 +1703,7 @@ import { workCategories, works } from '../data/works';
     }
 
     /* 时间轴不再铺网格底纹：之前的 46px 渐变网格会在节点与卡片下方形成大片亮线，
-       与正弦轴线的视觉层级打架，这里整块去掉（::after 的压边渐隐保留）。 */
+       与折线的视觉层级打架，这里整块去掉（::after 的压边渐隐保留）。 */
     .chronology-map::after {
       background: radial-gradient(ellipse at 50% 74%, transparent 0%, rgba(4, 10, 16, 0.14) 60%, rgba(4, 10, 16, 0.6) 100%);
       content: "";
@@ -1885,7 +1734,8 @@ import { workCategories, works } from '../data/works';
     .chronology-path {
       fill: none;
       stroke-linecap: round;
-      stroke-linejoin: round;
+      stroke-linejoin: miter;
+      stroke-miterlimit: 3;
       vector-effect: non-scaling-stroke;
     }
 
@@ -3123,11 +2973,6 @@ import { workCategories, works } from '../data/works';
         transform: translate3d(0, 0, 0);
       }
     }
-
-    @keyframes moveLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-25%); } }
-    @keyframes moveRight { 0% { transform: translateX(-25%); } 100% { transform: translateX(0%); } }
-    .marquee-left { display: inline-block; animation: moveLeft 12s linear infinite; }
-    .marquee-right { display: inline-block; animation: moveRight 12s linear infinite; }
 
     @media (max-width: 900px) {
       .home-sections {

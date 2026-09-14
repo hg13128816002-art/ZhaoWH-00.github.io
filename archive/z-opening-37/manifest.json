@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "version": "Z / Opening 37",
+  "status": "preparation-baseline-not-integrated",
+  "source": {
+    "path": "C:/Users/18123/.codex/visualizations/2026/09/12/01a095f9-60d1-74b0-9314-ad1fd7deaec1/z-opening-37.html",
+    "sha256": "48975413176a7af899648e5dad08fafd3b7333872ab2dcbe67c78435af8fed1b",
+    "bytes": 987223
+  },
+  "artboard": {
+    "width": 1280,
+    "height": 534
+  },
+  "palette": {
+    "blue": "#ACDBFB",
+    "black": "#040A10"
+  },
+  "timing": {
+    "fps": 60,
+    "bpm": 90,
+    "meter": "4/4",
+    "startBeat": 3,
+    "musicDurationSeconds": 24.624,
+    "seekMaxFrame": 1478,
+    "note": "Cue frames are zero-based; frame 1478 is the preview seek endpoint clamped to 24.624 s, not a longer soundtrack."
+  },
+  "originalRenderer": {
+    "sha256": "0bdb725f04c5e0bc0d047ce513dc6b779b27999f4be23affa85832dc3d7ab679",
+    "bytes": 51733,
+    "modified": false
+  },
+  "audio": {
+    "path": "assets/z-opening-music.mp3",
+    "sha256": "3257636c2f368efd5c402201a7e514c374c11f0613b9efba46cbb5b215e63032",
+    "bytes": 693568,
+    "transcoded": false
+  },
+  "cues": [
+    {
+      "id": "loader-start",
+      "label": "Z 三笔从画外合体",
+      "frame": 0,
+      "seconds": 0,
+      "beat": 3,
+      "onBeat": true
+    },
+    {
+      "id": "loader-assembled",
+      "label": "Z 三笔落位",
+      "frame": 26,
+      "seconds": 0.43333333333333335,
+      "beat": 3,
+      "onBeat": false
+    },
+    {
+      "id": "opening-reveal",
+      "label": "开屏斜切与第一镜头乱码同步",
+      "frame": 140,
+      "seconds": 2.3333333333333335,
+      "beat": 2,
+      "onBeat": false
+    },
+    {
+      "id": "phrase-full-view",
+      "label": "第一镜头完整露出",
+      "frame": 160,
+      "seconds": 2.6666666666666665,
+      "beat": 3,
+      "onBeat": true
+    },
+    {
+      "id": "phrase-2",
+      "label": "第二个特写",
+      "frame": 240,
+      "seconds": 4,
+      "beat": 1,
+      "onBeat": true
+    },
+    {
+      "id": "phrase-3",
+      "label": "第三个特写",
+      "frame": 320,
+      "seconds": 5.333333333333333,
+      "beat": 3,
+      "onBeat": true
+    },
+    {
+      "id": "phrase-4",
+      "label": "第四个特写",
+      "frame": 400,
+      "seconds": 6.666666666666667,
+      "beat": 1,
+      "onBeat": true
+    },
+    {
+      "id": "collage-1",
+      "label": "字母拼贴第一镜头",
+      "frame": 480,
+      "seconds": 8,
+      "beat": 3,
+      "onBeat": true
+    },
+    {
+      "id": "collage-2",
+      "label": "字母拼贴第二镜头",
+      "frame": 520,
+      "seconds": 8.666666666666666,
+      "beat": 4,
+      "onBeat": true
+    },
+    {
+      "id": "collage-3",
+      "label": "字母拼贴第三镜头",
+      "frame": 560,
+      "seconds": 9.333333333333334,
+      "beat": 1,
+      "onBeat": true
+    },
+    {
+      "id": "collage-4",
+      "label": "字母拼贴第四镜头",
+      "frame": 600,
+      "seconds": 10,
+      "beat": 2,
+      "onBeat": true
+    },
+    {
+      "id": "collage-5",
+      "label": "字母拼贴第五镜头",
+      "frame": 640,
+      "seconds": 10.666666666666666,
+      "beat": 3,
+      "onBeat": true
+    },
+    {
+      "id": "closing-seed",
+      "label": "中央细线从零生长",
+      "frame": 680,
+      "seconds": 11.333333333333334,
+      "beat": 4,
+      "onBeat": true
+    },
+    {
+      "id": "z-split",
+      "label": "整根横条开始切分，Z 展开",
+      "frame": 720,
+      "seconds": 12,
+      "beat": 1,
+      "onBeat": true
+    },
+    {
+      "id": "slogan-first-line",
+      "label": "标语首行开始入场",
+      "frame": 725,
+      "seconds": 12.083333333333334,
+      "beat": 1,
+      "onBeat": false
+    },
+    {
+      "id": "lockup-settled",
+      "label": "Z 与标语落位",
+      "frame": 750,
+      "seconds": 12.5,
+      "beat": 1,
+      "onBeat": false
+    },
+    {
+      "id": "lockup-invert",
+      "label": "Z 与标语反色，蓝底黑字",
+      "frame": 840,
+      "seconds": 14,
+      "beat": 4,
+      "onBeat": true
+    },
+    {
+      "id": "name-cut",
+      "label": "完整姓名，黑底蓝字",
+      "frame": 920,
+      "seconds": 15.333333333333334,
+      "beat": 2,
+      "onBeat": true
+    },
+    {
+      "id": "name-freeze",
+      "label": "姓名与相机偏移冻结",
+      "frame": 1080,
+      "seconds": 18,
+      "beat": 2,
+      "onBeat": true
+    },
+    {
+      "id": "outro-start",
+      "label": "姓名 Z 原位回缩",
+      "frame": 1160,
+      "seconds": 19.333333333333332,
+      "beat": 4,
+      "onBeat": true
+    },
+    {
+      "id": "outro-reveal-start",
+      "label": "片尾遮罩开始打开",
+      "frame": 1190,
+      "seconds": 19.833333333333332,
+      "beat": 4,
+      "onBeat": false
+    },
+    {
+      "id": "outro-reveal-complete",
+      "label": "片尾遮罩打开完成",
+      "frame": 1220,
+      "seconds": 20.333333333333332,
+      "beat": 1,
+      "onBeat": false
+    }
+  ],
+  "pending": [
+    "embedding",
+    "start-trigger",
+    "repeat-policy",
+    "skip",
+    "audio-policy",
+    "responsive-composition",
+    "next-scene-content",
+    "reduced-motion-site-handoff"
+  ]
+}

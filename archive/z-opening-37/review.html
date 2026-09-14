@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opening 37 · 网页适配检查</title>
+  <link rel="stylesheet" href="opening-37.css">
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <main>
+    <header class="review-heading">
+      <p>WEB ADAPTATION / BASELINE 37</p>
+      <h1>先保留每一帧，再适配屏幕。</h1>
+      <p>Opening 37 原版画面与音乐。切换画框只用于检查完整画面缩放；竖屏构图和网站接入方式尚未定案。</p>
+    </header>
+    <div class="review-settings">
+      <label>检查画框
+        <select id="review-ratio">
+          <option value="1280/534">原版 · 1280 × 534</option>
+          <option value="16/9">桌面 · 16:9</option>
+          <option value="4/3">平板 · 4:3</option>
+          <option value="9/16">竖屏 · 9:16</option>
+        </select>
+      </label>
+      <label>定位镜头
+        <select id="review-cue">
+          <option value="0">0.000 s · Z 沙漏载入</option>
+          <option value="140">2.333 s · 斜切开屏与首镜头乱码</option>
+          <option value="240">4.000 s · 第二个特写</option>
+          <option value="480">8.000 s · 字母拼贴</option>
+          <option value="680">11.333 s · 细线生长</option>
+          <option value="720">12.000 s · Z 展开与标语入场</option>
+          <option value="750">12.500 s · Z 与标语落位</option>
+          <option value="840">14.000 s · 标语镜头反色</option>
+          <option value="920">15.333 s · 完整姓名</option>
+          <option value="1160">19.333 s · 姓名 Z 回缩</option>
+          <option value="1190">19.833 s · 片尾遮罩开始打开</option>
+          <option value="1220">20.333 s · 片尾遮罩打开完成</option>
+          <option value="1478">24.624 s · 音乐结束</option>
+        </select>
+      </label>
+    </div>
+    <div id="z-opening-37" data-bpm="90" data-meter="4/4" data-start-beat="3" data-fps="60">
+  <div class="viz-row zo-head"><span>Z / Opening 37</span><span class="text-small text-muted">90 BPM · 4/4 · <span data-beat>第 3 拍</span></span></div>
+  <div class="review-viewport">
+  <svg class="zo-stage" viewBox="0 0 1280 534" role="img" aria-labelledby="zo-title zo-desc">
+    <title id="zo-title">Zhao WenHao — Make something different.</title>
+    <desc id="zo-desc">Zhao WenHao 开场，配用户提供的 Z 开场音乐，时长 24.624 秒。斜杠遮罩与首镜头乱码同步启动。Z 与标语在 14 秒反色，15.333 秒切到黑底蓝字姓名。19.333 秒，姓名中的 Z 从原位回缩为细斜杠、拉长并展开遮罩，动作持续 1 秒，在 20.333 秒露出预留的下一镜头纯蓝画面。播放、暂停、拖动、慢放和重播保持音画同步。</desc>
+    <defs>
+      <g id="zo-glyph-Z"><path data-wordmark-z /></g>
+      <g id="zo-glyph-h"><path data-diagonal-glyph="h" /></g>
+      <g id="zo-glyph-a"><path data-diagonal-glyph="a" fill-rule="evenodd" /></g>
+      <g id="zo-glyph-o"><path data-diagonal-glyph="o" fill-rule="evenodd" /></g>
+      <g id="zo-glyph-W"><path d="M0 -64H7L20 -11L32 -52H38L50 -11L63 -64H70L54 0H47L35 -41L23 0H16Z" /></g>
+      <g id="zo-glyph-e"><path data-diagonal-glyph="e" /></g>
+      <g id="zo-glyph-n"><path data-diagonal-glyph="n" /></g>
+      <g id="zo-glyph-H"><path d="M0 0V-64H7V-31H39V-64H46V0H39V-24H7V0Z" /></g>
+      <g id="zo-glyph-F"><path d="M0 0V-64H38V-57H7V-34H30V-27H7V0Z" /></g>
+      <g id="zo-glyph-T"><path d="M0 -64H42V-57H24.5V0H17.5V-57H0Z" /></g>
+      <g id="zo-glyph-E"><path d="M0 -64H38V-57H7V-36H31V-29H7V-7H38V0H0Z" /></g>
+      <g id="zo-glyph-r"><path data-diagonal-glyph="r" /></g>
+      <g id="zo-glyph-g"><path data-diagonal-glyph="g" fill-rule="evenodd" /></g>
+      <g id="zo-glyph-d"><path data-diagonal-glyph="d" fill-rule="evenodd" /></g>
+      <g id="zo-glyph-x"><path data-diagonal-glyph="x" /></g>
+      <g id="zo-glyph-t"><path d="M7 -55H14V-42H26V-35H14V-7H26V0H7V-35H0V-42H7Z" /></g>
+      <g id="zo-glyph-i"><path d="M0 -42H7V0H0Z M0 -56H7V-49H0Z" /></g>
+      <g id="zo-glyph-y"><path d="M0 -42H7L20 -12L33 -42H40L16 18H8L16 -2Z" /></g>
+      <g id="zo-glyph-M"><path data-diagonal-glyph="M" /></g>
+      <g id="zo-glyph-k"><path data-diagonal-glyph="k" /></g>
+      <g id="zo-glyph-s"><path data-diagonal-glyph="s" /></g>
+      <g id="zo-glyph-m"><path data-diagonal-glyph="m" /></g>
+      <g id="zo-glyph-f"><path data-diagonal-glyph="f" /></g>
+      <g id="zo-glyph-period"><path d="M0 -7H7V0H0Z" /></g>
+      <g id="zo-glyph-hash"><path d="M10 -64H17V0H10Z M29 -64H36V0H29Z M0 -45H46V-38H0Z M0 -26H46V-19H0Z" /></g>
+      <g id="zo-glyph-ampersand"><path d="M43 -3L11 -39L8 -46V-54L15 -61H26L33 -54V-45L5 -19V-10L12 -3H25L44 -24" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="miter" /></g>
+      <g id="zo-glyph-plus"><path d="M0 -36H38V-29H0Z M15.5 -51H22.5V-13H15.5Z" /></g>
+      <g id="zo-glyph-question"><path d="M0 -51L12 -64H34V-36L21 -23V-13H14V-27L27 -40V-57H15L7 -49V-43H0Z M14 -7H21V0H14Z" /></g>
+      <g id="zo-glyph-slash"><path data-diagonal-glyph="/" /></g>
+      <g id="zo-glyph-equals"><path d="M0 -43H38V-36H0Z M0 -25H38V-18H0Z" /></g>
+
+      <clipPath id="zo-hao-clip" clipPathUnits="userSpaceOnUse"><rect data-reveal="hao" x="0" y="-90" width="0" height="125" /></clipPath>
+      <clipPath id="zo-en-clip" clipPathUnits="userSpaceOnUse"><rect data-reveal="en" x="0" y="-90" width="0" height="125" /></clipPath>
+      <clipPath id="zo-ao-clip" clipPathUnits="userSpaceOnUse"><rect data-reveal="ao" x="0" y="-90" width="0" height="125" /></clipPath>
+      <clipPath id="zo-collage-window" clipPathUnits="userSpaceOnUse"><rect data-collage-window x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-0" clipPathUnits="userSpaceOnUse"><rect data-row-window="0" x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-1" clipPathUnits="userSpaceOnUse"><rect data-row-window="1" x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-2" clipPathUnits="userSpaceOnUse"><rect data-row-window="2" x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-3" clipPathUnits="userSpaceOnUse"><rect data-row-window="3" x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-4" clipPathUnits="userSpaceOnUse"><rect data-row-window="4" x="0" y="0" width="1280" height="534" /></clipPath>
+      <clipPath id="zo-row-window-5" clipPathUnits="userSpaceOnUse"><rect data-row-window="5" x="0" y="0" width="1280" height="534" /></clipPath>
+      <mask id="zo-intact" maskUnits="userSpaceOnUse" x="0" y="0" width="1280" height="534" style="mask-type:luminance">
+        <rect x="0" y="0" width="1280" height="534" fill="white" />
+        <rect data-hole="0" x="0" y="0" width="1280" height="0" fill="black" />
+        <rect data-hole="1" x="0" y="0" width="1280" height="0" fill="black" />
+        <rect data-hole="2" x="0" y="0" width="1280" height="0" fill="black" />
+      </mask>
+      <clipPath id="zo-slice-0" clipPathUnits="userSpaceOnUse"><rect data-slice-clip="0" x="0" y="0" width="1280" height="0" /></clipPath>
+      <clipPath id="zo-slice-1" clipPathUnits="userSpaceOnUse"><rect data-slice-clip="1" x="0" y="0" width="1280" height="0" /></clipPath>
+      <clipPath id="zo-slice-2" clipPathUnits="userSpaceOnUse"><rect data-slice-clip="2" x="0" y="0" width="1280" height="0" /></clipPath>
+
+      <g id="zo-frame-art" fill="currentColor">
+        <g data-phrase-scene>
+          <g data-phrase-word="Make"></g>
+          <g data-phrase-word="something"></g>
+          <g data-phrase-word="different."></g>
+        </g>
+        <g data-collage-scene visibility="hidden" clip-path="url(#zo-collage-window)">
+          <g clip-path="url(#zo-row-window-0)"><g data-collage-row="0"></g></g>
+          <g clip-path="url(#zo-row-window-1)"><g data-collage-row="1"></g></g>
+          <g clip-path="url(#zo-row-window-2)"><g data-collage-row="2"></g></g>
+          <g clip-path="url(#zo-row-window-3)"><g data-collage-row="3"></g></g>
+          <g clip-path="url(#zo-row-window-4)"><g data-collage-row="4"></g></g>
+          <g clip-path="url(#zo-row-window-5)"><g data-collage-row="5"></g></g>
+        </g>
+        <g data-detail-scene fill="none" stroke="currentColor" stroke-width="1" />
+        <!-- The approved Z and slogan keep their 640 × 360 geometry.
+             The final wordmark appears complete, with a subtle shared camera shake. -->
+        <g data-closing-scene visibility="hidden" transform="translate(256 51) scale(1.2)">
+          <g data-logo-scene>
+            <g data-logo-placement transform="translate(320 180)">
+              <path data-logo fill="currentColor" />
+            </g>
+            <g data-slogan fill="currentColor" opacity="0">
+              <g data-slogan-line="0"><g data-glyph-content="Forge" /></g>
+              <g data-slogan-line="1"><g data-glyph-content="The" /></g>
+              <g data-slogan-line="2"><g data-glyph-content="Extraordinary" /></g>
+            </g>
+          </g>
+          <g data-name-scene fill="currentColor" visibility="hidden">
+            <g data-name-layout>
+              <g data-word="Z"><g data-glyph-content="Z" /></g>
+              <g data-word="hao" opacity="0"><g clip-path="url(#zo-hao-clip)"><g data-glyph-content="hao" /></g></g>
+              <g data-word="W"><g data-glyph-content="W" /></g>
+              <g data-word="en" opacity="0"><g clip-path="url(#zo-en-clip)"><g data-glyph-content="en" /></g></g>
+              <g data-word="H"><g data-glyph-content="H" /></g>
+              <g data-word="ao" opacity="0"><g clip-path="url(#zo-ao-clip)"><g data-glyph-content="ao" /></g></g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </defs>
+    <g data-picture>
+      <rect data-background x="0" y="0" width="1280" height="534" fill="#040A10" />
+      <g data-ink color="#ACDBFB" fill="currentColor">
+        <g mask="url(#zo-intact)"><use href="#zo-frame-art" /></g>
+        <g clip-path="url(#zo-slice-0)"><use data-slice-copy="0" href="#zo-frame-art" /></g>
+        <g clip-path="url(#zo-slice-1)"><use data-slice-copy="1" href="#zo-frame-art" /></g>
+        <g clip-path="url(#zo-slice-2)"><use data-slice-copy="2" href="#zo-frame-art" /></g>
+      </g>
+    </g>
+    <g data-loading-scene visibility="hidden" color="#ACDBFB" fill="currentColor" aria-label="Z 沙漏载入动画">
+      <g data-loading-gates />
+      <g data-loading-mark transform="translate(640 267)">
+        <g data-loading-rotor>
+          <g data-loading-trails aria-hidden="true" />
+          <g data-loading-top />
+          <g data-loading-bottom />
+          <path data-loading-diagonal />
+          <path data-loading-stream fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="7 17" />
+          <path data-loading-intact />
+        </g>
+      </g>
+    </g>
+    <g data-outro-scene visibility="hidden" color="#ACDBFB" fill="currentColor" aria-label="姓名 Z 斜切转场">
+      <!-- Replace this group's contents with the next shot; the shutters reveal it. -->
+      <g data-next-content><rect x="0" y="0" width="1280" height="534" fill="#ACDBFB" /></g>
+      <g data-outro-gates />
+      <path data-outro-mark />
+    </g>
+  </svg>
+  </div>
+  <audio data-soundtrack preload="auto" src="assets/z-opening-music.mp3" aria-label="Z 开场音乐"></audio>
+  <div class="viz-row zo-head"><span data-phase aria-live="polite">00 · Z 三笔合体</span><span data-time class="tabular-nums text-muted">0.000 / 24.624 s</span></div>
+  <label class="sr-only" for="zo-progress">动画进度，可拖动查看任意阶段</label>
+  <input class="form-range" id="zo-progress" type="range" min="0" max="1478" value="0" step="1" />
+  <div class="viz-controls">
+    <button type="button" class="btn btn-primary" data-play>播放（含音乐）</button>
+    <button type="button" class="btn" data-replay>重播</button>
+    <button type="button" class="btn btn-ghost" data-mute aria-pressed="false">静音</button>
+    <label class="form-label">速度<select class="form-select" data-speed aria-label="播放速度"><option value="1">1× 原速</option><option value="0.65">0.65×</option><option value="0.35">0.35× 慢放</option></select></label>
+  </div>
+  <span class="text-small" data-audio-status role="status" hidden></span>
+</div>
+    <footer>这是独立检查页。黑色留空是完整画面缩放的结果；片尾蓝色区域仍是动画原版的下一镜头占位。</footer>
+  </main>
+  <script src="opening-37.js"></script>
+  <script src="review.js"></script>
+</body>
+</html>

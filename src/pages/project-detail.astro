@@ -3,6 +3,19 @@
 // 项目详情页：每个项目一个全屏 project-entry（左侧视觉档案 + 右侧解密档案文本）
 import Layout from '../layouts/Layout.astro';
 import { asset } from '../data/assets';
+
+// Decode display-sized images during navigation; fetch originals only for expanded previews.
+const projectImage = (path: string, poster = false) => {
+  const original = asset(path);
+  const widths = poster ? [480, 960, 1600] : [320, 640, 960];
+  const resized = (width: number) => `${original}?x-oss-process=image/resize,w_${width}`;
+  return {
+    src: resized(poster ? 960 : 640),
+    srcset: widths.map(width => `${resized(width)} ${width}w`).join(', '),
+    sizes: poster ? '(min-width: 768px) 36vw, 90vw' : '(min-width: 768px) 18vw, 44vw',
+    'data-preview-src': original,
+  };
+};
 ---
 
 <Layout title="PROJECTS // ZHAO WENHAO" lang="zh-CN" bodyClass="project-detail-page">
@@ -54,6 +67,12 @@ import { asset } from '../data/assets';
       --footer-top-gap: 4rem;
       --footer-bottom-gap: 2rem;
     }
+
+    .project-entry {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 100vh;
+    }
+    .project-entry:target { content-visibility: visible; }
 
     .left-panel {
       position: relative;
@@ -545,7 +564,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp')}
+           <img {...projectImage('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp', true)}
                 alt="Never Extinguished Promo"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -575,19 +594,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip">
           <div class="thumb-item">
-            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景2 拷贝.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景2 拷贝.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景3 拷贝.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景3 拷贝.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/VR严肃游戏《未曾熄灭的》游戏场景4 拷贝.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景4 拷贝.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -662,7 +681,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('posters/Liminal封面.png')}
+           <img {...projectImage('posters/Liminal封面.png', true)}
                 alt="Liminal-The Fantasy at the Edge"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -692,19 +711,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src={asset('images/Liminal-视频截图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/Liminal-视频截图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Liminal-视频截图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/Liminal-视频截图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Liminal-视频截图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/Liminal-视频截图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Liminal-视频截图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/Liminal-视频截图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -772,7 +791,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('images/艺术装置《starE》- P7.webp')}
+           <img {...projectImage('images/艺术装置《starE》- P7.webp', true)}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -802,19 +821,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src={asset('images/艺术装置《starE》- P8.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/艺术装置《starE》- P8.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/艺术装置《starE》- P1.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/艺术装置《starE》- P1.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/艺术装置《任尔EWSN风？》-P2.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/艺术装置《任尔EWSN风？》-P2.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/艺术装置《任尔EWSN风？》-P3.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/艺术装置《任尔EWSN风？》-P3.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -883,7 +902,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('posters/那洲村AR导览DEMO演示视频封面.png')}
+           <img {...projectImage('posters/那洲村AR导览DEMO演示视频封面.png', true)}
                 alt="Nazo Village AR Guide Demo Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -913,19 +932,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src={asset('images/那洲AR演示图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/那洲AR演示图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/那洲AR演示图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/那洲AR演示图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/那洲AR演示图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/那洲AR演示图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/那洲AR演示图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/那洲AR演示图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -994,7 +1013,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('images/施洞苗绣1.webp')}
+           <img {...projectImage('images/施洞苗绣1.webp', true)}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -1024,19 +1043,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src={asset('images/施洞苗绣2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/施洞苗绣2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/施洞苗绣3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/施洞苗绣3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/施洞苗绣4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/施洞苗绣4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/施洞苗绣5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/施洞苗绣5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -1104,7 +1123,7 @@ import { asset } from '../data/assets';
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img src={asset('images/Shadow Shell 1.webp')}
+           <img {...projectImage('images/Shadow Shell 1.webp', true)}
                 alt="starE Promo Poster"
                 loading="lazy" decoding="async" data-hover-preview
                 data-preview-label="PROMO_POSTER // PRIMARY"
@@ -1134,19 +1153,19 @@ import { asset } from '../data/assets';
 
         <div class="thumb-strip thumb-strip-wide">
           <div class="thumb-item">
-            <img src={asset('images/Shadow Shell 2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <img {...projectImage('images/Shadow Shell 2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
             <span class="thumb-index">01</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Shadow Shell 3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <img {...projectImage('images/Shadow Shell 3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
             <span class="thumb-index">02</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Shadow Shell 4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <img {...projectImage('images/Shadow Shell 4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
             <span class="thumb-index">03</span>
           </div>
           <div class="thumb-item">
-            <img src={asset('images/Shadow Shell 5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <img {...projectImage('images/Shadow Shell 5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
             <span class="thumb-index">04</span>
           </div>
         </div>
@@ -1320,74 +1339,13 @@ import { asset } from '../data/assets';
 
   <div class="preview-backdrop" aria-hidden="true"></div>
 
+  <script>
+    import { initProjectLayout } from '../scripts/project-layout.js';
+    initProjectLayout();
+  </script>
+
   <script is:inline>
     // @ts-nocheck
-    const removeProjectStyleProperty = (element, property) => {
-      if (element.style.getPropertyValue(property)) {
-        element.style.removeProperty(property);
-      }
-    };
-
-    const syncProjectEntryLayout = () => {
-      const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
-      document.querySelectorAll('.project-entry').forEach((entry) => {
-        const thumbStrip = entry.querySelector('.thumb-strip');
-        const targetText = entry.querySelector('.right-panel section .section:last-of-type .section-text')
-          || entry.querySelector('.right-panel section .section-text:last-of-type');
-        if (!isDesktop) {
-          removeProjectStyleProperty(entry, '--thumb-offset');
-          removeProjectStyleProperty(entry, '--footer-top-gap');
-          removeProjectStyleProperty(entry, '--footer-bottom-gap');
-          return;
-        }
-
-        if (!thumbStrip || !targetText) return;
-
-        const currentThumbOffset = Number.parseFloat(getComputedStyle(thumbStrip).marginTop) || 0;
-        const entryRect = entry.getBoundingClientRect();
-        const thumbRect = thumbStrip.getBoundingClientRect();
-        const textRect = targetText.getBoundingClientRect();
-        const naturalThumbTop = thumbRect.top - entryRect.top - currentThumbOffset;
-        const targetBottom = textRect.bottom - entryRect.top;
-        const desiredOffset = targetBottom - naturalThumbTop - thumbRect.height;
-        const nextThumbOffset = Math.max(8, desiredOffset);
-
-        if (Math.abs(nextThumbOffset - currentThumbOffset) > 0.25) {
-          entry.style.setProperty('--thumb-offset', `${nextThumbOffset}px`);
-        }
-      });
-    };
-
-    let projectLayoutFrame = 0;
-    const scheduleProjectEntryLayoutSync = () => {
-      if (projectLayoutFrame) return;
-      projectLayoutFrame = requestAnimationFrame(() => {
-        projectLayoutFrame = 0;
-        syncProjectEntryLayout();
-      });
-    };
-
-    window.addEventListener('load', scheduleProjectEntryLayoutSync);
-    window.addEventListener('resize', scheduleProjectEntryLayoutSync);
-    window.visualViewport?.addEventListener('resize', scheduleProjectEntryLayoutSync);
-
-    if (document.fonts) {
-      document.fonts.ready.then(scheduleProjectEntryLayoutSync);
-    }
-
-    const projectResizeObserver = new ResizeObserver(scheduleProjectEntryLayoutSync);
-    document.querySelectorAll('.project-entry .right-panel, .project-entry .left-panel, .project-entry .thumb-strip').forEach((element) => {
-      projectResizeObserver.observe(element);
-    });
-
-    document.querySelectorAll('.project-entry img').forEach((image) => {
-      if (image.complete) return;
-      image.addEventListener('load', scheduleProjectEntryLayoutSync, { once: true });
-    });
-
-    scheduleProjectEntryLayoutSync();
-
     const previewBackdrop = document.querySelector('.preview-backdrop');
     const previewTargets = document.querySelectorAll('[data-hover-preview]');
     let activePreview = null;
@@ -1524,6 +1482,18 @@ import { asset } from '../data/assets';
       activeTarget = image;
 
       clone.removeAttribute('data-hover-preview');
+      clone.removeAttribute('srcset');
+      clone.removeAttribute('sizes');
+      clone.src = image.currentSrc || image.src;
+      // Keep the decoded thumbnail visible until the original is ready to swap in.
+      if (image.dataset.previewSrc) {
+        const fullSize = new Image();
+        fullSize.decoding = 'async';
+        fullSize.src = image.dataset.previewSrc;
+        fullSize.decode().then(() => {
+          if (activePreview === clone) clone.src = fullSize.src;
+        }).catch(() => {});
+      }
       clone.style.position = 'fixed';
       clone.style.zIndex = '80';
       clone.style.margin = '0';

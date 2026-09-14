@@ -1,0 +1,256 @@
+{
+  "status": "passed",
+  "browser": "Microsoft Edge / Chromium (headless on Windows)",
+  "checkedAt": "2026-09-14T15:05:04.909Z",
+  "originalSvgEqualAtFrames": [
+    0,
+    26,
+    66,
+    82,
+    120,
+    140,
+    150,
+    160,
+    240,
+    400,
+    480,
+    560,
+    640,
+    680,
+    720,
+    725,
+    735,
+    750,
+    839,
+    840,
+    919,
+    920,
+    1080,
+    1159,
+    1160,
+    1180,
+    1190,
+    1200,
+    1219,
+    1220,
+    1478
+  ],
+  "pixelComparisons": [
+    {
+      "frame": 26,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 150,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 560,
+      "count": 12,
+      "sum": 12,
+      "max": 1,
+      "mean": 0.000004389044943820225,
+      "bounds": [
+        431,
+        32,
+        727,
+        104
+      ]
+    },
+    {
+      "frame": 735,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 750,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 920,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 1160,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 1200,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "frame": 1220,
+      "count": 0,
+      "max": 0,
+      "mean": 0
+    }
+  ],
+  "audio": {
+    "duration": 24.624,
+    "paused": true,
+    "currentTime": 0
+  },
+  "externalAudioPlaybackAndFinish": true,
+  "reducedMotion": "Original static name at frame 1080, paused",
+  "viewportChecks": [
+    {
+      "viewportWidth": 320,
+      "ratio": "1280/534",
+      "overflow": false,
+      "width": 292,
+      "height": 121.8125,
+      "scaleX": 0.2281132958801498,
+      "scaleY": 0.2281132958801498
+    },
+    {
+      "viewportWidth": 320,
+      "ratio": "16/9",
+      "overflow": false,
+      "width": 292,
+      "height": 164.25,
+      "scaleX": 0.228125,
+      "scaleY": 0.228125
+    },
+    {
+      "viewportWidth": 320,
+      "ratio": "4/3",
+      "overflow": false,
+      "width": 292,
+      "height": 219,
+      "scaleX": 0.228125,
+      "scaleY": 0.228125
+    },
+    {
+      "viewportWidth": 320,
+      "ratio": "9/16",
+      "overflow": false,
+      "width": 292,
+      "height": 519.109375,
+      "scaleX": 0.228125,
+      "scaleY": 0.228125
+    },
+    {
+      "viewportWidth": 390,
+      "ratio": "1280/534",
+      "overflow": false,
+      "width": 362,
+      "height": 151.015625,
+      "scaleX": 0.28280079588014984,
+      "scaleY": 0.28280079588014984
+    },
+    {
+      "viewportWidth": 390,
+      "ratio": "16/9",
+      "overflow": false,
+      "width": 362,
+      "height": 203.625,
+      "scaleX": 0.2828125,
+      "scaleY": 0.2828125
+    },
+    {
+      "viewportWidth": 390,
+      "ratio": "4/3",
+      "overflow": false,
+      "width": 362,
+      "height": 271.5,
+      "scaleX": 0.2828125,
+      "scaleY": 0.2828125
+    },
+    {
+      "viewportWidth": 390,
+      "ratio": "9/16",
+      "overflow": false,
+      "width": 362,
+      "height": 643.546875,
+      "scaleX": 0.2828125,
+      "scaleY": 0.2828125
+    },
+    {
+      "viewportWidth": 768,
+      "ratio": "1280/534",
+      "overflow": false,
+      "width": 720,
+      "height": 300.375,
+      "scaleX": 0.5625,
+      "scaleY": 0.5625
+    },
+    {
+      "viewportWidth": 768,
+      "ratio": "16/9",
+      "overflow": false,
+      "width": 720,
+      "height": 405,
+      "scaleX": 0.5625,
+      "scaleY": 0.5625
+    },
+    {
+      "viewportWidth": 768,
+      "ratio": "4/3",
+      "overflow": false,
+      "width": 720,
+      "height": 540,
+      "scaleX": 0.5625,
+      "scaleY": 0.5625
+    },
+    {
+      "viewportWidth": 768,
+      "ratio": "9/16",
+      "overflow": false,
+      "width": 390,
+      "height": 693.328125,
+      "scaleX": 0.3046875,
+      "scaleY": 0.3046875
+    },
+    {
+      "viewportWidth": 1440,
+      "ratio": "1280/534",
+      "overflow": false,
+      "width": 1280,
+      "height": 534,
+      "scaleX": 1,
+      "scaleY": 1
+    },
+    {
+      "viewportWidth": 1440,
+      "ratio": "16/9",
+      "overflow": false,
+      "width": 1280,
+      "height": 720,
+      "scaleX": 1,
+      "scaleY": 1
+    },
+    {
+      "viewportWidth": 1440,
+      "ratio": "4/3",
+      "overflow": false,
+      "width": 1280,
+      "height": 960,
+      "scaleX": 1,
+      "scaleY": 1
+    },
+    {
+      "viewportWidth": 1440,
+      "ratio": "9/16",
+      "overflow": false,
+      "width": 390,
+      "height": 693.328125,
+      "scaleX": 0.3046875,
+      "scaleY": 0.3046875
+    }
+  ],
+  "errors": [],
+  "scope": "Review baseline only. No responsive scene re-layout or site integration implemented. Safari and real devices not tested."
+}

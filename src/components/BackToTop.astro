@@ -1,0 +1,62 @@
+<button class="back-to-top" type="button" aria-label="返回首屏" title="返回首屏" hidden>
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M5 4h14M12 20V8m-6 6 6-6 6 6" />
+  </svg>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.back-to-top')!;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+  function update() {
+    frame = 0;
+    button.hidden = window.scrollY < window.innerHeight * .6;
+  }
+  function schedule() {
+    if (!frame) frame = requestAnimationFrame(update);
+  }
+  button.addEventListener('click', () => {
+    if (window.location.hash) {
+      history.replaceState(history.state, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo({top:0, behavior:reducedMotion.matches ? 'instant' : 'smooth'});
+  });
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('pageshow', schedule);
+  update();
+</script>
+
+<style>
+  .back-to-top {
+    --back-to-top-inset: max(1.35rem, env(safe-area-inset-right));
+    position: fixed;
+    right: var(--back-to-top-inset);
+    bottom: var(--back-to-top-inset);
+    z-index: 10035;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+    box-sizing: border-box;
+    border: 1px solid currentColor;
+    border-radius: var(--site-frame-radius);
+    background: transparent;
+    color: #ACDBFB;
+    cursor: pointer;
+    opacity: .7;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+  .back-to-top[hidden] { display: none; }
+  .back-to-top svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .back-to-top:hover { opacity: 1; transform: translateY(-3px) scale(1.08); }
+  .back-to-top:focus-visible { opacity: 1; outline: 1px solid currentColor; outline-offset: 3px; }
+  @media (max-width: 1100px) {
+    .back-to-top { --back-to-top-inset: max(.75rem, env(safe-area-inset-right)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top { transition: none; }
+    .back-to-top:hover { transform: none; }
+  }
+</style>

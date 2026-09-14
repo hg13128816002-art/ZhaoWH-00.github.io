@@ -3,6 +3,8 @@
 赵文浩的个人作品集站点。品牌蓝（`#ACDBFB`）+ 蓝调黑（`#040A10`）的"终端 / HUD"视觉基调，
 以 Canvas 粒子、滚动驱动的编年时间轴和全屏作品叠层作为主要交互语言。
 
+本次更新详情见 [更新说明](CHANGELOG.md)。
+
 ## 技术栈
 
 | 项 | 说明 |
@@ -40,8 +42,10 @@ src/
 ├── layouts/Layout.astro    全站唯一外壳：document 骨架 + 导航 + 转场
 ├── components/
 │   ├── SiteHeader.astro          顶部导航 + 明暗主题切换
-│   ├── PureTransition.astro      跨页切片转场 + 站内链接拦截
-│   ├── Preloader.astro           首屏加载环（每个会话只播一次）
+│   ├── PureTransition.astro      Z 标志转场 + 站内链接拦截
+│   ├── HeroOpening.astro         首页开场动画、音频授权与播放控制
+│   ├── HomeSectionNav.astro       首页区块导航
+│   ├── BackToTop.astro            返回首屏按钮
 │   ├── InfiniteOmniGallery.astro /omni 视频档案（Canvas 无限画布）
 │   ├── DualTrackGallery.astro    /dual 图片档案（双轨传送带 + 深度缩放）
 │   └── interaction-lab/          未上线的交互原型存档
@@ -65,5 +69,5 @@ src/
 - `window.fontsReadyPromise` 是首屏脚本的统一等待点（由
   `public/scripts/font-loader.js` 提供，带 2 秒 fail-open 兜底）。
   新增首屏动画请复用它，不要各自监听 `document.fonts`。
-- 移动端（`max-width: 899px`）会关闭首页的滚动驱动动画与 3D 模型，
+- 移动端（时间线 `max-width: 900px`）会关闭首页的滚动驱动动画与 3D 模型，
   切换为静态降级布局；改动首页交互时注意 `isMobileHomeFallback()` 这条分支。

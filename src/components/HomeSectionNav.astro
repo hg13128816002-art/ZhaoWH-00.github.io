@@ -1,0 +1,113 @@
+---
+// 首页区块导航：固定在视口中，独立于全站的跨页导航。
+const sections = [
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'works', label: 'Works' },
+  { id: 'profile', label: 'Profile' },
+];
+---
+
+<nav class="home-section-nav" aria-label="首页区块导航" data-on-canvas="true">
+  {sections.map(({ id, label }) => (
+    <a href={`#${id}`} data-home-section={id}><span aria-hidden="true">—</span> {label}</a>
+  ))}
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.home-section-nav')!;
+  const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-home-section]'));
+  const targets = links.map((link) => document.getElementById(link.dataset.homeSection!)!);
+  const stage = document.querySelector<HTMLElement>('.hero-stage')!;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+
+  function updateNavigation() {
+    frame = 0;
+    const marker = window.innerHeight * 0.35;
+    let current = '';
+    targets.forEach((section) => {
+      if (section.getBoundingClientRect().top <= marker) current = section.id;
+    });
+    // 页面末尾的 Profile 可能不足一屏，仍应正确标记为当前区块。
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+      current = targets[targets.length - 1].id;
+    }
+    links.forEach((link) => {
+      if (link.dataset.homeSection === current) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+    const navRect = nav.getBoundingClientRect();
+    nav.dataset.onCanvas = String(stage.getBoundingClientRect().bottom > navRect.bottom);
+  }
+
+  function scheduleNavigation() {
+    if (!frame) frame = requestAnimationFrame(updateNavigation);
+  }
+
+  links.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      const section = document.getElementById(link.dataset.homeSection!)!;
+      event.preventDefault();
+      // 保留真实 hash 和浏览器历史；同页锚点不触发全站跨页切片转场。
+      if (window.location.hash !== link.hash) history.pushState(null, '', link.hash);
+      section.scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth', block: 'start' });
+    });
+  });
+  window.addEventListener('scroll', scheduleNavigation, { passive: true });
+  window.addEventListener('resize', scheduleNavigation, { passive: true });
+  window.addEventListener('pageshow', scheduleNavigation);
+  window.addEventListener('hashchange', scheduleNavigation);
+  window.fontsReadyPromise?.then(scheduleNavigation);
+  updateNavigation();
+</script>
+
+<style>
+  .home-section-nav {
+    position: fixed;
+    z-index: 10035;
+    top: 57%;
+    left: clamp(1.25rem, 2.2vw, 2.5rem);
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    padding: 0.4rem 0.6rem;
+    background: transparent;
+  }
+  .home-section-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    color: #ACDBFB;
+    text-decoration: none;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
+    opacity: 0.65;
+    transition: opacity 180ms ease;
+  }
+  .home-section-nav a span { opacity: 0.5; }
+  .home-section-nav a:hover,
+  .home-section-nav a:focus-visible,
+  .home-section-nav a[aria-current] { opacity: 1; }
+  .home-section-nav a[aria-current] span { opacity: 1; }
+  .home-section-nav a:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
+  .home-section-nav[data-on-canvas="true"] a { color: #040a12; opacity: 0.8; }
+  @media (max-width: 1100px) {
+    .home-section-nav {
+      top: auto;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: row;
+      gap: 1.2rem;
+      padding: 0.25rem 0.85rem;
+    }
+    .home-section-nav a { min-height: 2.5rem; font-size: 0.73rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-section-nav, .home-section-nav a { transition: none; }
+  }
+</style>

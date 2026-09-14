@@ -17,6 +17,7 @@ interface Props {
   bodyClass?: string;
   /** <body> 的行内样式（主要是兜底背景色） */
   bodyStyle?: string;
+  skipInitialTransition?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   viewport = 'width=device-width, initial-scale=1.0',
   bodyClass,
   bodyStyle,
+  skipInitialTransition = false,
 } = Astro.props;
 ---
 
@@ -34,6 +36,8 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content={viewport} />
     <title>{title}</title>
+    <link rel="icon" href="/favicon.ico?v=z-blue-2" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=z-blue-2" sizes="any" />
 
     <!-- 自托管中文字体：先声明预加载，配合 fonts-ready 门控避免首屏字体跳动 -->
     <link rel="preload" href="/fonts/NotoSansSC-Regular.woff2" as="font" type="font/woff2" crossorigin />
@@ -47,9 +51,8 @@ const {
     <slot name="head" />
   </head>
   <body class={bodyClass} style={bodyStyle}>
-    <PureTransition />
+    <PureTransition skipInitialReveal={skipInitialTransition} />
     <SiteHeader />
     <slot />
   </body>
 </html>
-
