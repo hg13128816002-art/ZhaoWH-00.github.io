@@ -1382,11 +1382,10 @@ import { workCategories, works } from '../data/works';
       // 浅色底比深色底要反射得更亮才不会发灰，两套主题各给一组光比；
       // 主光与边光的强度也分主题：浅色面板本身更亮，光源不跟上就压不住
       const themeLighting = {
-        dark: { exposure: 1.03, envIntensity: 1.45, hemisphere: 0.05, key: 2.15, rim: 1.55, glowOpacity: 0.34 },
-        light: { exposure: 1.02, envIntensity: 1.15, hemisphere: 0.05, key: 2.5, rim: 1.9, glowOpacity: 0.14 },
+        dark: { exposure: 1.03, envIntensity: 1.45, hemisphere: 0.05, key: 2.15, rim: 1.55 },
+        light: { exposure: 1.02, envIntensity: 1.15, hemisphere: 0.05, key: 2.5, rim: 1.9 },
       };
       const modelMaterials = [];
-      let glowBaseOpacity = themeLighting.dark.glowOpacity;
       let keyBaseIntensity = themeLighting.dark.key;
       let rimBaseIntensity = themeLighting.dark.rim;
 
@@ -1485,26 +1484,8 @@ import { workCategories, works } from '../data/works';
         return texture;
       }
 
-      // 模型背后的蓝色辉光：随呼吸轻微明灭，让金属边缘像在发光。
-      // 它必须挂在相机（= 展示窗口坐标系）下，并在 frame() 里钉到模型正后方 ——
-      // 摆在世界坐标里的话，相机绕模型自转时这块亮斑会跟着模型一起转，
-      // 看起来就是「打光在跟着模型走」（实测背景左右亮度比会从 0.5 荡到 1.8）。
-      const GLOW_BEHIND = 1.5; // 比模型中心再往后 1.5 个世界单位，正好托在背后
-      const backdropGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: makeRadialTexture([
-          [0, 'rgba(172, 219, 251, 0.85)'],
-          [0.42, 'rgba(122, 178, 226, 0.32)'],
-          [1, 'rgba(4, 10, 16, 0)'],
-        ]),
-        color: 0xacdbfb,
-        transparent: true,
-        opacity: 0.42,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      }));
-      backdropGlow.position.set(0, 0.25, -(camera.position.length() + GLOW_BEHIND));
-      backdropGlow.scale.set(5.6, 5.6, 1);
-      camera.add(backdropGlow);
+      // 模型背后不再有辉光、光晕一类的附加亮斑：整套灯只负责把光打在模型自己身上，
+      // 背景留给面板的网格底纹（与参考图一致——黑底 + 网格，模型之外不发光）。
 
       // 假接触阴影：贴在支架脚下，把模型「按」到地面上（不占一张阴影贴图）
       // 比地面略高 6‰，免得和网格线抢深度；脚底压在这层之上，看着才是踩进阴影里
@@ -1539,7 +1520,7 @@ import { workCategories, works } from '../data/works';
           : themeLighting.dark;
       }
 
-      // 曝光、反射强度、辉光浓淡、主光/边光亮度都跟着主题走；
+      // 曝光、反射强度、主光/边光亮度都跟着主题走；
       // 模型材质是异步加载的，所以两处都要能重复调用
       function applyLightingTheme() {
         const preset = currentThemeLighting();
@@ -1549,8 +1530,6 @@ import { workCategories, works } from '../data/works';
         rimLight.intensity = preset.rim;
         keyBaseIntensity = preset.key;
         rimBaseIntensity = preset.rim;
-        glowBaseOpacity = preset.glowOpacity;
-        backdropGlow.material.opacity = preset.glowOpacity;
         modelMaterials.forEach((material) => {
           material.envMapIntensity = preset.envIntensity;
           material.needsUpdate = true;
@@ -1592,13 +1571,6 @@ import { workCategories, works } from '../data/works';
         // 「活着」的感觉交给强度呼吸，以及模型自转带来的切面明暗变化
         keyLight.intensity = keyBaseIntensity * (1 + Math.sin(lightClock * 0.5) * 0.05);
         rimLight.intensity = rimBaseIntensity * (1 + Math.cos(lightClock * 0.42 + 1.1) * 0.08);
-        // 辉光按主题基准值做呼吸，浅色主题几乎看不出，深色主题才明显；
-        // 同时每帧钉到模型正后方：相机坐标系里正后方就是 -Z，
-        // 距离取「相机到模型的距离 + 1.5」，缩放跟着相机远近走，屏占比才稳定
-        backdropGlow.material.opacity = glowBaseOpacity * (1 + Math.sin(lightClock * 0.45) * 0.24);
-        const glowScale = 5.6 + Math.sin(lightClock * 0.45) * 0.22;
-        backdropGlow.scale.set(glowScale, glowScale, 1);
-        backdropGlow.position.set(0, 0.25, -(camera.position.length() + GLOW_BEHIND));
 
         controls.update();
 
@@ -3108,11 +3080,10 @@ import { workCategories, works } from '../data/works';
 
     .profile-model-panel {
       background:
-        radial-gradient(circle at 50% 45%, rgba(172, 219, 251, 0.12), transparent 34%),
         linear-gradient(90deg, rgba(172, 219, 251, 0.08) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         rgba(4, 10, 16, 0.28);
-      background-size: auto, 62px 62px, 62px 62px, auto;
+      background-size: 62px 62px, 62px 62px, auto;
       border: 1px solid rgba(172, 219, 251, 0.24);
       border-radius: 16px;
       height: 100%;
