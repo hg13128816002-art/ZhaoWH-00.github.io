@@ -1,6 +1,11 @@
 ---
 // Geometry is derived from the archived Opening 37; the archive stays immutable.
+import entrySource from '../scripts/opening/entry.js?raw';
 ---
+<script is:inline set:html={`(() => {
+${entrySource.replace(/^export /gm, '')}
+document.documentElement.dataset.openingEntry = claimOpeningEntry();
+})();`} />
 <div class="hero-opening" data-hero-opening-root data-state="loading" aria-label="Zhao Wenhao 开场动画">
   <svg class="zo-stage" viewBox="0 0 1280 534" aria-hidden="true" focusable="false">
     <defs>
@@ -125,7 +130,7 @@
     </g>
   </svg>
   <!-- Fade 21.3–23.7 s to silence; retain the original 24.624 s length and musical cues. -->
-  <audio data-opening-audio preload="auto" src="/opening/z-opening-37.mp3?v=fade-2400-v2"></audio>
+  <audio data-opening-audio preload="none" src="/opening/z-opening-37.mp3?v=fade-2400-v2"></audio>
   <button class="opening-start" type="button" data-opening-start hidden>
     <span aria-hidden="true">▶</span><span data-opening-start-label>播放开场 · 开启声音</span>
   </button>
@@ -158,6 +163,7 @@
 <noscript><style>.hero-opening, .opening-controls { display: none !important; }</style></noscript>
 
 <style>
+  :global(html[data-opening-entry]:not([data-opening-entry="fresh"])) .hero-opening { display: none !important; }
   .hero-opening {
     position: fixed;
     inset: 0 0 auto;

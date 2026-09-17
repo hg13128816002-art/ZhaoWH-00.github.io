@@ -1,27 +1,8 @@
 import { createOpeningRenderer, OPENING_TIMING } from './opening/renderer.js';
+import { claimOpeningEntry } from './opening/entry.js';
 
 type Universe = { setPaused(value: boolean): void } | undefined;
 const TAB_SOUND_CHOICE_KEY = 'zhao-portfolio-tab-audio-choice';
-
-function currentTabAllowedSound() {
-  try { return window.sessionStorage.getItem(TAB_SOUND_CHOICE_KEY) === 'allowed'; }
-  catch { return false; }
-}
-
-function homepageEntry() {
-  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-  // A reload can retain the previous page's referrer, so check it first.
-  if (navigation?.type === 'reload') return 'reload';
-  // A newly restored document (including a reopened tab) asks again.
-  if (navigation?.type === 'back_forward') return 'direct';
-  try {
-    const from = new URL(document.referrer);
-    if (from.origin === window.location.origin && from.pathname !== '/' && from.pathname !== '/index.html') {
-      return 'internal';
-    }
-  } catch { /* Direct visits have no referrer. */ }
-  return 'direct';
-}
 
 export function initHeroOpening(root: HTMLElement, universe: Universe) {
   const stage = root.parentElement!;
@@ -35,6 +16,23 @@ export function initHeroOpening(root: HTMLElement, universe: Universe) {
   const consent = stage.querySelector<HTMLDialogElement>('[data-opening-consent]')!;
   const allowButton = consent.querySelector<HTMLButtonElement>('[data-opening-allow]')!;
   const denyButton = consent.querySelector<HTMLButtonElement>('[data-opening-deny]')!;
+  const entry = document.documentElement.dataset.openingEntry ?? claimOpeningEntry();
+  root.dataset.entry = entry;
+  if (entry !== 'fresh') {
+    root.hidden = true;
+    root.dataset.state = 'skipped';
+    root.dataset.revealed = 'true';
+    controls.hidden = true;
+    if (consent.open) consent.close();
+    delete document.documentElement.dataset.openingConsent;
+    document.body.dataset.heroOpening = 'revealed';
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+    universe?.setPaused(false);
+    return { destroy() {} };
+  }
+  audio.preload = 'auto';
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const renderer = createOpeningRenderer(root, { reducedMotion: motion.matches });
   const events = new AbortController();
@@ -47,7 +45,7 @@ export function initHeroOpening(root: HTMLElement, universe: Universe) {
   let usingAudioClock = false;
   let silentElapsed = 0, silentStartedAt = 0;
 
-  // Remember explicit choices only for reloads in this tab, never for a new visit.
+  // Sound is selected only when this tab first plays the opening.
   audio.muted = true;
   audio.volume = 0.8;
 
@@ -272,7 +270,7 @@ export function initHeroOpening(root: HTMLElement, universe: Universe) {
   window.addEventListener('page-transition-end', syncVisibility, eventOptions);
   motion.addEventListener('change', () => renderer.setReducedMotion(motion.matches), eventOptions);
   window.addEventListener('pagehide', (event) => {
-    if (event.persisted) pause();
+    if (event.persisted) { closeConsent(); finish(); }
     else destroy();
   }, eventOptions);
   window.addEventListener('pageshow', syncVisibility, eventOptions);
@@ -298,22 +296,10 @@ export function initHeroOpening(root: HTMLElement, universe: Universe) {
     new Promise<void>(resolve => window.addEventListener('load', () => resolve(), { ...eventOptions, once: true }));
   Promise.all([window.fontsReadyPromise ?? Promise.resolve(), pageReady,
     window.pageTransitionReady ?? Promise.resolve()]).then(() => {
-    if (disposed) return;
+    if (disposed || root.hidden) return;
     ready = true;
     renderer.resize(root.clientWidth, root.clientHeight);
     renderer.render(0);
-    const entry = homepageEntry();
-    root.dataset.entry = entry;
-    if (entry === 'internal' || (entry === 'reload' && currentTabAllowedSound())) {
-      // Automatic silence must not overwrite an explicit earlier allow/deny choice.
-      chooseSound(false, false);
-      return;
-    }
-    if (entry === 'direct') {
-      // Also reset copied/restored tab storage when opening the site afresh.
-      try { window.sessionStorage.removeItem(TAB_SOUND_CHOICE_KEY); }
-      catch { /* New visits ask regardless of storage availability. */ }
-    }
     setState('consent');
     document.documentElement.dataset.openingConsent = 'true';
     consent.showModal();

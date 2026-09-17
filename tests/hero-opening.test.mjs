@@ -6,10 +6,10 @@ import vm from 'node:vm';
 
 // Exercise the host lifecycle independently of SVG layout and real autoplay policy.
 const source = stripTypeScriptTypes(readFileSync(new URL('../src/scripts/hero-opening.ts', import.meta.url), 'utf8'))
-  .replace(/^import .*;\n/, '')
+  .replace(/^import .*;\n/gm, '')
   .replace('export function initHeroOpening', 'function initHeroOpening');
+const entrySource = readFileSync(new URL('../src/scripts/opening/entry.js', import.meta.url), 'utf8').replace('export function', 'function');
 const timing = { revealStart:1190/60, visualEnd:1220/60, audioEnd:24.624 };
-const soundChoiceKey = 'zhao-portfolio-audio-choice';
 const tabSoundChoiceKey = 'zhao-portfolio-tab-audio-choice';
 
 function fixture({ allowed = true, loaded = true, navigation = 'navigate', referrer = '', storage = new Map(), tabStorage = new Map(), storageUnavailable = false, transitionReady } = {}) {
@@ -59,7 +59,7 @@ function fixture({ allowed = true, loaded = true, navigation = 'navigate', refer
     body:{dataset:{}}, documentElement:{dataset:{}}, referrer });
   let intersection, resized = false, disconnected = 0;
   const renderer = { render:t => rendered.push(t), resize(){ resized = true; }, setReducedMotion(){} };
-  const init = vm.runInNewContext(`${source}\ninitHeroOpening`, {
+  const init = vm.runInNewContext(`${entrySource}\n${source}\ninitHeroOpening`, {
     window, document, AbortController, URL, OPENING_TIMING:timing, createOpeningRenderer:() => renderer,
     performance:{ now:() => now, getEntriesByType:() => [{type:navigation}] },
     requestAnimationFrame:callback => { frames.set(++nextFrame,callback); return nextFrame; },
@@ -161,64 +161,62 @@ test('disposal releases the modal, observers, audio and pending promises', async
   assert.equal(pending.playCalls(), 0); assert.equal(pending.frames.size, 0);
 });
 
-test('reload after allow is silent; reload after denial or no choice asks again', async () => {
-  for (const value of [null, 'allowed', 'denied']) {
-    const tabStorage = new Map(value ? [[tabSoundChoiceKey,value]] : []);
-    const f = fixture({navigation:'reload', referrer:'https://portfolio.test/profile', tabStorage, allowed:false}); await flush();
-    assert.equal(f.consent.open, value !== 'allowed'); assert.equal(f.playCalls(), 0);
-    assert.equal(f.frames.size, value === 'allowed' ? 1 : 0);
-    assert.equal(f.audio.muted, true); assert.equal(f.root.dataset.state, value === 'allowed' ? 'playing' : 'consent');
-    assert.equal(f.root.dataset.entry, 'reload');
+test('refresh never plays or asks for sound, regardless of the previous choice', async () => {
+  for (const choice of [null, 'allowed', 'denied']) {
+    const f = fixture({navigation:'reload', tabStorage:new Map(choice ? [[tabSoundChoiceKey,choice]] : [])});
+    await flush();
+    assert.equal(f.root.dataset.state,'skipped'); assert.equal(f.root.hidden,true);
+    assert.equal(f.consent.open,false); assert.equal(f.playCalls(),0); assert.equal(f.frames.size,0);
+    assert.equal(f.resized(),false); assert.equal(f.audio.source,null);
+    assert.deepEqual(f.universeStates,[false]);
   }
 });
 
-test('internal entry is always silent but preserves either choice for the next reload', async () => {
-  for (const choice of ['allowed', 'denied']) {
-    const tabStorage = new Map([[tabSoundChoiceKey,choice]]);
-    const f = fixture({referrer:'https://portfolio.test/contact', tabStorage}); await flush();
-    assert.equal(f.root.dataset.entry, 'internal'); assert.equal(f.consent.open, false);
-    assert.equal(f.root.dataset.state, 'playing'); assert.equal(f.audio.muted, true); assert.equal(f.playCalls(), 0);
-    assert.equal(tabStorage.get(tabSoundChoiceKey), choice); f.controller.destroy();
-    const refreshed = fixture({navigation:'reload', referrer:'https://portfolio.test/contact', tabStorage}); await flush();
-    assert.equal(refreshed.consent.open, choice === 'denied'); assert.equal(refreshed.audio.muted, true);
-    assert.equal(refreshed.playCalls(), 0);
+test('internal and history returns show the universe directly, even without stored choices', async () => {
+  for (const options of [{referrer:'https://portfolio.test/contact'}, {navigation:'back_forward'}]) {
+    const f=fixture(options); await flush();
+    assert.equal(f.root.dataset.state,'skipped'); assert.equal(f.consent.open,false);
+    assert.equal(f.root.hidden,true); assert.equal(f.controls.hidden,true); assert.equal(f.frames.size,0);
   }
 });
 
-test('either choice survives reload in the same tab but a new visit always asks again', async () => {
-  for (const allowed of [true, false]) {
-    const first = fixture(); await flush(); first.choose(allowed); await flush();
-    assert.equal(first.storage.size, 0); assert.equal(first.audio.muted, !allowed);
-    assert.equal(first.tabStorage.get(tabSoundChoiceKey), allowed ? 'allowed' : 'denied');
-    first.controller.destroy();
-    const refreshed = fixture({navigation:'reload', tabStorage:first.tabStorage}); await flush();
-    assert.equal(refreshed.consent.open, !allowed); assert.equal(refreshed.playCalls(), 0);
-    const reopened = fixture({storage:first.storage, tabStorage:first.tabStorage}); await flush();
-    assert.equal(reopened.consent.open, true); assert.equal(reopened.playCalls(), 0);
-    assert.equal(reopened.frames.size, 0); assert.equal(reopened.rendered.at(-1), 0);
-    assert.equal(reopened.tabStorage.size, 0);
+test('one tab plays once; a new tab session asks and plays again for either sound choice', async () => {
+  for (const allowed of [true,false]) {
+    const first=fixture(); await flush(); first.choose(allowed); await flush();
+    assert.equal(first.root.dataset.state,'playing');
+    const repeat=fixture({tabStorage:first.tabStorage}); await flush();
+    assert.equal(repeat.root.dataset.state,'skipped'); assert.equal(repeat.consent.open,false);
+    const reopened=fixture({storage:first.storage}); await flush();
+    assert.equal(reopened.consent.open,true); reopened.choose(allowed); await flush();
+    assert.equal(reopened.root.dataset.state,'playing');
   }
 });
 
-test('new visits and restored documents ignore both legacy allowed and denied choices', async () => {
-  for (const choice of ['allowed', 'denied']) {
-    for (const referrer of ['', 'https://other.test/contact', 'https://portfolio.test/', 'https://portfolio.test/index.html']) {
-      const f = fixture({referrer, storage:new Map([[soundChoiceKey,choice]])}); await flush();
-      assert.equal(f.consent.open, true); assert.equal(f.playCalls(), 0);
-    }
-    const restored = fixture({navigation:'back_forward', referrer:'https://portfolio.test/contact', storage:new Map([[soundChoiceKey,choice]]), tabStorage:new Map([[tabSoundChoiceKey,choice]])}); await flush();
-    assert.equal(restored.consent.open, true); assert.equal(restored.playCalls(), 0);
-    assert.equal(restored.tabStorage.size, 0);
+test('even a refresh before permission is answered skips the opening', async () => {
+  const first=fixture({loaded:false});
+  const refreshed=fixture({navigation:'reload',tabStorage:first.tabStorage}); await flush();
+  assert.equal(refreshed.root.hidden,true); assert.equal(refreshed.consent.open,false);
+});
+
+test('storage failure still permits fresh visits and skips reloads and internal returns', async () => {
+  const f=fixture({storageUnavailable:true}); await flush();
+  assert.equal(f.consent.open,true); f.choose(false); assert.equal(f.root.dataset.state,'playing');
+  for(const options of [{navigation:'reload'},{referrer:'https://portfolio.test/contact'},{navigation:'back_forward'}]) {
+    const returned=fixture({...options,storageUnavailable:true}); await flush();
+    assert.equal(returned.root.hidden,true); assert.equal(returned.consent.open,false);
   }
 });
 
-test('opening and refreshing still work when browser storage is unavailable', async () => {
-  const f = fixture({storageUnavailable:true}); await flush();
-  assert.equal(f.consent.open, true); f.choose(true); await flush();
-  assert.equal(f.root.dataset.state, 'playing');
-  const refreshed = fixture({navigation:'reload', storageUnavailable:true}); await flush();
-  assert.equal(refreshed.consent.open, true); assert.equal(refreshed.playCalls(), 0);
-  assert.equal(refreshed.root.dataset.state, 'consent');
+test('restoring a cached page does not resume its interrupted film or consent dialog', async () => {
+  for(const started of [true,false]) {
+    const f=fixture(); await flush();
+    if(started){f.choose(true);await flush();f.advance(4);}
+    f.window.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));
+    f.window.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await flush();
+    assert.equal(f.root.hidden,true);assert.equal(f.controls.hidden,true);assert.equal(f.consent.open,false);
+    assert.equal(f.frames.size,0);assert.equal(f.audio.paused,true);
+    assert.equal(f.document.body.dataset.heroOpening,'revealed');
+  }
 });
 
 test('audio failure exposes retry and never silently advances the film', async () => {
@@ -254,9 +252,9 @@ test('silent playback excludes time offscreen and Escape chooses silence', async
   assert.equal(f.playCalls(), 0);
 });
 
-test('sound can join silent autoplay at its current time and mute without changing playback or volume', async () => {
+test('sound can join a silent opening at its current time and mute without changing playback or volume', async () => {
   const tabStorage = new Map([[tabSoundChoiceKey,'allowed']]);
-  const f = fixture({navigation:'reload', tabStorage}); await flush();
+  const f = fixture({tabStorage}); await flush(); f.choose(false);
   assert.equal(f.controls.hidden, false); assert.equal(f.sound.attributes['aria-label'], '打开声音');
   f.advanceSilent(6);
   f.click(f.sound);
@@ -270,7 +268,7 @@ test('sound can join silent autoplay at its current time and mute without changi
   f.advance(9); f.click(f.sound); await flush();
   assert.equal(f.audio.muted, false); assert.equal(f.audio.currentTime, 9);
   assert.equal(f.rendered.at(-1), 9000); assert.equal(f.playCalls(), 1);
-  assert.equal(f.audio.volume, 0.8); assert.equal(tabStorage.get(tabSoundChoiceKey), 'allowed');
+  assert.equal(f.audio.volume, 0.8); assert.equal(tabStorage.get(tabSoundChoiceKey), 'denied');
 });
 
 test('toggling sound while paused changes only sound; the same pause control resumes in sync', async () => {
@@ -328,12 +326,12 @@ test('muted audio tail finishes normally and disposal removes both small control
   assert.equal(disposed.controls.hidden, true); assert.equal(disposed.playCalls(), 0);
 });
 
-test('home waits for the page gate; outgoing and restored transitions pause and resume without replay', async () => {
+test('home waits for the page gate; transition events pause and resume without replay', async () => {
   let reveal;
   const transitionReady = new Promise(resolve => { reveal = resolve; });
-  const f = fixture({referrer:'https://portfolio.test/contact', transitionReady}); await flush();
+  const f = fixture({transitionReady}); await flush();
   assert.equal(f.root.dataset.state, 'loading'); assert.equal(f.frames.size, 0); assert.equal(f.playCalls(), 0);
-  reveal(); await flush();
+  reveal(); await flush(); f.choose(false);
   assert.equal(f.root.dataset.state, 'playing'); assert.equal(f.audio.muted, true);
   f.advanceSilent(4);
   f.document.documentElement.dataset.pageTransition = 'closing';
