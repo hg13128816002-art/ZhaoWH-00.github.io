@@ -234,6 +234,7 @@ import { workCategories, works } from '../data/works';
                 <a
                   class:list={['timeline-node', { 'has-media': media.length > 0 }]}
                   href={node.href}
+                  data-classified={node.classified}
                   data-timeline-node
                   data-node-index={index}
                   aria-label={`${node.meta.replace('/', '·')} — ${node.title}`}
@@ -248,7 +249,13 @@ import { workCategories, works } from '../data/works';
                     <span class="timeline-node-meta">{node.meta}</span>
                     <strong>{node.title}</strong>
                     <em>{node.note}</em>
-                    {media.length === 1 && (
+                    {media.length === 1 && node.classified && (
+                      <span class="timeline-node-media classified-media">
+                        <span class="coming-soon">Coming Soon</span>
+                        <img src={media[0].src} alt={media[0].alt} loading="lazy" decoding="async" />
+                      </span>
+                    )}
+                    {media.length === 1 && !node.classified && (
                       <img
                         class="timeline-node-media"
                         src={media[0].src}
@@ -305,6 +312,7 @@ import { workCategories, works } from '../data/works';
           {works.map((item, index) => (
             <article
               class:list={['works-layer', { 'is-active': index === 0, 'is-video': item.kind === 'video' }]}
+              data-classified={item.classified}
               data-work-card
               data-work-category={item.category}
               data-work-kind={item.kind}
@@ -316,9 +324,10 @@ import { workCategories, works } from '../data/works';
                 decoding="async"
               />
               {item.video && <video src={item.video} preload="none" muted playsinline></video>}
-              {item.kind === 'video' && (
+              {item.kind === 'video' && !item.classified && (
                 <button class="works-play" type="button" aria-label={item.playLabel}>CLICK TO PLAY</button>
               )}
+              {item.classified && <span class="coming-soon">Coming Soon</span>}
               <div class="works-layer-copy">
                 <span>{item.era}</span>
                 {item.titleEn ? (

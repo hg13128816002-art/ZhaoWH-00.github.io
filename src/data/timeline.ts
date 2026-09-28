@@ -5,6 +5,7 @@
  * 内容数据不包含页面坐标，增删节点时会自动重新排布。
  */
 import { covers } from './covers';
+import { redact, CLASSIFIED_ALT } from './classified';
 
 export interface TimelineMedia {
   src: string;
@@ -12,6 +13,7 @@ export interface TimelineMedia {
 }
 
 export interface TimelineNode {
+  classified?: boolean;
   /** 左侧时间与类型标签，如 `2026.01 / WORK` */
   meta: string;
   title: string;
@@ -72,11 +74,12 @@ export const timelineNodes: TimelineNode[] = [
     media: [{ src: covers.starE, alt: 'starE 装置作品' }],
   },
   {
-    meta: '2026.01 / WORK',
-    title: '《Liminal-临近边缘的幻想》',
-    note: '关于算法、虚构与真实边界的实验短片。',
+    classified: true,
+    meta: redact('2026.01 / WORK'),
+    title: redact('《Liminal-临近边缘的幻想》'),
+    note: redact('关于算法、虚构与真实边界的实验短片。'),
     href: '/project-detail#liminal',
-    media: [{ src: covers.liminal, alt: 'Liminal 短片封面' }],
+    media: [{ src: covers.liminal, alt: CLASSIFIED_ALT }],
   },
   {
     meta: '2026.01 / WORK',

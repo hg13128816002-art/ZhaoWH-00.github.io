@@ -194,6 +194,8 @@ import '../styles/global.css';
 
 <script>
   import { asset } from '../data/assets';
+  import { redact } from '../data/classified';
+  import { drawClassifiedMedia } from '../scripts/classified-canvas';
 
   const canvas = document.getElementById('omni-canvas') as HTMLCanvasElement;
   canvas.style.visibility = 'hidden';
@@ -233,6 +235,7 @@ import '../styles/global.css';
   }
 
   type Project = {
+    classified?: boolean;
     slug: string;
     aliases?: string[];
     title: string;
@@ -245,9 +248,10 @@ import '../styles/global.css';
   const projects: Project[] = [
     { 
       slug: "liminal",
-      title: "LIMINAL-临近边缘的幻想.MP4", 
+      classified: true,
+      title: redact("LIMINAL-临近边缘的幻想.MP4"),
       posterSrc: asset('posters/Liminal封面.png'),
-      videoSrc: asset('videos/Liminal-临近边缘的幻想.mp4') 
+      videoSrc: ''
     },
     { 
       slug: "never-extinguished",
@@ -500,7 +504,10 @@ import '../styles/global.css';
         const isHit = mouse.x > cardLeft && mouse.x < cardLeft + cardW && mouse.y > cardTop && mouse.y < cardTop + cardH;
         if (isHit && overlay.style.opacity !== '1') { hoveredNodeCoord = { ix, iy, project }; }
 
-        if (project.imgObj && project.imgObj.complete && project.imgObj.naturalWidth > 0) {
+        if (project.classified) {
+          drawClassifiedMedia(ctx, project.imgObj, cardLeft, cardTop, cardW, cardH);
+          continue;
+        } else if (project.imgObj && project.imgObj.complete && project.imgObj.naturalWidth > 0) {
           const img = project.imgObj;
           const imgRatio = img.naturalWidth / img.naturalHeight;
           const boxRatio = cardW / cardH;
@@ -520,7 +527,7 @@ import '../styles/global.css';
           ctx.fillStyle = 'rgba(4,10,16,0.85)';
           ctx.fillRect(cardLeft, cardTop + cardH - 30, cardW, 30);
           ctx.fillStyle = ACCENT; ctx.font = '12px monospace'; ctx.textAlign = 'left';
-          ctx.fillText(`> DECRYPT: ${project.title}`, cardLeft + 15, cardTop + cardH - 15);
+          ctx.fillText(`> ${project.classified ? "SEALED" : "DECRYPT"}: ${project.title}`, cardLeft + 15, cardTop + cardH - 15);
         } else {
           ctx.strokeStyle = '#21272D'; ctx.lineWidth = 1;
           ctx.strokeRect(cardLeft, cardTop, cardW, cardH);
@@ -607,6 +614,14 @@ import '../styles/global.css';
   }
 
   function openVideoProject(project: Project, allowMutedFallback = false) {
+    if (project.classified || !project.videoSrc) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      return;
+    }
     overlayTitle.innerText = project.title;
     progressBar.style.width = '0%';
     timeDisplay.innerText = '00:00 / 00:00';
@@ -668,6 +683,7 @@ import '../styles/global.css';
   });
 
   function togglePlay() {
+    if (!video.getAttribute('src')) return;
     if (video.paused) { video.play(); playHint.style.opacity = '0'; } 
     else { video.pause(); playHint.style.opacity = '1'; }
   }

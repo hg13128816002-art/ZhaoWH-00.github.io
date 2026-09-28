@@ -3,6 +3,7 @@
 // 项目详情页：每个项目一个全屏 project-entry（左侧视觉档案 + 右侧解密档案文本）
 import Layout from '../layouts/Layout.astro';
 import { asset } from '../data/assets';
+import { redact, CLASSIFIED_ALT } from '../data/classified';
 
 // Decode display-sized images during navigation; fetch originals only for expanded previews.
 const projectImage = (path: string, poster = false) => {
@@ -673,18 +674,18 @@ const projectImage = (path: string, poster = false) => {
       </div>
     </article>
 
-    <article id="liminal" class="project-entry project-entry-liminal">
+    <article id="liminal" class="project-entry project-entry-liminal" data-classified="true">
       <div class="left-panel">
-        <div class="left-panel-label">VISUAL_DATA // PROMO_POSTER</div>
+        <div class="left-panel-label">{redact('VISUAL_DATA // PROMO_POSTER')}</div>
 
-        <div class="img-container">
+        <div class="img-container classified-media">
+           <span class="coming-soon">Coming Soon</span>
            <div class="corner-tl"></div>
            <div class="corner-br"></div>
 
-           <img {...projectImage('posters/Liminal封面.png', true)}
-                alt="Liminal-The Fantasy at the Edge"
-                loading="lazy" decoding="async" data-hover-preview
-                data-preview-label="PROMO_POSTER // PRIMARY"
+           <img src={asset('posters/Liminal封面.png')}
+                alt={CLASSIFIED_ALT}
+                loading="lazy" decoding="async"
                 class="main-img" />
         </div>
 
@@ -692,47 +693,47 @@ const projectImage = (path: string, poster = false) => {
 
         <div class="visual-meta">
           <div class="visual-meta-item">
-            <div class="visual-meta-label">FIELD</div>
-            <div class="visual-meta-value">CONTEMPORARY ART</div>
+            <div class="visual-meta-label">{redact('FIELD')}</div>
+            <div class="visual-meta-value">{redact('CONTEMPORARY ART')}</div>
           </div>
           <div class="visual-meta-item">
-            <div class="visual-meta-label">MEDIUM</div>
-            <div class="visual-meta-value">AUDIO-VISUAL CONTENT</div>
+            <div class="visual-meta-label">{redact('MEDIUM')}</div>
+            <div class="visual-meta-value">{redact('AUDIO-VISUAL CONTENT')}</div>
           </div>
           <div class="visual-meta-item">
-            <div class="visual-meta-label">MOOD</div>
-            <div class="visual-meta-value">CALM / ANXIETY</div>
+            <div class="visual-meta-label">{redact('MOOD')}</div>
+            <div class="visual-meta-value">{redact('CALM / ANXIETY')}</div>
           </div>
           <div class="visual-meta-item">
-            <div class="visual-meta-label">LOCATION</div>
-            <div class="visual-meta-value">ZHUHAI</div>
+            <div class="visual-meta-label">{redact('LOCATION')}</div>
+            <div class="visual-meta-value">{redact('ZHUHAI')}</div>
           </div>
         </div>
 
         <div class="thumb-strip thumb-strip-wide">
-          <div class="thumb-item">
-            <img {...projectImage('images/Liminal-视频截图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
-            <span class="thumb-index">01</span>
+          <div class="thumb-item classified-media">
+            <span class="coming-soon">Coming Soon</span>
+            <img src={asset('images/Liminal-视频截图01.webp')} alt={CLASSIFIED_ALT} loading="lazy" decoding="async" />
           </div>
-          <div class="thumb-item">
-            <img {...projectImage('images/Liminal-视频截图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
-            <span class="thumb-index">02</span>
+          <div class="thumb-item classified-media">
+            <span class="coming-soon">Coming Soon</span>
+            <img src={asset('images/Liminal-视频截图02.webp')} alt={CLASSIFIED_ALT} loading="lazy" decoding="async" />
           </div>
-          <div class="thumb-item">
-            <img {...projectImage('images/Liminal-视频截图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
-            <span class="thumb-index">03</span>
+          <div class="thumb-item classified-media">
+            <span class="coming-soon">Coming Soon</span>
+            <img src={asset('images/Liminal-视频截图03.webp')} alt={CLASSIFIED_ALT} loading="lazy" decoding="async" />
           </div>
-          <div class="thumb-item">
-            <img {...projectImage('images/Liminal-视频截图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
-            <span class="thumb-index">04</span>
+          <div class="thumb-item classified-media">
+            <span class="coming-soon">Coming Soon</span>
+            <img src={asset('images/Liminal-视频截图04.webp')} alt={CLASSIFIED_ALT} loading="lazy" decoding="async" />
           </div>
         </div>
 
         <div class="archive-rail">
           <div class="archive-rail-line"></div>
           <div class="archive-rail-text">
-            <span>ARCHIVE_NODE</span>
-            <span>002 / ACTIVE</span>
+            <span>{redact('ARCHIVE_NODE')}</span>
+            <span>{redact('002 / ACTIVE')}</span>
           </div>
         </div>
       </div>
@@ -741,45 +742,39 @@ const projectImage = (path: string, poster = false) => {
         <header style="margin-bottom: 3rem;">
           <div class="file-label">
              <div class="pulse-dot"></div>
-             FILE_DECRYPTED // 002
+             {redact('FILE_DECRYPTED // 002')}
           </div>
-          <h1 class="title-main">
-            Liminal
-          </h1>
-          <h2 class="title-main">临近边缘的幻想</h2>
-          <h3 class="title-sub">Liminal-The Fantasy at the Edge </h3>
-          <a class="project-video-link" href="/omni#liminal">WATCH VIDEO</a>
+          <h1 class="title-main">{redact('Liminal')}</h1>
+          <h2 class="title-main">{redact('临近边缘的幻想')}</h2>
+          <h3 class="title-sub">{redact('Liminal-The Fantasy at the Edge')}</h3>
+          <button class="project-video-link archive-disabled" type="button" disabled>ACCESS DENIED // 播放已禁用</button>
         </header>
 
         <div class="meta-grid">
           <div>
-            <div class="meta-item-label">TIMESTAMP</div>
-            <div class="meta-item-value">2026</div>
+            <div class="meta-item-label">{redact('TIMESTAMP')}</div>
+            <div class="meta-item-value">{redact('2026')}</div>
           </div>
           <div>
-            <div class="meta-item-label">CATEGORY</div>
-            <div class="meta-item-value green">Experimental Films</div>
+            <div class="meta-item-label">{redact('CATEGORY')}</div>
+            <div class="meta-item-value green">{redact('Experimental Films')}</div>
           </div>
           <div class="meta-full-width">
-            <div class="meta-item-label">SOFTWARE TOOLS</div>
-            <div class="meta-item-value">Blender / Filmora</div>
+            <div class="meta-item-label">{redact('SOFTWARE TOOLS')}</div>
+            <div class="meta-item-value">{redact('Blender / Filmora')}</div>
           </div>
         </div>
 
         <section>
           <div class="section">
-            <h3 class="section-title">I. INTRODUCTION OF WORKS</h3>
-            <p class="section-text">
-              虚构与真实的界限是什么？ 这似乎是一个去时代化的命题。 从千万年前人类第一次仰望星空起，虚构便已存在于这个世界。 而现在，这个古老的问题产生了新的境况： 如果说古代的虚构源于对未知的想象，那么当代的虚构则源于算法的增殖。从互联网的诞生到AI的出现，在短短几十年内，算法驱动的虚构体量已超过了既往文明的总和。 虚构曾是现实的镜像；现在，算法使镜像脱离实体，进行着指数级的自我复制。 虚构与真实的界限正变得愈发模糊。在这个算法可以批量生产虚构的时代，我们要从哪里找到仅存的真实？ 当临界点到来，当虚构溢出屏幕，当现实充斥虚构。 寻找真实，或适应虚构——这并非选择，而是一种演化状态。 我们应该如何迎接这样的世界？我希望能通过这个短片启发你产生一些对于这个问题的思考。
-            </p>
+            <h3 class="section-title">{redact('I. INTRODUCTION OF WORKS')}</h3>
+            <p class="section-text">{redact('虚构与真实的界限是什么？ 这似乎是一个去时代化的命题。 从千万年前人类第一次仰望星空起，虚构便已存在于这个世界。 而现在，这个古老的问题产生了新的境况： 如果说古代的虚构源于对未知的想象，那么当代的虚构则源于算法的增殖。从互联网的诞生到AI的出现，在短短几十年内，算法驱动的虚构体量已超过了既往文明的总和。 虚构曾是现实的镜像；现在，算法使镜像脱离实体，进行着指数级的自我复制。 虚构与真实的界限正变得愈发模糊。在这个算法可以批量生产虚构的时代，我们要从哪里找到仅存的真实？ 当临界点到来，当虚构溢出屏幕，当现实充斥虚构。 寻找真实，或适应虚构——这并非选择，而是一种演化状态。 我们应该如何迎接这样的世界？我希望能通过这个短片启发你产生一些对于这个问题的思考。')}</p>
           </div>
 
 
         </section>
 
-        <div class="footer">
-          [ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...
-        </div>
+        <div class="footer">{redact('[ END_OF_FILE ] // WAITING_FOR_NEXT_QUERY...')}</div>
       </div>
     </article>
 

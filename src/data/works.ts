@@ -5,6 +5,7 @@
  * 都基于这个数组，所以新增作品只要在数组里补一项即可。
  */
 import { covers, reelVideos } from './covers';
+import { redact, CLASSIFIED_ALT } from './classified';
 
 export type WorkCategoryId = 'digital' | 'film' | 'photo' | 'other';
 
@@ -15,6 +16,7 @@ export interface WorkCategory {
 }
 
 export interface WorkItem {
+  classified?: boolean;
   category: WorkCategoryId;
   kind: 'image' | 'video';
   /** 卡片左上角的分类与年份，如 `VR 严肃游戏 / 2026` */
@@ -110,15 +112,14 @@ export const works: WorkItem[] = [
   {
     category: 'film',
     kind: 'video',
-    era: '实验短片 / 2026',
-    title: 'Liminal 临近边缘的幻想',
-    description: '围绕算法、虚构和真实边界展开的影像实验，讨论当代视觉经验中不断增殖的“非真实”。',
+    era: redact('实验短片 / 2026'),
+    classified: true,
+    title: redact('Liminal 临近边缘的幻想'),
+    description: redact('围绕算法、虚构和真实边界展开的影像实验，讨论当代视觉经验中不断增殖的“非真实”。'),
     image: covers.liminal,
-    imageAlt: 'Liminal 短片封面',
-    video: reelVideos.liminal,
-    playLabel: '播放 Liminal',
+    imageAlt: CLASSIFIED_ALT,
     href: '/project-detail#liminal',
-    linkText: '查看项目',
+    linkText: '查看封存档案',
   },
   {
     category: 'film',
