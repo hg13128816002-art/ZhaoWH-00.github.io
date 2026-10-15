@@ -1,0 +1,27 @@
+---
+import { otherWorks } from '../data/catalog';
+const { index = 7 } = Astro.props;
+const counts = Object.fromEntries([...new Set(otherWorks.map(work => work.collection))]
+  .map(category => [category, otherWorks.filter(work => work.collection === category).length]));
+const imageUrl = (src: string) => src.includes('aliyuncs.com') ? `${src}?x-oss-process=image/resize,w_480` : src;
+---
+<article class="work-card" data-collection="other" data-collection-counts={JSON.stringify(counts)}>
+  <a class="work-card-image" href="/works/other/" data-other-link aria-label="查看其他作品">
+    <span class="other-work-mosaic" aria-hidden="true">
+      {otherWorks.slice(0,3).map(work => <img src={imageUrl(work.image)} alt="" loading="lazy" decoding="async" />)}
+    </span>
+    <span class="work-card-number">{String(index + 1).padStart(2, '0')}</span>
+    <span class="work-card-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="work-card-caption">
+    <span class="work-card-type"><span data-other-count>{otherWorks.length}</span> 件作品</span>
+    <h2><a href="/works/other/" data-other-link>其他作品</a></h2>
+    <p>影像 / 摄影 / 绘画 / 空间实践</p>
+    <a class="work-card-link" href="/works/other/" data-other-link>查看其他作品 <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<style>
+  .other-work-mosaic { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:4px; height:100%; }
+  .other-work-mosaic img { min-width:0; min-height:0; }
+  .other-work-mosaic img:first-child { grid-row:span 2; }
+</style>

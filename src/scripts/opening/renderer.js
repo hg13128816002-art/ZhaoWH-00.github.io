@@ -1,7 +1,7 @@
-// Adapted from archive/z-opening-37/opening-37.js. Original glyphs and musical cues are retained.
-// Geometry/layout only: playback, audio, visibility and disposal belong to the host controller.
+// Adapted from archive/z-opening-37/opening-37.js; original glyph geometry is retained.
+// Geometry/layout only: playback, visibility and disposal belong to the host controller.
 import { createZLoadingGeometry } from './z-loading.js';
-export const OPENING_TIMING = { revealStart:1190/60, visualEnd:1220/60, audioEnd:24.624 };
+import { openingSourceTime } from './timing.js';
 export function createOpeningRenderer(root, { reducedMotion = false } = {}) {
 
   const $ = selector => root.querySelector(selector);
@@ -66,7 +66,7 @@ export function createOpeningRenderer(root, { reducedMotion = false } = {}) {
   const LOGO_START = LOGO_START_FRAME * FRAME;
   // Prepend one full bar. All approved scenes still run on their original clock.
   const LOADING_FRAMES = 4 * BEAT_FRAMES, MOTION_FRAMES = LOADING_FRAMES + 23 * BEAT_FRAMES;
-  const MOTION_DURATION = MOTION_FRAMES * FRAME, DURATION = 24624;
+  const MOTION_DURATION = MOTION_FRAMES * FRAME, DURATION = 1220 * FRAME;
   const TOTAL_FRAMES = Math.ceil(DURATION/FRAME);
   const OUTRO_START_FRAME = 29 * BEAT_FRAMES, OUTRO_TIME_SCALE = 1.5;
   const OUTRO_REVEAL_FRAME = OUTRO_START_FRAME + BEAT_FRAMES / 2 * OUTRO_TIME_SCALE;
@@ -954,17 +954,18 @@ export function createOpeningRenderer(root, { reducedMotion = false } = {}) {
     render(lastTime);
   }
   function render(milliseconds) {
-    lastTime = Math.max(0,Math.min(DURATION,milliseconds));
-    const frame = Math.floor(lastTime/FRAME+1e-7);
+    lastTime = Math.max(0, milliseconds);
+    const sourceTime = openingSourceTime(lastTime);
+    const frame = Math.floor(sourceTime/FRAME+1e-7);
     if (frame === lastFrame) return;
     lastFrame = frame;
     if (reduced.matches && frame > 0) {
-      // Preserve the soundtrack clock while replacing motion with the final wordmark.
+      // Replace motion with the final wordmark when reduced motion is requested.
       paint(MOTION_DURATION);
       visible(outroScene,false);
       visible(picture,frame < OUTRO_END_FRAME);
       root.dataset.frame = String(frame);
-    } else paint(lastTime);
+    } else paint(sourceTime);
   }
   resize(root.clientWidth,root.clientHeight);
   return { render, resize, setReducedMotion(value) { reduced.matches=value; lastFrame=-1; resize(root.clientWidth,root.clientHeight); } };

@@ -11,6 +11,7 @@ import '../styles/global.css';
 </style>
 
 <div class="relative w-screen h-screen bg-[#090F15] flex overflow-hidden select-none font-mono">
+  <div class="image-gallery-guide"><a href="/works/">← 全部作品</a><strong>图像展厅</strong><select id="image-index" aria-label="按名称查找图像"><option value="">按名称查找图像</option></select></div>
   
   <div id="gallery-container" class="relative w-[65%] h-full overflow-hidden border-r border-neutral-900 cursor-crosshair">
     <canvas id="gallery-canvas" class="absolute inset-0 block w-full h-full"></canvas>
@@ -18,23 +19,24 @@ import '../styles/global.css';
 
   <div class="w-[35%] h-full bg-[#090F15] flex flex-col justify-between p-12 pointer-events-none z-20">
     <div class="text-neutral-700 text-xs tracking-[0.3em]">
-      <span>SYSTEM // CONVEYOR_TRACK_V3 (STABLE)</span>
+      <span>图像与创作片段 / VISUAL ARCHIVE</span>
     </div>
     
     <div id="filename-display" class="text-[#ACDBFB] text-xl font-bold tracking-tight opacity-0 transition-opacity duration-200"></div>
 
     <div class="text-neutral-800 text-[10px] tracking-widest">
-      <span>[ 65% VIEWPORT DOMINANCE // MASONRY_FLOW ]</span>
+      <span>点击图像放大 · 放大后可拖动查看</span>
     </div>
   </div>
 
-  <div id="deep-zoom-overlay" class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+  <div id="deep-zoom-overlay" inert class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
     
     <div class="absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
+      <a id="image-work-link" href="/works/" class="image-work-link">了解这件作品 ↗</a>
       <div id="zoom-hud" class="text-[#ACDBFB] text-[10px] tracking-[0.2em] opacity-80">ZOOM: 100% // DRAG_TO_PAN</div>
-      <div id="close-viewer" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
-        [ X ] TERMINATE_VIEW
-      </div>
+      <button type="button" id="close-viewer" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
+        关闭图像 ×
+      </button>
     </div>
 
     <div id="zoom-viewport" class="relative w-full h-full cursor-grab active:cursor-grabbing flex items-center justify-center touch-none">
@@ -342,28 +344,54 @@ import '../styles/global.css';
 
   function updateTransform() {
     targetImg.style.transform = `translate(${zX}px, ${zY}px) scale(${zScale})`;
-    hud.innerText = `ZOOM: ${Math.round(zScale * 100)}% // DRAG_TO_PAN`;
+    hud.innerText = `${Math.round(zScale * 100)}% · 拖动查看`;
   }
 
-  window.addEventListener('mousedown', (e) => {
-    const target = e.target as HTMLElement;
-    const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
-    if (isUIInteraction) return;
-
-    if (overlay.style.opacity !== '1' && hoveredCard && hoveredCard.project.src) {
-      zScale = 1; zX = 0; zY = 0;
-      updateTransform();
-      targetImg.src = hoveredCard.project.src;
-      overlay.style.pointerEvents = 'auto';
-      overlay.style.opacity = '1';
-    }
+  function workIdForImage(title: string) {
+    if (/LIMINAL/i.test(title)) return 'liminal';
+    if (title.includes('未曾熄灭')) return 'never-extinguished';
+    if (/starE|任尔/i.test(title)) return 'stare-ewsn';
+    if (title.includes('合成的沉默')) return 'synthetic-silence';
+    if (title.includes('自画像')) return 'self-portrait';
+    if (title.includes('风景写生')) return 'landscape';
+    if (title.includes('清迈')) return 'land-temple';
+    return null;
+  }
+  const imageIndex = document.getElementById('image-index') as HTMLSelectElement;
+  projects.forEach((project,index) => imageIndex.add(new Option(project.title, String(index))));
+  function openImage(project: typeof projects[number]) {
+    zScale = 1; zX = 0; zY = 0; updateTransform();
+    targetImg.src = project.src; targetImg.alt = project.title;
+    const workId = workIdForImage(project.title);
+    const link = document.getElementById('image-work-link')!;
+    link.setAttribute('href', workId ? '/works/' + workId + '/' : '/works/?category=visual');
+    link.textContent = workId ? '了解这件作品 ↗' : '更多视觉作品 ↗';
+    overlay.inert = false; overlay.style.pointerEvents = 'auto'; overlay.style.opacity = '1';
+    btnClose.focus();
+  }
+  imageIndex.addEventListener('change', () => {
+    if (imageIndex.value !== '') openImage(projects[Number(imageIndex.value)]);
   });
+  window.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('a, button, nav, select, svg')) return;
+    if (overlay.style.opacity !== '1' && hoveredCard?.project.src) openImage(hoveredCard.project);
+  });
+  function openImageFromHash() {
+    const id = location.hash.slice(1);
+    const project = projects.find(p => workIdForImage(p.title) === id);
+    if (id && project) openImage(project);
+  }
+  window.addEventListener('hashchange', openImageFromHash);
+  openImageFromHash();
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !overlay.inert) btnClose.click(); });
 
   btnClose.addEventListener('click', (e) => {
     e.stopPropagation();
     overlay.style.opacity = '0';
     overlay.style.pointerEvents = 'none';
-    setTimeout(() => { targetImg.src = ''; }, 500); 
+    overlay.inert = true; imageIndex.value = ''; imageIndex.focus();
+    setTimeout(() => { if (overlay.inert) targetImg.src = ''; }, 500);
   });
 
   viewport.addEventListener('wheel', (e) => {
@@ -390,3 +418,18 @@ import '../styles/global.css';
   
   window.addEventListener('mouseup', () => { isDragging = false; });
 </script>
+
+<style>
+.image-gallery-guide { position:absolute; top:7rem; left:2rem; right:2rem; z-index:30; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem; color:#acdbfb; background:rgba(4,10,16,.88); border:1px solid rgba(172,219,251,.24); border-radius:12px; }
+.image-gallery-guide a { color:inherit; font-size:.75rem; text-decoration:none; }
+.image-gallery-guide strong { font-weight:500; }
+.image-gallery-guide select { max-width:20rem; color:#acdbfb; background:#0a141e; border:1px solid #355065; padding:.5rem; border-radius:6px; font-size:.72rem; }
+.image-work-link { color:#acdbfb; text-decoration:none; font-size:.8rem; pointer-events:auto; }
+#deep-zoom-overlay > div:first-child { top:6.5rem; flex-wrap:wrap; gap:.75rem; }
+@media(max-width:700px) { #gallery-container { width:100%; } #gallery-container + div { display:none; } .image-gallery-guide { top:5rem; left:1rem; right:1rem; flex-wrap:wrap; padding:.7rem; } .image-gallery-guide select { width:100%; max-width:none; } #deep-zoom-overlay > div:first-child { padding:0 1.5rem; } }
+</style>
+<style>
+  :global(html[data-theme="light"]) .image-gallery-guide :is(a,strong,select) { color:#acdbfb !important; }
+  :global(html[data-theme="light"]) #image-work-link { color:#acdbfb !important; }
+  .image-work-link { background:#040a10; color:#acdbfb !important; border:1px solid #355065; border-radius:6px; padding:.5rem .7rem; }
+</style>

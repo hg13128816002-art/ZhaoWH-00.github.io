@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WorkBrowser from '../../components/WorkBrowser.astro';
+import ConversationFooter from '../../components/ConversationFooter.astro';
+import { catalog, mainWorks } from '../../data/catalog';
+import '../../styles/editorial.css';
+---
+<Layout title="作品 / WORKS — Zhao Wenhao" lang="zh-CN" bodyClass="catalog-page">
+  <main>
+    <header class="editorial-section catalog-intro">
+      <p class="eyebrow">AN OPEN COLLECTION / 持续生长的创作档案</p>
+      <h1>作品<span>WORKS / {String(catalog.length).padStart(2,'0')}</span></h1>
+      <p class="section-note">一些关于感知、记忆与人与世界关系的尝试。<br />从一个感兴趣的画面开始，走进作品背后的想法。</p>
+    </header>
+    <section class="editorial-section catalog-body" aria-label="浏览作品">
+      <WorkBrowser works={mainWorks} includeOthers />
+      <aside class="exhibition-links">
+        <p class="eyebrow">ANOTHER WAY TO EXPLORE</p><h2>也可以，随意逛逛。</h2>
+        <p class="section-note">进入影像与图像展厅，在流动的画面中偶遇一件作品。</p>
+        <div><a class="editorial-button" href="/omni">影像展厅 ↗</a><a class="editorial-button" href="/dual">图像展厅 ↗</a></div>
+      </aside>
+    </section>
+  </main>
+  <ConversationFooter />
+</Layout>

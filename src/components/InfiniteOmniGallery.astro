@@ -8,30 +8,33 @@ import '../styles/global.css';
   
   <canvas id="omni-canvas" class="absolute inset-0 block w-full h-full z-10 cursor-crosshair"></canvas>
 
-  <div class="absolute top-8 left-8 z-20 pointer-events-none">
-    <div class="text-[#ACDBFB] text-[10px] tracking-[0.5em] font-bold">OMNIDIRECTIONAL // VIDEO_ARCHIVE_NODE</div>
-    <div class="text-neutral-600 text-[10px] mt-2 tracking-widest">GRID_RATIO: CUSTOM_XY // CHAOTIC_SCATTERING</div>
+  <div class="gallery-guide">
+    <a href="/works/">← 全部作品</a>
+    <div><strong>影像展厅</strong><span>移动鼠标探索，点击画面播放。</span></div>
+    <select id="video-index" aria-label="按名称查找影像"><option value="">按名称查找影像</option></select>
   </div>
 
   <div id="gyro-init-overlay" class="fixed inset-0 z-[10030] bg-[#040A10]/95 backdrop-blur-md flex-col items-center justify-center font-mono transition-opacity duration-300" style="display: none;">
     <div class="text-[#ACDBFB] text-sm md:text-base tracking-[0.2em] mb-10 text-center px-6 leading-loose">
-      [ 倾斜手机以使用陀螺仪操作此页面 ]<br/>
-      <span class="text-neutral-500 text-[10px] mt-2 block tracking-widest">TILT DEVICE TO NAVIGATE</span>
+      可以倾斜手机探索，也可以直接按名称浏览。<br/>
+      <span class="text-neutral-500 text-[10px] mt-2 block tracking-widest">CHOOSE HOW TO EXPLORE</span>
     </div>
     <button id="gyro-ok-btn" class="border border-[#ACDBFB] bg-[#090F15] text-[#ACDBFB] px-12 py-3 hover:bg-[#ACDBFB] hover:text-black transition-colors tracking-widest font-bold text-sm cursor-pointer shadow-[0_0_15px_rgba(172,219,251,0.2)]">
-      OK
+      使用倾斜控制
     </button>
+    <button type="button" id="gyro-skip-btn" style="margin-top:1.5rem;color:#acdbfb;font-size:14px;padding:.7rem 1.5rem;cursor:pointer">直接浏览</button>
   </div>
 
-  <div id="video-overlay" class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+  <div id="video-overlay" inert class="fixed inset-0 z-[10020] bg-[#040A10] opacity-0 pointer-events-none transition-opacity duration-500 flex items-center justify-center overflow-hidden">
     
     <div class="video-overlay-topbar absolute top-8 w-full px-12 flex justify-between items-center z-50 pointer-events-none">
-      <div id="video-hud" class="text-[#ACDBFB] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">STATUS: DECRYPTING_FILE</div>
-      <div id="close-video" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
-        [ X ] TERMINATE_LINK
-      </div>
+      <a id="video-work-link" href="/works/" style="pointer-events:auto;text-decoration:none" class="text-[#ACDBFB] text-[10px] tracking-[0.2em] opacity-80 animate-pulse">了解这件作品 ↗</a>
+      <button type="button" id="close-video" class="text-[#ACDBFB] text-[11px] tracking-widest cursor-pointer hover:text-white transition-colors pointer-events-auto bg-[#090F15] px-4 py-2 border border-[#ACDBFB]/30 hover:border-[#ACDBFB]">
+        关闭影像 ×
+      </button>
     </div>
 
+    <span id="video-hud" hidden></span>
     <div id="video-stage" class="relative w-[85vw] aspect-video border border-neutral-900 group pointer-events-auto cursor-crosshair">
       <div class="absolute -inset-[1px] border border-[#ACDBFB]/20 pointer-events-none z-10"></div>
       
@@ -381,7 +384,9 @@ import '../styles/global.css';
   const gyroOverlay = document.getElementById('gyro-init-overlay')!;
   const gyroOkBtn = document.getElementById('gyro-ok-btn')!;
 
-  // 💡 如果是移动端，一进页面直接弹出显性 UI 提示层
+  document.getElementById('gyro-skip-btn')!.addEventListener('click', () => { gyroOverlay.style.display = 'none'; });
+
+  // Offer both motion-based exploration and the accessible title index.
   if (isMobile) {
     gyroOverlay.style.display = 'flex';
   }
@@ -563,6 +568,15 @@ import '../styles/global.css';
   const timeDisplay = document.getElementById('time-display')!;
   const overlayTitle = document.getElementById('overlay-title')!;
 
+  const videoIndex = document.getElementById('video-index') as HTMLSelectElement;
+  projects.forEach(project => videoIndex.add(new Option(project.title.replace(/\.MP4$/i, ''), project.slug)));
+  videoIndex.addEventListener('change', () => {
+    const project = projects.find(p => p.slug === videoIndex.value);
+    if (project) { openVideoProject(project); document.getElementById('close-video')?.focus(); }
+  });
+  btnClose.addEventListener('click', () => { overlay.inert = true; videoIndex.value = ''; videoIndex.focus(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !overlay.inert) btnClose.click(); });
+
   function getProjectBySlug(slug: string) {
     const normalized = decodeURIComponent(slug.replace(/^#/, '')).trim().toLowerCase();
     if (!normalized) return null;
@@ -608,6 +622,9 @@ import '../styles/global.css';
 
   function openVideoProject(project: Project, allowMutedFallback = false) {
     overlayTitle.innerText = project.title;
+    const workId = ['stare', 'ewsn'].includes(project.slug) ? 'stare-ewsn' : project.slug;
+    document.getElementById('video-work-link')!.setAttribute('href', '/works/' + workId + '/');
+    overlay.inert = false;
     progressBar.style.width = '0%';
     timeDisplay.innerText = '00:00 / 00:00';
     video.pause();
@@ -649,7 +666,7 @@ import '../styles/global.css';
     if (gyroOverlay.style.display !== 'none') return;
 
     const target = e.target as HTMLElement;
-    const isUIInteraction = target.closest('a, button, nav, svg') || window.getComputedStyle(target).cursor === 'pointer';
+    const isUIInteraction = target.closest('a, button, nav, select, svg') || window.getComputedStyle(target).cursor === 'pointer';
     if (isUIInteraction) return;
     if (overlay.style.opacity === '1') return;
 
@@ -664,7 +681,7 @@ import '../styles/global.css';
     overlay.style.opacity = '0';
     overlay.style.pointerEvents = 'none';
     video.pause();
-    setTimeout(() => { video.src = ''; playHint.style.opacity = '1'; }, 500); 
+    setTimeout(() => { if (overlay.inert) { video.src = ''; playHint.style.opacity = '1'; } }, 500);
   });
 
   function togglePlay() {
@@ -745,3 +762,18 @@ import '../styles/global.css';
     }
   });
 </script>
+
+<style>
+.gallery-guide { position:absolute; top:7rem; left:2rem; right:2rem; z-index:25; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.9rem 1.2rem; border:1px solid rgba(172,219,251,.24); border-radius:12px; background:rgba(4,10,16,.88); color:#acdbfb; }
+.gallery-guide a { font-size:.75rem; text-decoration:none; color:inherit; }
+.gallery-guide strong { font-weight:500; font-size:1rem; }
+.gallery-guide span { margin-left:1rem; color:#96aabb; font-size:.72rem; }
+.gallery-guide select { max-width:17rem; background:#0a141e; color:#acdbfb; border:1px solid #355065; border-radius:6px; padding:.5rem; font-size:.72rem; }
+.video-overlay-topbar { top:6.2rem; }
+@media(max-width:700px) { .gallery-guide { top:5rem; left:1rem; right:1rem; flex-wrap:wrap; padding:.7rem; } .gallery-guide span { display:none; } .gallery-guide select { width:100%; max-width:none; } }
+</style>
+<style>
+  :global(html[data-theme="light"]) .gallery-guide :is(a,strong,select) { color:#acdbfb !important; }
+  :global(html[data-theme="light"]) .gallery-guide span { color:#96aabb !important; }
+  #video-work-link { background:#040a10; color:#acdbfb !important; border:1px solid #355065; border-radius:6px; padding:.5rem .7rem; }
+</style>

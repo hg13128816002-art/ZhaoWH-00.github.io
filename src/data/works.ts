@@ -100,8 +100,8 @@ export const works: WorkItem[] = [
     titleEn: 'Synesthesia Canvas',
     description:
       '把颜色、形状与位置实时翻译成音乐的浏览器乐器：在无限画布上绘制声音，编排节奏，并分享或导出自己的作品。',
-    image: covers.synesthesia,
-    imageAlt: '通感画布互动音乐创作界面预览',
+    image: covers.synesthesiaReal,
+    imageAlt: '通感画布真实互动音乐创作界面截图',
     href: 'https://synesthesia.zhaowenhao.design',
     linkText: '打开互动页面 ↗',
     external: true,

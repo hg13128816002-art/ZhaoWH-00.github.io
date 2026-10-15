@@ -9,20 +9,16 @@ const normalizePath = (path: string) => {
 
 const currentPath = normalizePath(Astro.url.pathname);
 const navItems = [
-  { href: '/', label: 'HOME', match: '/' },
-  { href: '/project-detail', label: 'PROJECTS', match: '/project-detail' },
-  { href: '/omni', label: 'VIDEOS', match: '/omni' },
-  { href: '/dual', label: 'PICTURES', match: '/dual' },
-  { href: '/profile', label: 'PROFILE', match: '/profile' },
-  { href: '/contact', label: 'CONTACT', match: '/contact' },
+  { href: '/', label: '首页', match: '/' },
+  { href: '/works/', label: '作品', match: '/works' },
+  { href: '/profile', label: '关于', match: '/profile' },
+  { href: '/contact', label: '联系', match: '/contact' },
 ];
+const isActive = (item: typeof navItems[number]) => item.match === '/works'
+  ? ['/works', '/project-detail', '/omni', '/dual'].some(p => currentPath === p || currentPath.startsWith(p + '/'))
+  : currentPath === item.match;
 
-const isActive = (item: typeof navItems[number]) => {
-  return currentPath === item.match;
-};
-
-const shouldStayVisibleAtTop = currentPath === '/omni' || currentPath === '/dual' || currentPath === '/contact';
-const shouldHideAtTop = !shouldStayVisibleAtTop;
+const shouldHideAtTop = false;
 const startsVisible = !shouldHideAtTop;
 ---
 
@@ -136,7 +132,9 @@ const startsVisible = !shouldHideAtTop;
       const activeMatch = window.location.pathname.replace(/\/$/, '') || '/';
 
       siteNavLinks.forEach((link) => {
-        const isActive = link.dataset.navMatch === activeMatch;
+        const isActive = link.dataset.navMatch === '/works'
+          ? ['/works', '/project-detail', '/omni', '/dual'].some(path => activeMatch === path || activeMatch.startsWith(path + '/'))
+          : link.dataset.navMatch === activeMatch;
         link.classList.toggle('is-active', isActive);
         if (isActive) {
           link.setAttribute('aria-current', 'page');
@@ -361,9 +359,9 @@ const startsVisible = !shouldHideAtTop;
     }
 
     .site-nav {
-      width: calc(100vw - 1.25rem);
-      max-width: calc(100vw - 1.25rem);
-      justify-content: flex-start;
+      width: auto;
+      max-width: auto;
+      justify-content: center;
       padding: 0.32rem;
       border-radius: 11px;
       scroll-padding-inline: 0.32rem;

@@ -1,12 +1,14 @@
 ---
 // src/pages/index.astro
-// 首页：英雄区粒子宇宙 + 创作编年时间轴 + Works 作品叠层 + Profile 3D 模型
+// 首页：粒子宇宙 + 精选作品 + 创作轨迹 + 个人介绍与交流入口
 import Layout from '../layouts/Layout.astro';
 import HeroOpening from '../components/HeroOpening.astro';
 import HomeSectionNav from '../components/HomeSectionNav.astro';
 import BackToTop from '../components/BackToTop.astro';
 import { timelineNodes } from '../data/timeline';
-import { workCategories, works } from '../data/works';
+import SelectedWorks from '../components/SelectedWorks.astro';
+import ConversationFooter from '../components/ConversationFooter.astro';
+import '../styles/editorial.css';
 ---
 
 <style>
@@ -62,6 +64,10 @@ import { workCategories, works } from '../data/works';
     background: #040A10;
     color: #ACDBFB;
   }
+  .hero-explore { display:inline-flex; gap:2rem; align-items:center; color:#acdbfb; font-size:.85rem; text-decoration:none; margin-top:1rem; padding:.5rem 0; border-bottom:1px solid rgba(172,219,251,.5); }
+  .hero-intro-line { opacity:.75; }
+  .hero-explore:hover { opacity:.75; }
+  :global(html[data-theme="light"]) .hero-explore { color:#244e6c; }
   .hero-wordmark {
     margin: 0;
     font-family: "Helvetica Neue", Arial, sans-serif;
@@ -90,7 +96,7 @@ import { workCategories, works } from '../data/works';
     z-index: 1;
     display: grid;
     place-items: center;
-    min-height: 44svh;
+    min-height: 26svh;
     padding: 5rem 1.5rem;
     background: #040A10;
   }
@@ -127,7 +133,7 @@ import { workCategories, works } from '../data/works';
     .hero-wordmark { font-size: clamp(2.7rem, 10.8vw, 5.4rem); }
     .hero-intro { text-align: left; font-size: 0.72rem; }
     .hero-intro .hero-scroll-hint { margin-top: 0.75rem; }
-    .home-statement { min-height: 35svh; padding: 4rem 1.5rem; }
+    .home-statement { min-height: 24svh; padding: 4rem 1.5rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .statement-word { opacity: 1; transition: none; }
@@ -179,7 +185,8 @@ import { workCategories, works } from '../data/works';
         <p>赵文浩</p>
         <p>北京师范大学珠海校区 · 未来设计学院</p>
         <p>实验艺术 / 人机交互 / 游戏设计</p>
-        <p class="hero-scroll-hint">SCROLL FOR MORE ↓</p>
+        <p class="hero-intro-line">把想法做成可以观看、操作和进入的作品。</p>
+        <a class="hero-explore" href="#works">探索作品 <span aria-hidden="true">↘</span></a>
       </div>
     </div>
   </section>
@@ -193,13 +200,14 @@ import { workCategories, works } from '../data/works';
   </section>
 
   <main class="home-sections">
+    <SelectedWorks />
     <section id="timeline" class="home-section chronology-section" aria-labelledby="creative-chronology-title">
       <div class="chronology-pin">
         <div class="chronology-copy">
           <div class="chronology-heading">
-            <div class="section-kicker">01 / CREATIVE CHRONOLOGY</div>
+            <div class="section-kicker">02 / CREATIVE CHRONOLOGY</div>
             <div class="section-head">
-              <h2 id="creative-chronology-title">TIMELINE</h2>
+              <h2 id="creative-chronology-title">Timeline</h2>
             </div>
           </div>
           <div class="chronology-progress">
@@ -279,80 +287,16 @@ import { workCategories, works } from '../data/works';
       </div>
     </section>
 
-    <section id="works" class="home-section works-section" aria-labelledby="home-works-title">
-      <div class="works-pin">
-        <div class="works-control">
-          <h2 id="home-works-title"><span aria-hidden="true"></span>WORKS CATEGORY</h2>
-          <div class="works-category-list" aria-label="作品分类">
-            {workCategories.map((category) => (
-              <button
-                class:list={['works-category', { 'is-active': category.id === works[0].category }]}
-                type="button"
-                data-work-category={category.id}
-              >
-                <span>{category.index}:</span> {category.label}
-              </button>
-            ))}
-          </div>
-          <div class="works-progress" aria-live="polite">
-            <span data-work-current>01</span>
-            <i></i>
-            <span data-work-total>{String(works.length).padStart(2, '0')}</span>
-          </div>
-        </div>
-
-        <div class="works-stage" aria-label="首页作品预览叠层">
-          {works.map((item, index) => (
-            <article
-              class:list={['works-layer', { 'is-active': index === 0, 'is-video': item.kind === 'video' }]}
-              data-work-card
-              data-work-category={item.category}
-              data-work-kind={item.kind}
-            >
-              <img
-                src={item.image}
-                alt={item.imageAlt}
-                loading={item.eager ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-              {item.video && <video src={item.video} preload="none" muted playsinline></video>}
-              {item.kind === 'video' && (
-                <button class="works-play" type="button" aria-label={item.playLabel}>CLICK TO PLAY</button>
-              )}
-              <div class="works-layer-copy">
-                <span>{item.era}</span>
-                {item.titleEn ? (
-                  <h3 class="works-title-split">
-                    <span class="works-title-cn">{item.title}</span>
-                    <span class="works-title-en">{item.titleEn}</span>
-                  </h3>
-                ) : (
-                  <h3>{item.title}</h3>
-                )}
-                <p>{item.description}</p>
-                <a
-                  href={item.href}
-                  target={item.external ? '_blank' : undefined}
-                  rel={item.external ? 'noopener noreferrer' : undefined}
-                  aria-label={item.linkLabel}
-                >{item.linkText}</a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
     <section id="profile" class="home-section profile-section" aria-labelledby="home-profile-title">
       <div class="profile-layout">
         <div class="profile-copy">
           <div class="profile-copy-main">
             <div class="section-kicker">03 / PROFILE</div>
             <div class="profile-heading">
-              <h2 id="home-profile-title">PROFILE</h2>
+              <h2 id="home-profile-title">Profile</h2>
             </div>
             <p class="profile-lead">我是赵文浩，北京师范大学珠海校区未来设计学院 25 级本科生。</p>
-            <p>我关注实验艺术、人机交互和游戏化叙事，习惯从议题研究出发，把想法转化为可被观看、操作和进入的作品。</p>
+            <p>我关注实验艺术、人机交互和游戏设计，习惯从议题研究出发，把想法转化为可被观看、操作和进入的作品。</p>
             <div class="profile-brief-list">
               <span>实验艺术</span>
               <span>人机交互</span>
@@ -380,7 +324,7 @@ import { workCategories, works } from '../data/works';
             </div>
             <div>
               <span>MORE</span>
-              <a class="profile-mini-link" href="/profile">VIEW PROFILE</a>
+              <a class="profile-mini-link" href="/profile">进一步认识我 ↗</a>
             </div>
           </div>
         </div>
@@ -391,6 +335,7 @@ import { workCategories, works } from '../data/works';
         </div>
       </div>
     </section>
+    <ConversationFooter />
   </main>
 
   <script>
@@ -752,274 +697,20 @@ import { workCategories, works } from '../data/works';
       });
     }
 
-    const worksSection = document.querySelector('.works-section') as HTMLElement | null;
-    const worksStage = document.querySelector('.works-stage') as HTMLElement | null;
-    const worksCards = Array.from(document.querySelectorAll('[data-work-card]')) as HTMLElement[];
-    const worksCategories = Array.from(document.querySelectorAll('[data-work-category].works-category')) as HTMLButtonElement[];
-    const worksCurrent = document.querySelector('[data-work-current]') as HTMLElement | null;
-    const worksTotal = document.querySelector('[data-work-total]') as HTMLElement | null;
-    let activeWorkIndex = 0;
-    let visualWorkProgress = 0;
-    let targetWorkProgress = 0;
-    let worksScrollRaf: number | undefined;
-    const pendingWorksVideoReveals = new WeakMap<HTMLVideoElement, EventListener>();
-
-    function isMobileWorksLayout() {
-      return isMobileHomeFallback();
-    }
-
-    function getWorksIntroHoldDistance() {
-      return getInteractionViewportHeight() * (isMobileWorksLayout() ? 0.58 : 1.25);
-    }
-
-    function applyWorksViewportMetrics() {
-      if (!worksSection) return;
-
-      if (isMobileWorksLayout()) {
-        worksSection.style.removeProperty('--works-intro-hold');
-        worksSection.style.removeProperty('--works-step-scroll');
-        worksSection.style.removeProperty('min-height');
-      } else {
-        worksSection.style.removeProperty('--works-intro-hold');
-        worksSection.style.removeProperty('--works-step-scroll');
-        worksSection.style.removeProperty('min-height');
-      }
-    }
-
-    function restoreWorksVideoPoster(card: HTMLElement, video: HTMLVideoElement) {
-      const pendingReveal = pendingWorksVideoReveals.get(video);
-      if (pendingReveal) {
-        video.removeEventListener('playing', pendingReveal);
-        pendingWorksVideoReveals.delete(video);
-      }
-      const image = card.querySelector('img') as HTMLImageElement | null;
-      delete card.dataset.videoLoading;
-      video.style.removeProperty('opacity');
-      image?.style.removeProperty('opacity');
-      card.classList.remove('is-playing');
-    }
-
-    function stopWorksVideos(except?: HTMLElement) {
-      worksCards.forEach((card) => {
-        if (card === except) return;
-        const video = card.querySelector('video') as HTMLVideoElement | null;
-        if (!video) return;
-        video.pause();
-        restoreWorksVideoPoster(card, video);
-      });
-    }
-
-    function syncWorksMeta() {
-      if (!worksCards.length) return;
-      const activeCard = worksCards[activeWorkIndex];
-      const activeCategory = activeCard?.dataset.workCategory;
-
-      worksCategories.forEach((button) => {
-        button.classList.toggle('is-active', button.dataset.workCategory === activeCategory);
-      });
-
-      if (worksCurrent) worksCurrent.textContent = String(activeWorkIndex + 1).padStart(2, '0');
-      if (worksTotal) worksTotal.textContent = String(worksCards.length).padStart(2, '0');
-      if (isMobileWorksLayout()) {
-        const overallProgress = worksCards.length > 1 ? activeWorkIndex / (worksCards.length - 1) : 1;
-        worksSection?.style.setProperty('--work-step-progress', String(overallProgress));
-      }
-    }
-
-    // 调用处仍会把进度传进来，但整个函数是按 activeWorkIndex 算位置的，
-    // 形参目前用不上；名字加下划线前缀，免得被类型检查当成「声明了却没用」
-    function renderWorksStack(_progress = activeWorkIndex) {
-      if (!worksCards.length) return;
-
-      worksCards.forEach((card, index) => {
-        const offset = index - activeWorkIndex;
-        const absOffset = Math.abs(offset);
-        const depth = Math.min(absOffset, 5);
-        const isActive = index === activeWorkIndex;
-        const isPast = offset < 0;
-        const isUpcoming = offset > 0;
-        const isMobile = isMobileWorksLayout();
-        const isMobileVisible = isMobile && offset >= 0 && offset <= 3;
-        const parkedX = offset < 0 ? '-64vw' : '64vw';
-        const parkedRotate = offset < 0 ? '-2.8deg' : '2.8deg';
-
-        card.classList.toggle('is-active', isActive);
-        card.classList.toggle('is-past', isPast);
-        card.classList.toggle('is-upcoming', isUpcoming);
-        card.style.setProperty('--offset', String(offset));
-        card.style.setProperty('--abs-offset', String(absOffset));
-        card.style.setProperty('--depth', String(depth));
-        card.style.setProperty('--stack-order', String(isMobile ? 1000 - Math.max(offset, 0) : 1000 - Math.round(absOffset * 20)));
-        card.style.opacity = isActive || isMobileVisible ? String(isActive ? 1 : Math.max(0.38, 0.78 - offset * 0.14)) : '0';
-        card.style.pointerEvents = isActive ? 'auto' : 'none';
-        card.style.transform = isMobile
-          ? `translate(-50%, calc(-50% + ${Math.max(offset, 0) * 0.72}rem)) rotate(${Math.max(offset, 0) * -1.1}deg) scale(${1 - Math.max(offset, 0) * 0.035})`
-          : isActive
-            ? 'translate(-50%, -50%) rotate(0deg) scale(1)'
-            : `translate(calc(-50% + ${parkedX}), -50%) rotate(${parkedRotate}) scale(0.985)`;
-        card.style.visibility = isActive || isMobileVisible ? 'visible' : 'hidden';
-      });
-    }
-
-    function updateWorksStack() {
-      if (!worksCards.length) return;
-      renderWorksStack(visualWorkProgress);
-      syncWorksMeta();
-      const activeCard = worksCards[activeWorkIndex];
-
-      worksCards.forEach((card, index) => {
-        if (index !== activeWorkIndex) {
-          const video = card.querySelector('video') as HTMLVideoElement | null;
-          const image = card.querySelector('img') as HTMLImageElement | null;
-          video?.style.removeProperty('opacity');
-          image?.style.removeProperty('opacity');
-          card.classList.remove('is-playing');
-        }
-      });
-
-      stopWorksVideos(activeCard);
-    }
-
-    function setActiveWorkIndex(index: number) {
-      const nextIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
-      if (nextIndex === activeWorkIndex) return;
-      activeWorkIndex = nextIndex;
-      updateWorksStack();
-    }
-
-    function setWorksProgress(progress: number) {
-      targetWorkProgress = Math.min(Math.max(progress, 0), worksCards.length - 1);
-      visualWorkProgress = targetWorkProgress;
-      const nextIndex = Math.min(Math.floor(targetWorkProgress + 0.0001), worksCards.length - 1);
-      const stepProgress = nextIndex >= worksCards.length - 1 ? 1 : targetWorkProgress - nextIndex;
-      worksSection?.style.setProperty('--work-step-progress', String(Math.min(Math.max(stepProgress, 0), 1)));
-      setActiveWorkIndex(nextIndex);
-    }
-
-    function getWorksSectionTop() {
-      if (!worksSection) return 0;
-      return worksSection.getBoundingClientRect().top + window.scrollY;
-    }
-
-    function getWorksTravelDistance() {
-      if (!worksSection) return 1;
-      const introHold = getWorksIntroHoldDistance();
-      return Math.max(1, worksSection.offsetHeight - getInteractionViewportHeight() - introHold);
-    }
-
-    function syncWorksStackToScroll() {
-      if (!worksSection || !worksCards.length) return;
-      const introHold = getWorksIntroHoldDistance();
-      const progress = (window.scrollY - getWorksSectionTop() - introHold) / getWorksTravelDistance();
-      const clampedProgress = Math.min(Math.max(progress, 0), 1);
-      setWorksProgress(clampedProgress * (worksCards.length - 1));
-    }
-
-    function requestWorksScrollSync() {
-      if (worksSection && !isNearInteractiveSection(worksSection)) return;
-      if (worksScrollRaf) return;
-      worksScrollRaf = window.requestAnimationFrame(() => {
-        worksScrollRaf = undefined;
-        syncWorksStackToScroll();
-      });
-    }
-
-    function normalizeWheelDelta(event: WheelEvent) {
-      if (event.deltaMode === 1) return event.deltaY * 16;
-      if (event.deltaMode === 2) return event.deltaY * window.innerHeight;
-      return event.deltaY;
-    }
-
-    function handleWorksWheel(event: WheelEvent) {
-      if (!worksSection || !worksCards.length || window.innerWidth < 900) return;
-      const sectionTop = getWorksSectionTop();
-      const sectionBottom = sectionTop + worksSection.offsetHeight - window.innerHeight;
-      const scrollY = window.scrollY;
-      const rawDelta = normalizeWheelDelta(event);
-      const isInsideWorks = scrollY >= sectionTop - 2 && scrollY <= sectionBottom + 2;
-      const isLeavingUp = scrollY <= sectionTop + 2 && rawDelta < 0;
-      const isLeavingDown = scrollY >= sectionBottom - 2 && rawDelta > 0;
-
-      if (!isInsideWorks || isLeavingUp || isLeavingDown || Math.abs(rawDelta) < 1) return;
-
-      event.preventDefault();
-      const maxStep = Math.max(36, Math.min(window.innerHeight * 0.09, 72));
-      const cappedDelta = Math.sign(rawDelta) * Math.min(Math.abs(rawDelta), maxStep);
-      const nextY = Math.min(Math.max(scrollY + cappedDelta, sectionTop), sectionBottom);
-      window.scrollTo({ top: nextY, behavior: 'auto' });
-      requestWorksScrollSync();
-    }
-
-    function scrollToWorkIndex(index: number) {
-      if (!worksSection || !worksCards.length) return;
-      const targetIndex = Math.min(Math.max(index, 0), worksCards.length - 1);
-      if (isMobileWorksLayout()) {
-        setActiveWorkIndex(targetIndex);
-        return;
-      }
-      const ratio = worksCards.length > 1 ? targetIndex / (worksCards.length - 1) : 0;
-      const introHold = getWorksIntroHoldDistance();
-      const targetY = getWorksSectionTop() + introHold + getWorksTravelDistance() * ratio;
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
-      setWorksProgress(targetIndex);
-      setActiveWorkIndex(targetIndex);
-    }
-
-    function toggleWorksVideo(card: HTMLElement) {
-      if (!card.classList.contains('is-active') || card.dataset.workKind !== 'video') return;
-      const video = card.querySelector('video') as HTMLVideoElement | null;
-      if (!video) return;
-      if (card.dataset.videoLoading === 'true') return;
-      stopWorksVideos(card);
-      video.controls = true;
-      if (video.paused) {
-        if (video.readyState === 0) video.load();
-        video.muted = false;
-        video.removeAttribute('muted');
-        video.volume = Math.max(video.volume || 0, 0.85);
-        const image = card.querySelector('img') as HTMLImageElement | null;
-        card.dataset.videoLoading = 'true';
-
-        const revealVideo: EventListener = () => {
-          pendingWorksVideoReveals.delete(video);
-          delete card.dataset.videoLoading;
-          if (video.paused || !card.classList.contains('is-active')) return;
-          video.style.setProperty('opacity', '1', 'important');
-          image?.style.setProperty('opacity', '0', 'important');
-          card.classList.add('is-playing');
-        };
-        pendingWorksVideoReveals.set(video, revealVideo);
-        video.addEventListener('playing', revealVideo, { once: true });
-
-        video.play().catch((error) => {
-          // 旧一轮 play() 的异步失败不得打断同一卡片上已经开始的新一轮播放。
-          if (pendingWorksVideoReveals.get(video) !== revealVideo) return;
-          card.dataset.videoError = error?.name || 'play-failed';
-          restoreWorksVideoPoster(card, video);
-        });
-      } else {
-        video.pause();
-        restoreWorksVideoPoster(card, video);
-      }
-    }
-
     function handleInteractiveResize() {
       const widthDelta = Math.abs(window.innerWidth - stableMobileViewportWidth);
       const heightDelta = Math.abs(window.innerHeight - stableMobileViewportHeight);
       const isMobileAddressBarResize = window.innerWidth < 900 && widthDelta <= 8 && heightDelta > 0;
 
       refreshStableViewportSize();
-      applyWorksViewportMetrics();
       if (isMobileAddressBarResize) return;
 
       if (!isMobileHomeFallback()) {
         setupTimelineGeometry();
         requestTimelineScrollSync();
-        requestWorksScrollSync();
       } else {
         releaseTimelineWorldSize();
         activateMobileTimelineFallback();
-        updateWorksStack();
       }
     }
 
@@ -1051,66 +742,7 @@ import { workCategories, works } from '../data/works';
       });
     }
 
-    if (worksCards.length) {
-      worksSection?.style.setProperty('--works-count', String(worksCards.length));
-      applyWorksViewportMetrics();
-      updateWorksStack();
-      if (!isMobileWorksLayout()) {
-        syncWorksStackToScroll();
-        window.addEventListener('scroll', requestWorksScrollSync, { passive: true });
-        window.addEventListener('wheel', handleWorksWheel, { passive: false });
-      }
-
-      worksCategories.forEach((button) => {
-        button.addEventListener('click', () => {
-          if (button.getAttribute('aria-disabled') === 'true') return;
-          const category = button.dataset.workCategory;
-          const targetIndex = worksCards.findIndex((card) => card.dataset.workCategory === category);
-          if (targetIndex < 0) return;
-          scrollToWorkIndex(targetIndex);
-        });
-      });
-
-      worksCards.forEach((card) => {
-        const playButton = card.querySelector('.works-play') as HTMLButtonElement | null;
-        playButton?.addEventListener('click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          toggleWorksVideo(card);
-        });
-
-        card.addEventListener('click', (event) => {
-          const target = event.target as HTMLElement;
-          if (target.closest('a') || target.closest('video')) return;
-          if (isMobileWorksLayout() && card.dataset.workKind !== 'video') {
-            setActiveWorkIndex((activeWorkIndex + 1) % worksCards.length);
-            return;
-          }
-          toggleWorksVideo(card);
-        });
-      });
-
-      let worksTouchStartX = 0;
-      let worksTouchStartY = 0;
-      worksStage?.addEventListener('touchstart', (event) => {
-        const touch = event.touches[0];
-        if (!touch) return;
-        worksTouchStartX = touch.clientX;
-        worksTouchStartY = touch.clientY;
-      }, { passive: true });
-
-      worksStage?.addEventListener('touchend', (event) => {
-        if (!isMobileWorksLayout()) return;
-        const touch = event.changedTouches[0];
-        if (!touch) return;
-        const deltaX = touch.clientX - worksTouchStartX;
-        const deltaY = touch.clientY - worksTouchStartY;
-        if (Math.abs(deltaX) < 42 || Math.abs(deltaX) < Math.abs(deltaY) * 1.15) return;
-        setActiveWorkIndex(activeWorkIndex + (deltaX < 0 ? 1 : -1));
-      }, { passive: true });
-    }
-
-    if (chronologySection || worksCards.length) {
+    if (chronologySection) {
       window.addEventListener('resize', handleInteractiveResize);
     }
 
@@ -2327,395 +1959,6 @@ import { workCategories, works } from '../data/works';
       }
     }
 
-    .works-section {
-      --works-count: 11;
-      --works-intro-hold: 125vh;
-      --works-step-scroll: 96vh;
-      --work-step-progress: 0;
-      min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * var(--works-step-scroll));
-      margin-left: 0;
-      margin-right: 0;
-      padding-bottom: 0;
-      padding-top: 0;
-      position: relative;
-      width: 100%;
-    }
-
-    .works-section::before {
-      background:
-        linear-gradient(90deg, rgba(172, 219, 251, 0.1) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-      background-size: 72px 72px;
-      content: "";
-      inset: clamp(3rem, 6vw, 5rem) 0;
-      opacity: 0.22;
-      pointer-events: none;
-      position: absolute;
-      transform: skewY(-3deg);
-    }
-
-    .works-pin {
-      box-sizing: border-box;
-      height: 100vh;
-      min-height: 100vh;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .works-control {
-      display: grid;
-      gap: clamp(1rem, 2vh, 1.45rem);
-      justify-items: start;
-      left: clamp(2rem, 4vw, 4.6rem);
-      max-width: min(23rem, 32vw);
-      position: absolute;
-      top: clamp(6rem, 11vh, 8rem);
-      z-index: 6;
-    }
-
-    .works-control h2 {
-      align-items: center;
-      color: rgba(245, 245, 245, 0.92);
-      display: flex;
-      gap: 0.78rem;
-      font-family: var(--font-mono-cn);
-      font-size: clamp(1.05rem, 1.55vw, 1.52rem);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      line-height: 1;
-      margin: 0;
-      text-shadow:
-        -1px 0 #ff3048,
-        1px 0 #00f0ff,
-        0 0 18px rgba(0, 0, 0, 0.72);
-      white-space: nowrap;
-    }
-
-    .works-control h2 span {
-      background: rgba(245, 245, 245, 0.92);
-      border: 1px solid rgba(172, 219, 251, 0.72);
-      border-radius: 999px;
-      box-shadow:
-        -1px 0 #ff3048,
-        1px 0 #00f0ff,
-        0 0 12px rgba(172, 219, 251, 0.24);
-      display: block;
-      height: 1.05rem;
-      width: 1.35rem;
-    }
-
-    .works-category-list {
-      display: grid;
-      gap: clamp(0.72rem, 1.45vh, 1.05rem);
-      margin-top: 0;
-    }
-
-    .works-category {
-      appearance: none;
-      background: transparent;
-      border: 0;
-      color: rgba(245, 245, 245, 0.56);
-      font-family: var(--font-mono-cn);
-      font-size: clamp(0.92rem, 1.25vw, 1.12rem);
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      padding: 0.12rem 0;
-      text-align: left;
-      text-shadow:
-        -1px 0 rgba(255, 48, 72, 0.62),
-        1px 0 rgba(0, 240, 255, 0.62);
-      transition: color 180ms ease;
-    }
-
-    .works-category span {
-      color: rgba(172, 219, 251, 0.66);
-      display: inline-block;
-      min-width: 1.6rem;
-    }
-
-    .works-category.is-active {
-      color: #ACDBFB;
-      text-shadow: 0 0 14px rgba(172, 219, 251, 0.42);
-    }
-
-    .works-category.is-empty {
-      color: rgba(245, 245, 245, 0.28);
-      opacity: 0.58;
-    }
-
-    .works-category.is-empty span {
-      color: rgba(172, 219, 251, 0.34);
-    }
-
-    .works-progress {
-      align-items: center;
-      color: rgba(245, 245, 245, 0.62);
-      display: flex;
-      font-family: var(--font-mono-cn);
-      font-size: 0.74rem;
-      gap: 0.65rem;
-      letter-spacing: 0.16em;
-      margin-top: 0.5rem;
-      text-shadow: 0 0 14px rgba(0, 0, 0, 0.8);
-    }
-
-    .works-progress i {
-      background: rgba(245, 245, 245, 0.22);
-      display: block;
-      height: 1px;
-      overflow: hidden;
-      position: relative;
-      width: 3.5rem;
-    }
-
-    .works-progress i::after {
-      background: #ACDBFB;
-      box-shadow: 0 0 12px rgba(172, 219, 251, 0.62);
-      content: "";
-      inset: 0;
-      position: absolute;
-      transform: scaleX(var(--work-step-progress));
-      transform-origin: left center;
-      transition: transform 120ms linear;
-    }
-
-    .works-stage {
-      inset: clamp(4.7rem, 8vh, 6.25rem) clamp(1.7rem, 3vw, 3.4rem) clamp(1.4rem, 3.5vh, 2.4rem);
-      min-height: 0;
-      position: absolute;
-      z-index: 1;
-    }
-
-    .works-layer {
-      --offset: 0;
-      --abs-offset: 0;
-      --stack-order: 1;
-      background: #040A10;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 22px;
-      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.58);
-      color: #ffffff;
-      height: 100%;
-      left: 50%;
-      min-height: 0;
-      overflow: hidden;
-      position: absolute;
-      top: 50%;
-      transform:
-        translate(
-          calc(-50% + var(--offset) * -32px),
-          calc(-50% + var(--offset) * 22px)
-        )
-        rotate(calc(var(--offset) * -0.42deg))
-        scale(calc(1 - var(--depth) * 0.018));
-      transform-origin: 62% 54%;
-      opacity: 0;
-      transition: filter 180ms ease, opacity 180ms ease;
-      visibility: hidden;
-      will-change: transform, opacity;
-      width: 100%;
-      z-index: var(--stack-order);
-    }
-
-    .works-layer.is-past {
-      pointer-events: none;
-    }
-
-    .works-layer.is-active {
-      cursor: pointer;
-    }
-
-    .works-layer.is-active::after {
-      z-index: 2;
-    }
-
-    .works-layer.is-active .works-layer-copy::after {
-      background: rgba(245, 245, 245, 0.2);
-      content: "";
-      height: 2px;
-      left: 0;
-      position: absolute;
-      top: -1rem;
-      width: min(15rem, 42vw);
-    }
-
-    .works-layer.is-active .works-layer-copy::before {
-      background: #ACDBFB;
-      box-shadow: 0 0 14px rgba(172, 219, 251, 0.7);
-      content: "";
-      height: 2px;
-      left: 0;
-      position: absolute;
-      top: -1rem;
-      transform: scaleX(var(--work-step-progress));
-      transform-origin: left center;
-      transition: transform 120ms linear;
-      width: min(15rem, 42vw);
-      z-index: 1;
-    }
-
-    .works-layer img,
-    .works-layer video {
-      display: block;
-      filter: grayscale(0.45) contrast(1.08);
-      height: 100%;
-      inset: 0;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      transform: translateZ(0) scale(1.006);
-      transition: filter 260ms ease, opacity 220ms ease, transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: filter, transform, opacity;
-      width: 100%;
-    }
-
-    .works-layer video {
-      opacity: 0;
-      z-index: 1;
-    }
-
-    :global(.works-layer.is-playing video) {
-      opacity: 1 !important;
-    }
-
-    :global(.works-layer.is-playing img) {
-      opacity: 0 !important;
-    }
-
-    .works-layer.is-active img {
-      animation: worksMediaEnter 520ms cubic-bezier(0.16, 1, 0.3, 1);
-      filter: grayscale(0.2) contrast(1.12);
-      transform: translateZ(0) scale(1);
-    }
-
-    .works-layer::after {
-      background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.8) 82%),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.28) 36%, transparent 70%);
-      content: "";
-      inset: 0;
-      pointer-events: none;
-      position: absolute;
-      z-index: 2;
-    }
-
-    .works-play {
-      appearance: none;
-      background: rgba(4, 10, 16, 0.78);
-      border: 1px solid rgba(172, 219, 251, 0.54);
-      border-radius: 999px;
-      bottom: clamp(1.25rem, 3vh, 2rem);
-      color: #ACDBFB;
-      font-family: var(--font-mono-cn);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      padding: 0.55rem 0.8rem;
-      position: absolute;
-      right: clamp(1.25rem, 4vw, 4.5rem);
-      z-index: 4;
-    }
-
-    .works-layer.is-playing .works-play {
-      bottom: auto;
-      color: rgba(245, 245, 245, 0.72);
-      opacity: 0.72;
-      padding: 0.42rem 0.62rem;
-      right: clamp(1rem, 2vw, 1.6rem);
-      top: clamp(1rem, 2vw, 1.6rem);
-    }
-
-    .works-layer.is-playing .works-play::before {
-      content: "PLAYING / ";
-    }
-
-    .works-layer-copy {
-      bottom: clamp(1.25rem, 3vh, 2.25rem);
-      display: grid;
-      gap: 0.58rem;
-      left: clamp(1.25rem, 4vw, 4.5rem);
-      max-width: min(78rem, calc(100vw - clamp(2.5rem, 8vw, 9rem)));
-      position: absolute;
-      right: clamp(1.25rem, 4vw, 4.5rem);
-      z-index: 3;
-    }
-
-    .works-layer.is-active .works-layer-copy {
-      animation: worksCopyEnter 420ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .is-video .works-layer-copy {
-      padding-left: 0;
-    }
-
-    .works-layer-copy span {
-      color: #ACDBFB;
-      font-family: var(--font-mono-cn);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-    }
-
-    .works-layer-copy h3 {
-      color: #ffffff;
-      font-size: clamp(1.85rem, min(3.85vw, 7.4vh), 4.35rem);
-      font-weight: 600;
-      letter-spacing: 0;
-      line-height: 0.96;
-      margin: 0;
-      max-width: 100%;
-      white-space: nowrap;
-    }
-
-    .works-title-split {
-      align-items: baseline;
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 0.32em;
-    }
-
-    .works-title-split .works-title-cn,
-    .works-title-split .works-title-en {
-      display: block;
-      font-family: inherit;
-      letter-spacing: 0;
-    }
-
-    .works-title-split .works-title-cn {
-      color: #ffffff;
-      font-size: 1em;
-      font-weight: 600;
-      line-height: 0.96;
-    }
-
-    .works-title-split .works-title-en {
-      color: rgba(255, 255, 255, 0.84);
-      font-size: 0.58em;
-      font-weight: 500;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .works-layer-copy p {
-      color: rgba(245, 245, 245, 0.72);
-      font-size: clamp(0.92rem, 1.15vw, 1.08rem);
-      line-height: 1.72;
-      margin: 0;
-      max-width: 42rem;
-    }
-
-    .works-layer-copy a {
-      color: rgba(172, 219, 251, 0.9);
-      font-family: var(--font-mono-cn);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      margin-top: 0.25rem;
-      text-decoration: none;
-      width: fit-content;
-    }
-
     .profile-section {
       overflow: hidden;
       position: relative;
@@ -2950,30 +2193,6 @@ import { workCategories, works } from '../data/works';
       49%, 100% { opacity: 0; }
     }
 
-    @keyframes worksMediaEnter {
-      0% {
-        filter: grayscale(0.52) contrast(1.02);
-        transform: translateZ(0) scale(1.024);
-      }
-
-      100% {
-        filter: grayscale(0.2) contrast(1.12);
-        transform: translateZ(0) scale(1);
-      }
-    }
-
-    @keyframes worksCopyEnter {
-      0% {
-        opacity: 0;
-        transform: translate3d(0, 0.65rem, 0);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-      }
-    }
-
     @media (max-width: 900px) {
       .home-sections {
         overflow-x: clip;
@@ -3101,174 +2320,6 @@ import { workCategories, works } from '../data/works';
         aspect-ratio: 4 / 5;
       }
 
-      .works-section {
-        --works-intro-hold: 58vh;
-        --works-step-scroll: 72vh;
-        border-top: 0;
-        margin-left: 0;
-        margin-right: 0;
-        min-height: calc(100vh + var(--works-intro-hold) + (var(--works-count) - 1) * 72vh);
-        min-height: calc(var(--stable-app-height, 100svh) + var(--works-intro-hold) + (var(--works-count) - 1) * var(--works-step-scroll));
-        padding: 0;
-        width: 100%;
-      }
-
-      .works-pin {
-        display: block;
-        height: 100vh;
-        height: 100svh;
-        height: var(--stable-app-height, 100svh);
-        min-height: 100vh;
-        min-height: 100svh;
-        min-height: var(--stable-app-height, 100svh);
-        overflow: hidden;
-        padding: 0;
-        position: sticky;
-        top: 0;
-      }
-
-      .works-control {
-        align-items: start;
-        background: rgba(4, 10, 16, 0.62);
-        border: 1px solid rgba(172, 219, 251, 0.26);
-        border-radius: 12px;
-        gap: 0.7rem;
-        grid-template-columns: 1fr;
-        left: 0.72rem;
-        max-width: none;
-        padding: 0.78rem;
-        position: absolute;
-        right: 0.72rem;
-        top: calc(env(safe-area-inset-top) + 4.45rem);
-        z-index: 7;
-      }
-
-      .works-control h2 {
-        font-size: clamp(0.86rem, 4.4vw, 1.08rem);
-        line-height: 1;
-      }
-
-      .works-control h2,
-      .works-category-list {
-        grid-column: 1 / -1;
-      }
-
-      .works-control h2 span {
-        height: 0.82rem;
-        width: 1.08rem;
-      }
-
-      .works-category-list {
-        gap: 0.5rem 0.7rem;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: 100%;
-      }
-
-      .works-category {
-        font-size: clamp(0.78rem, 3.9vw, 0.95rem);
-      }
-
-      .works-category.is-active {
-        transform: none;
-      }
-
-      .works-progress {
-        font-size: 0.66rem;
-        margin-top: 0;
-      }
-
-      .works-progress i {
-        width: 3.1rem;
-      }
-
-      .works-stage {
-        display: block;
-        inset: calc(env(safe-area-inset-top) + 13.6rem) 0.65rem 0.8rem;
-        min-height: 0;
-        position: absolute;
-      }
-
-      .works-layer,
-      .works-layer.is-active,
-      .works-layer.is-past,
-      .works-layer.is-upcoming {
-        height: 100%;
-        left: 50%;
-        min-height: 0;
-        position: absolute;
-        top: 50%;
-        width: 100%;
-      }
-
-      .works-layer {
-        border-radius: 17px;
-      }
-
-      .works-layer-copy {
-        bottom: 0.92rem;
-        gap: 0.45rem;
-        left: 0.92rem;
-        max-width: none;
-        right: 0.92rem;
-      }
-
-      .works-layer-copy::after,
-      .works-layer-copy::before {
-        width: min(12.5rem, 52vw) !important;
-      }
-
-      .works-layer-copy span {
-        font-size: 0.62rem;
-      }
-
-      .works-layer-copy h3 {
-        font-size: clamp(1.28rem, 6.3vw, 2.08rem);
-        line-height: 1;
-        white-space: normal;
-      }
-
-      .works-title-split {
-        align-items: baseline;
-        flex-wrap: wrap;
-        gap: 0.22em;
-      }
-
-      .works-title-split .works-title-en {
-        font-size: 0.54em;
-      }
-
-      .works-layer-copy p {
-        display: -webkit-box;
-        font-size: 0.82rem;
-        line-height: 1.55;
-        max-width: 100%;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-      }
-
-      .works-layer-copy a {
-        font-size: 0.62rem;
-      }
-
-      .is-video .works-layer-copy {
-        padding-bottom: 2.6rem;
-        padding-left: 0;
-      }
-
-      .works-play {
-        border-radius: 12px;
-        bottom: 0.92rem;
-        font-size: 0.6rem;
-        padding: 0.48rem 0.62rem;
-        right: 0.92rem;
-      }
-
-      .works-layer.is-playing .works-play {
-        right: 0.82rem;
-        top: 0.82rem;
-      }
-
       .profile-layout {
         gap: 1.4rem;
         min-height: auto;
@@ -3313,8 +2364,7 @@ import { workCategories, works } from '../data/works';
         width: min(100vw - 24px, 1180px);
       }
 
-      .chronology-section,
-      .works-section {
+      .chronology-section {
         width: 100%;
       }
 
@@ -3324,18 +2374,6 @@ import { workCategories, works } from '../data/works';
 
       .timeline-node .timeline-node-media {
         max-height: 8.4rem;
-      }
-
-      .works-control {
-        grid-template-columns: 1fr;
-      }
-
-      .works-layer-copy h3 {
-        font-size: clamp(1.16rem, 6.2vw, 1.9rem);
-      }
-
-      .works-layer-copy p {
-        -webkit-line-clamp: 2;
       }
 
       .profile-copy {
@@ -3543,97 +2581,6 @@ import { workCategories, works } from '../data/works';
         width: 0.48rem;
       }
 
-      .works-section {
-        min-height: auto !important;
-        padding: calc(env(safe-area-inset-top) + 5.4rem) 0.85rem 2.2rem;
-        width: min(100vw - 1rem, 42rem);
-      }
-
-      .works-section::before {
-        inset: 4rem 0 0;
-        opacity: 0.16;
-        transform: none;
-      }
-
-      .works-pin {
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible;
-        padding: 0;
-        position: relative;
-      }
-
-      .works-control {
-        background: rgba(4, 10, 16, 0.72);
-        border: 1px solid rgba(172, 219, 251, 0.3);
-        border-radius: 14px;
-        left: auto;
-        margin-bottom: 0.95rem;
-        padding: 0.82rem;
-        position: relative;
-        right: auto;
-        top: auto;
-      }
-
-      .works-stage {
-        height: clamp(27rem, 118vw, 39rem);
-        inset: auto;
-        overflow: visible;
-        position: relative;
-      }
-
-      .works-layer,
-      .works-layer.is-active,
-      .works-layer.is-past,
-      .works-layer.is-upcoming {
-        height: 100%;
-        left: 50%;
-        position: absolute;
-        top: 50%;
-        width: 100%;
-      }
-
-      .works-layer {
-        border-color: rgba(255, 255, 255, 0.16);
-        border-radius: 18px;
-        box-shadow: 0 22px 56px rgba(0, 0, 0, 0.44);
-        transition:
-          opacity 240ms ease,
-          transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
-          visibility 240ms ease;
-        will-change: transform, opacity;
-      }
-
-      .works-layer.is-active {
-        box-shadow: 0 24px 68px rgba(0, 0, 0, 0.52);
-      }
-
-      .works-layer-copy {
-        bottom: 0.92rem;
-        left: 0.92rem;
-        right: 0.92rem;
-      }
-
-      .works-layer-copy h3 {
-        font-size: clamp(1.2rem, 7.2vw, 2rem);
-        white-space: normal;
-      }
-
-      .works-title-split {
-        flex-wrap: wrap;
-      }
-
-      .works-layer-copy p {
-        font-size: 0.78rem;
-        -webkit-line-clamp: 3;
-      }
-
-      .works-play {
-        bottom: 0.92rem;
-        border-radius: 12px;
-        right: 0.92rem;
-      }
-
       .profile-section {
         padding-top: calc(env(safe-area-inset-top) + 5.2rem);
       }
@@ -3644,22 +2591,12 @@ import { workCategories, works } from '../data/works';
     }
 
     @media (max-width: 620px) {
-      .chronology-section,
-      .works-section {
+      .chronology-section {
         width: min(100vw - 0.9rem, 42rem);
       }
 
-      .chronology-progress,
-      .works-progress {
+      .chronology-progress {
         font-size: 0.68rem;
-      }
-
-      .works-category-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .works-stage {
-        height: clamp(29rem, 132vw, 38rem);
       }
     }
 
@@ -3675,11 +2612,6 @@ import { workCategories, works } from '../data/works';
 
       html[data-theme="light"] .timeline-node-body em {
         color: rgba(4, 10, 16, 0.62);
-      }
-
-      html[data-theme="light"] .works-control {
-        background: rgba(255, 255, 255, 0.76) !important;
-        border-color: rgba(4, 10, 16, 0.18) !important;
       }
     }
   </style>

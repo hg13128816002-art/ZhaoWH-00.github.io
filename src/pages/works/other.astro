@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WorkBrowser from '../../components/WorkBrowser.astro';
+import ConversationFooter from '../../components/ConversationFooter.astro';
+import { otherWorks } from '../../data/catalog';
+import '../../styles/editorial.css';
+---
+<Layout title="其他作品 — Zhao Wenhao" lang="zh-CN" bodyClass="catalog-page">
+  <main>
+    <header class="editorial-section catalog-intro">
+      <p class="eyebrow"><a href="/works/">← 全部作品</a></p>
+      <h1>其他作品<span>OTHER WORKS / {String(otherWorks.length).padStart(2,'0')}</span></h1>
+    </header>
+    <section class="editorial-section catalog-body" aria-label="浏览其他作品">
+      <WorkBrowser works={otherWorks} />
+    </section>
+  </main>
+  <ConversationFooter />
+</Layout>

@@ -1,0 +1,26 @@
+---
+import WorkCard from './WorkCard.astro';
+import OtherWorksCard from './OtherWorksCard.astro';
+import { collections, otherWorks, type CatalogWork } from '../data/catalog';
+interface Props { works: CatalogWork[]; includeOthers?: boolean; }
+const { works, includeOthers = false } = Astro.props;
+const allWorks = [...works, ...(includeOthers ? otherWorks : [])];
+const filters = collections.filter(collection => allWorks.some(work => work.collection === collection.id));
+---
+<div data-work-browser>
+  <div class="catalog-toolbar">
+    <div class="catalog-filters" role="group" aria-label="作品分类">
+      <button type="button" data-filter="all" aria-pressed="true">全部作品</button>
+      {filters.map(collection => <button type="button" data-filter={collection.id} aria-pressed="false">{collection.label}</button>)}
+    </div>
+    <span class="catalog-count" aria-live="polite"><span data-result-count>{allWorks.length}</span> 件作品</span>
+  </div>
+  <div class="catalog-grid">
+    {works.map((work,index) => <WorkCard work={work} index={index} headingLevel={2} />)}
+    {includeOthers && <OtherWorksCard index={works.length} />}
+  </div>
+</div>
+<script>
+  import { initWorkBrowser } from '../scripts/work-browser';
+  document.querySelectorAll<HTMLElement>('[data-work-browser]').forEach(initWorkBrowser);
+</script>

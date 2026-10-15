@@ -1,0 +1,42 @@
+---
+import { projectVideos } from '../data/project-videos';
+interface Props { workId: string; }
+const { workId } = Astro.props;
+const videos = projectVideos[workId] ?? [];
+const poster = (src: string) => src.includes('aliyuncs.com') ? `${src}?x-oss-process=image/resize,w_1280` : src;
+---
+{videos.length > 0 && (
+  <section class="editorial-section work-videos" aria-labelledby="work-videos-title">
+    <div class="video-content">
+      <h2 id="work-videos-title">作品影像</h2>
+      {videos.map(video => (
+        <figure>
+          <figcaption>{video.title}</figcaption>
+          <video data-work-video controls playsinline preload="none" poster={poster(video.poster)} aria-label={video.title}>
+            <source src={video.src} type="video/mp4" />
+          </video>
+        </figure>
+      ))}
+    </div>
+  </section>
+)}
+<script>
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('[data-work-video]')];
+  const pauseAll = () => videos.forEach(video => video.pause());
+  videos.forEach(video => video.addEventListener('play', () => {
+    videos.forEach(other => { if (other !== video) other.pause(); });
+  }));
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pauseAll(); });
+  window.addEventListener('page-transition-start', pauseAll);
+  window.addEventListener('pagehide', pauseAll);
+</script>
+<style>
+  .work-videos { padding-top:3rem; padding-bottom:3rem; border-top:1px solid var(--ed-line); }
+  .video-content { max-width:70rem; margin:0 auto; }
+  h2 { font-size:clamp(1.5rem,2.6vw,2.3rem); font-weight:500; margin:0 0 2rem; }
+  figure { margin:0 0 2.5rem; }
+  figure:last-child { margin-bottom:0; }
+  figcaption { color:var(--ed-muted); font-size:.8rem; margin-bottom:.8rem; }
+  video { display:block; width:100%; max-height:80svh; aspect-ratio:16/9; object-fit:contain; background:#040a10; border:1px solid var(--ed-line); border-radius:var(--site-frame-radius); }
+  video:focus-visible { outline:2px solid var(--ed-blue); outline-offset:4px; }
+</style>

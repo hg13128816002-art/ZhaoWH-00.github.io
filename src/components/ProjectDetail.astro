@@ -1,0 +1,1491 @@
+---
+// src/components/ProjectDetail.astro
+// 项目详情页：每个项目一个全屏 project-entry（左侧视觉档案 + 右侧解密档案文本）
+import { catalog } from '../data/catalog';
+import { projectVideos } from '../data/project-videos';
+interface Props { slug: string; }
+const { slug } = Astro.props;
+const work = catalog.find(w => w.id === slug)!;
+import { asset } from '../data/assets';
+
+// Decode display-sized images during navigation; fetch originals only for expanded previews.
+const projectImage = (path: string, poster = false) => {
+  const original = asset(path);
+  const widths = poster ? [480, 960, 1600] : [320, 640, 960];
+  const resized = (width: number) => `${original}?x-oss-process=image/resize,w_${width}`;
+  return {
+    src: resized(poster ? 960 : 640),
+    srcset: widths.map(width => `${resized(width)} ${width}w`).join(', '),
+    sizes: poster ? '(min-width: 768px) 36vw, 90vw' : '(min-width: 768px) 18vw, 44vw',
+    'data-preview-src': original,
+  };
+};
+---
+
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-mono-cn);
+      background-color: #040A10;
+      color: #a3a3a3;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      user-select: none;
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .project-stack {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .site-header-room {
+      padding-top: 6rem;
+    }
+
+    .project-entry {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      scroll-margin-top: 7rem;
+      --thumb-offset: 2rem;
+      --footer-top-gap: 4rem;
+      --footer-bottom-gap: 2rem;
+    }
+
+    .project-entry {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 100vh;
+    }
+    .project-entry:target { content-visibility: visible; }
+
+    .left-panel {
+      position: relative;
+      order: 2;
+      width: 100%;
+      min-height: 50vh;
+      border-bottom: 1px solid #161C22;
+      z-index: 10;
+      background: #01070D;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .left-panel-label {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      color: #404040;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      z-index: 30;
+    }
+
+    .img-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      flex: none;
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid #161C22;
+      background: #040A10;
+      cursor: zoom-in;
+    }
+
+    .corner-tl {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1rem;
+      height: 1rem;
+      border-top: 1px solid #ACDBFB;
+      border-left: 1px solid #ACDBFB;
+      z-index: 20;
+      transition: all 0.3s;
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 1rem;
+      height: 1rem;
+      border-bottom: 1px solid #ACDBFB;
+      border-right: 1px solid #ACDBFB;
+      z-index: 20;
+      transition: all 0.3s;
+    }
+
+    .img-container:hover .corner-tl,
+    .img-container:hover .corner-br {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: grayscale(0.2);
+      transition: all 0.7s;
+      display: block;
+    }
+
+    .img-container:hover .main-img {
+      filter: grayscale(0);
+    }
+
+    .visual-caption {
+      color: #525252;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      line-height: 1.7;
+      margin-top: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #161C22;
+    }
+
+    .visual-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .visual-meta-item {
+      min-width: 0;
+    }
+
+    .visual-meta-label {
+      color: #404040;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      margin-bottom: 0.35rem;
+    }
+
+    .visual-meta-value {
+      color: #d4d4d4;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: break-word;
+    }
+
+    .thumb-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: var(--thumb-offset);
+    }
+
+    .thumb-item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border: 1px solid #161C22;
+      background: #090F15;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .thumb-strip-wide .thumb-item {
+      aspect-ratio: 16 / 9;
+    }
+
+    .project-entry-never .thumb-item {
+      aspect-ratio: 16 / 10;
+    }
+
+    .project-entry-synesthesia .thumb-item img {
+      filter: grayscale(0.18);
+      transform: scale(1.82);
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(1) img {
+      transform-origin: 8% 36%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(2) img {
+      transform-origin: 48% 43%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(3) img {
+      transform-origin: 92% 40%;
+    }
+
+    .project-entry-synesthesia .thumb-item:nth-child(4) img {
+      transform-origin: 55% 92%;
+    }
+
+    .project-entry-synesthesia .thumb-item:hover img {
+      filter: grayscale(0);
+      transform: scale(1.94);
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(0.55);
+      transition: filter 0.35s, transform 0.35s;
+    }
+
+    .thumb-item:hover img {
+      filter: grayscale(0);
+      transform: scale(1.04);
+    }
+
+    .thumb-index {
+      position: absolute;
+      left: 0.5rem;
+      bottom: 0.45rem;
+      color: #ACDBFB;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 10px #040A10;
+    }
+
+    .archive-rail {
+      margin-top: auto;
+      position: relative;
+      padding-top: var(--footer-top-gap);
+      padding-bottom: var(--footer-bottom-gap);
+    }
+
+    .archive-rail-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, #ACDBFB, #161C22 45%, transparent);
+    }
+
+    .archive-rail-text {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #404040;
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: 0.24em;
+    }
+
+    .preview-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 79;
+      pointer-events: none;
+      background: rgba(4, 10, 16, 0);
+      opacity: 0;
+      transition: opacity 0.28s ease, background 0.28s ease;
+    }
+
+    .preview-backdrop.active {
+      opacity: 1;
+      background: rgba(4, 10, 16, 0.68);
+    }
+
+    .right-panel {
+      order: 1;
+      width: 100%;
+      min-height: 50vh;
+      z-index: 20;
+      position: relative;
+      background: #040A10;
+      padding: 3.5rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .file-label {
+      color: #ACDBFB;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pulse-dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      background: #ACDBFB;
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .title-main {
+      color: white;
+      font-size: 2.25rem;
+      font-family: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+      -webkit-text-stroke: 0.015em currentColor;
+      text-shadow: 0 0 0 currentColor;
+    }
+
+    .title-sub {
+      color: #737373;
+      font-size: 0.875rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .project-video-link {
+      align-items: center;
+      border: 1px solid rgba(172, 219, 251, 0.46);
+      border-radius: 10px;
+      color: #ACDBFB;
+      display: inline-flex;
+      font-size: 0.72rem;
+      font-weight: 700;
+      gap: 0.65rem;
+      letter-spacing: 0.22em;
+      margin-top: 1.8rem;
+      padding: 0.75rem 1.05rem;
+      text-decoration: none;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .project-video-link::before {
+      background: currentColor;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      content: "";
+      display: block;
+      height: 0.58rem;
+      width: 0.48rem;
+    }
+
+    .project-video-link:hover,
+    .project-video-link:focus-visible {
+      background: #ACDBFB;
+      border-color: #ACDBFB;
+      color: #040A10;
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      border-top: 1px solid #161C22;
+      border-bottom: 1px solid #161C22;
+      padding: 1.5rem 0;
+      margin: 2rem 0;
+      background: rgba(4, 10, 16, 0.3);
+    }
+
+    html[data-theme="light"] .project-stack .meta-grid {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .meta-item-label {
+      color: #525252;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.375rem;
+    }
+
+    .meta-item-value {
+      color: #e5e5e5;
+      font-size: 0.875rem;
+    }
+
+    .meta-item-value.green {
+      color: #ACDBFB;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      color: white;
+      font-size: 0.875rem;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      border-left: 2px solid #ACDBFB;
+      padding-left: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #a3a3a3;
+      text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .footer {
+      margin-top: auto;
+      position: relative;
+      padding-top: var(--footer-top-gap);
+      padding-bottom: var(--footer-bottom-gap);
+      color: #252B31;
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: 0.3em;
+      border-top: 1px solid #161C22;
+    }
+
+    /* 桌面端响应式 */
+    @media (min-width: 768px) {
+      .project-entry {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+      }
+
+      .left-panel {
+        position: relative;
+        order: 1;
+        width: 40%;
+        height: auto;
+        min-height: 100vh;
+        border-bottom: none;
+        border-left: 0;
+        border-right: 1px solid #161C22;
+        padding: 3rem;
+        flex-shrink: 0;
+      }
+
+      .main-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .right-panel {
+        order: 2;
+        width: 60%;
+        margin-left: 0;
+        margin-top: 0;
+        min-height: 100vh;
+        padding: 5rem 3rem 3rem;
+      }
+
+      .title-main {
+        font-size: 3.5rem;
+      }
+
+      .title-sub {
+        font-size: 1rem;
+      }
+
+
+      .section-text {
+        font-size: 15px;
+        line-height: 1.8;
+        text-align: left;
+      }
+
+    }
+
+    @media (min-width: 1024px) {
+      .left-panel {
+        padding: 4rem;
+      }
+
+      .right-panel {
+        padding: 6rem 5rem 4rem;
+      }
+
+      .title-main {
+        font-size: 4.5rem;
+      }
+
+      .title-sub {
+        font-size: 1.125rem;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .meta-full-width {
+        grid-column: span 3;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .left-panel {
+        padding-bottom: 5rem;
+      }
+
+      .right-panel {
+        padding: 6rem 6rem 5rem;
+      }
+    }
+
+  </style>
+
+  <div class="grid-bg"></div>
+
+  <main class="project-stack">
+    {slug === "never-extinguished" && (<article id="never-extinguished" class="project-entry project-entry-never">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp', true)}
+                alt="Never Extinguished Promo"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">ART THERAPY</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">APPLICATION PROGRAM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NOSTALGIA / ASH</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">BEIJING</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip">
+          <div class="thumb-item">
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景2 拷贝.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景3 拷贝.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/VR严肃游戏《未曾熄灭的》游戏场景4 拷贝.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Serious Game / VR</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Unity / Meta XR</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              《未曾熄灭的》 是一款面向东北下岗潮中老年亲历者的VR严肃游戏。该游戏旨在通过沉浸式交互叙事与虚拟现实技术，探索对群体性历史创伤的视觉补偿机制
+游戏以1:1还原的90年代末东北中型车间为场景，玩家可通过手势识别与自然交互，亲身参与如操纵车床、整理零件、盖印章等“修复性工作”。
+随着交互的完成，昏暗的车间逐渐被点亮，象征从“失落”走向“和解”。
+            </p>
+          </div>
+
+          <div class="section">
+            <h2 class="section-title">设计探索 / EXPLORATION</h2>
+            <p class="section-text">
+              该项目融合怀旧疗法、游戏化设计与适老化交互，尝试为特定历史创伤群体提供一条温和、直观的心理疗愈路径。
+              后续我将持续完善这个游戏，并邀请更多的东北下岗潮亲历者参与测试，以确保它真正触及并帮助到需要的人群。
+            </p>
+          </div>
+        </section>
+
+
+      </div>
+    </article>)}
+
+    {slug === "liminal" && (<article id="liminal" class="project-entry project-entry-liminal">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('posters/Liminal封面.png', true)}
+                alt="Liminal-The Fantasy at the Edge"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">CONTEMPORARY ART</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">AUDIO-VISUAL CONTENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">CALM / ANXIETY</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img {...projectImage('images/Liminal-视频截图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Liminal-视频截图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Liminal-视频截图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Liminal-视频截图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Experimental Films</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Blender / Filmora</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              虚构与真实的界限是什么？ 这似乎是一个去时代化的命题。 从千万年前人类第一次仰望星空起，虚构便已存在于这个世界。 而现在，这个古老的问题产生了新的境况： 如果说古代的虚构源于对未知的想象，那么当代的虚构则源于算法的增殖。从互联网的诞生到AI的出现，在短短几十年内，算法驱动的虚构体量已超过了既往文明的总和。 虚构曾是现实的镜像；现在，算法使镜像脱离实体，进行着指数级的自我复制。 虚构与真实的界限正变得愈发模糊。在这个算法可以批量生产虚构的时代，我们要从哪里找到仅存的真实？ 当临界点到来，当虚构溢出屏幕，当现实充斥虚构。 寻找真实，或适应虚构——这并非选择，而是一种演化状态。 我们应该如何迎接这样的世界？我希望能通过这个短片启发你产生一些对于这个问题的思考。
+            </p>
+          </div>
+
+
+        </section>
+
+
+      </div>
+    </article>)}
+
+    {slug === "stare-ewsn" && (<article id="stare-ewsn" class="project-entry project-entry-magnetic">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('images/艺术装置《starE》- P7.webp', true)}
+                alt="starE Promo Poster"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">DATA VISUALIZATION</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">PHYSICAL WORKS</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">CALM / RATIONAL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img {...projectImage('images/艺术装置《starE》- P8.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/艺术装置《starE》- P1.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/艺术装置《任尔EWSN风？》-P2.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/艺术装置《任尔EWSN风？》-P3.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2025</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">INSTALLATION ART</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Raspberry Pi 4b</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              在艺术创作中融入对社会问题的探讨，是我创作的核心特点之一：随着互联网在我们日常生活中起着越来越重要的作用，互联网的讨论环境似乎每况愈下，“网络二极管”现象的爆发就是其最普遍的体现之一。我们对这一现象的成因进行了调查，最终得以稍微的窥探其中的原因。为了使观众能够直观的意识到“网络二极管”是怎样形成的，我们创造性的以“磁场”来进行比喻：围绕着磁极产生的磁场，正如围绕着意见领袖产生的舆论场一般。这个比喻恰当且富有科幻的浪漫，我们围绕着这个比喻创作了两件装置艺术作品：《starE》&《任尔EWSN风？》
+
+            </p>
+          </div>
+
+
+        </section>
+
+
+      </div>
+    </article>)}
+
+    {slug === "nazhou-ar" && (<article id="nazhou-ar" class="project-entry project-entry-ar">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('posters/那洲村AR导览DEMO演示视频封面.png', true)}
+                alt="Nazo Village AR Guide Demo Promo Poster"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">DIGITAL EMPOWERMENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">APPLICATION PROGRAM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img {...projectImage('images/那洲AR演示图01.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/那洲AR演示图02.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/那洲AR演示图03.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/那洲AR演示图04.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Guided Tour Game / AR</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Unity / Tripo</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              我为三创赛参赛项目：《画意那洲·文化寻根——艺术古村文旅赋能计划》制作了一个AR导览游戏Demo；在景区导览中融入AR技术，是现在各个景区进行数字化转型的重要方式之一。我们通过这个AR导览游戏鼓励参观的游客像玩RPG时收集地图中的宝箱一样收集我们藏在景区里的“拼图碎片”，通过这样的方式，我们可以增加游客在景区里停留的时间，同时还能通过引导游客寻找“碎片”来避免游客漏掉景区中的某些游览区域。
+
+            </p>
+          </div>
+
+
+        </section>
+
+
+      </div>
+    </article>)}
+
+    {slug === "miao-generator" && (<article id="miao-generator" class="project-entry project-entry-miao">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('images/施洞苗绣1.webp', true)}
+                alt="starE Promo Poster"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">Digital Intangible Culture Heritage</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">Interactive Web Page</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img {...projectImage('images/施洞苗绣2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/施洞苗绣3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/施洞苗绣4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/施洞苗绣5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Digital Art</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Vercel / Codex</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              本作品是一项聚焦于非遗数字转译的游戏化交互设计尝试。我们提取了“施洞苗族刺绣”中的蝴蝶、龙、鱼等九大传统视觉图腾，并开发出一款集数字再创作与非遗传播于一体的交互网页。作品立足于基础的 UI/UX 与前端交互设计，用户可通过控制面板自由组合刺绣元素，调节构图（团花/连续）、色板（节庆红/清水江）以及双针锁绣、破线绣等刺绣质感。同时，作品尝试融入了 AI 纹样评审功能，用户在完成共创后，系统会从构图、色彩等维度输出一份智能评分与优化建议。作品旨在通过数字美学为古老纹样提供一种趣味性的交互可能，用务实的方式为非遗的活态传承提供基础的数字化思路。
+            </p>
+          </div>
+
+
+        </section>
+
+
+      </div>
+    </article>)}
+
+     {slug === "shadow-shell" && (<article id="shadow-shell" class="project-entry project-entry-shadow-shell">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+
+        <div class="img-container">
+           <div class="corner-tl"></div>
+           <div class="corner-br"></div>
+
+           <img {...projectImage('images/Shadow Shell 1.webp', true)}
+                alt="starE Promo Poster"
+                loading="lazy" decoding="async" data-hover-preview
+                data-preview-label="PROMO_POSTER // PRIMARY"
+                class="main-img" />
+        </div>
+
+        <div class="visual-caption"></div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">Architecture</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">Hollow PP board</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">NULL</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">ZHUHAI</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img {...projectImage('images/Shadow Shell 2.webp')} alt="Scene thumbnail 1" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Shadow Shell 3.webp')} alt="Scene thumbnail 2" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Shadow Shell 4.webp')} alt="Scene thumbnail 3" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img {...projectImage('images/Shadow Shell 5.webp')} alt="Scene thumbnail 4" loading="lazy" decoding="async" data-hover-preview data-preview-label="ENV_SCAN // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Architecture</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Various construction tools</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              本构筑物以“壳”为外形，“影”为媒介，依傍元白楼中庭树池设置，将穿行人流引入一处可入、可立、可坐的微型空间。整体由11片白色PP中空板拱形单元连续排列而成，侧向取自黄金螺线，正向呈半圆，宛如一枚展开的身体保护壳，既是骨架也象征个体的聚集。空间内部，“影”被转化为三层叙事：凤凰树的自然树影回应场地中心，拱形板与栅格切分出结构之影，而人在栅格后若隐若现则形成身体之影；由此，空间自然衍生出明朗外向的“站区A”（顶部完全开放）、安静内聚的“站区B”（设栅格顶棚）以及顺应花坛边界供人停留对话的“坐区”。设计成功转译了自然界生物壳“保护与容纳”的逻辑，半围合的连续拱肋赋予身体被包裹的安定感，并利用缝隙与开口保持与外部的联系——“壳”提供了边界，但不切断关系；它制造了内部，却始终让内外持续交流。
+            </p>
+          </div>
+
+
+        </section>
+
+
+      </div>
+    </article>)}
+
+    {slug === "synesthesia-canvas" && (<article id="synesthesia-canvas" class="project-entry project-entry-synesthesia">
+      <div class="left-panel">
+        <div class="left-panel-label">VISUAL_DATA // INTERACTIVE_CANVAS</div>
+
+        <div class="img-container">
+          <div class="corner-tl"></div>
+          <div class="corner-br"></div>
+
+          <img src="/synesthesia-canvas-real.png"
+               alt="通感画布真实互动音乐创作界面截图"
+               loading="lazy" decoding="async" data-hover-preview
+               data-preview-label="INTERACTIVE_CANVAS // PRIMARY"
+               class="main-img" />
+        </div>
+
+        <div class="visual-caption">DRAW SOUND / HEAR COLOR // REAL-TIME GENERATIVE INTERFACE</div>
+
+        <div class="visual-meta">
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">FIELD</div>
+            <div class="visual-meta-value">CREATIVE CODING</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MEDIUM</div>
+            <div class="visual-meta-value">INTERACTIVE WEB INSTRUMENT</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">MOOD</div>
+            <div class="visual-meta-value">COLOR / RHYTHM</div>
+          </div>
+          <div class="visual-meta-item">
+            <div class="visual-meta-label">LOCATION</div>
+            <div class="visual-meta-value">BROWSER</div>
+          </div>
+        </div>
+
+        <div class="thumb-strip thumb-strip-wide">
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="声音画笔局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="SOUND_BRUSHES // 01" />
+            <span class="thumb-index">01</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="绘图声音画布局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="DRAWING_CANVAS // 02" />
+            <span class="thumb-index">02</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="声音参数映射局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="SOUND_MAPPING // 03" />
+            <span class="thumb-index">03</span>
+          </div>
+          <div class="thumb-item">
+            <img src="/synesthesia-canvas-cover.svg" alt="作品播放控制局部预览" loading="lazy" decoding="async" data-hover-preview data-preview-label="PLAYBACK_CONTROL // 04" />
+            <span class="thumb-index">04</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">{work.title}</h1>
+          <p class="project-summary">{work.summary}</p>
+          {work.actionHref && !projectVideos[work.id]?.length && <a class="project-video-link" href={work.actionHref} target={work.actionHref.startsWith('https:') ? '_blank' : undefined} rel={work.actionHref.startsWith('https:') ? 'noopener noreferrer' : undefined}>{work.action} ↗</a>}
+        </header>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-item-label">年份</div>
+            <div class="meta-item-value">2026</div>
+          </div>
+          <div>
+            <div class="meta-item-label">创作类型</div>
+            <div class="meta-item-value green">Creative Coding / Digital Art</div>
+          </div>
+          <div class="meta-full-width">
+            <div class="meta-item-label">创作工具</div>
+            <div class="meta-item-value">Next.js / Web Audio API / Canvas / TypeScript</div>
+          </div>
+        </div>
+
+        <section>
+          <div class="section">
+            <h2 class="section-title">创作想法 / CONCEPT</h2>
+            <p class="section-text">
+              《通感画布》是一件把图形实时翻译成音乐的浏览器乐器。用户可以像绘画一样放置颜色、形状和轨迹，并直接听见它们形成的旋律、和声与节奏。作品内置 13 种声音、13 组音阶与无限延展时间轴，也支持变奏、工程分享和 WAV 导出，让一次即兴绘制成为可以继续编辑、传播与保存的音乐作品。
+            </p>
+          </div>
+
+          <div class="section">
+            <h2 class="section-title">如何运作 / INTERACTION</h2>
+            <p class="section-text">
+              画布把视觉参数与声音参数建立一一对应：横向位置决定时间与声像，纵向位置决定音高，形状宽度决定持续时间，大小决定力度，不同颜色与画笔则对应不同音色。所有合成与播放都在浏览器本地完成，使观众无需音乐制作经验，也能通过直观的视觉动作组织一段属于自己的声音。
+            </p>
+          </div>
+        </section>
+
+
+      </div>
+    </article>)}
+
+  </main>
+
+  <div class="preview-backdrop" aria-hidden="true"></div>
+
+
+
+  <script is:inline>
+    // @ts-nocheck
+    const previewBackdrop = document.querySelector('.preview-backdrop');
+    const previewTargets = document.querySelectorAll('[data-hover-preview]');
+    let activePreview = null;
+    let activeTarget = null;
+    let activeAnimation = null;
+    let closeTimer = null;
+    let previewState = 'idle';
+
+    const previewTiming = {
+      duration: 560,
+      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      fill: 'forwards',
+    };
+
+    const getContainRect = (image, maxWidth, maxHeight) => {
+      const ratio = image.naturalWidth && image.naturalHeight
+        ? image.naturalWidth / image.naturalHeight
+        : image.getBoundingClientRect().width / image.getBoundingClientRect().height;
+
+      let width = maxWidth;
+      let height = width / ratio;
+
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * ratio;
+      }
+
+      return {
+        width,
+        height,
+        left: (window.innerWidth - width) / 2,
+        top: (window.innerHeight - height) / 2,
+      };
+    };
+
+    const applyPreviewRect = (image, rect, objectFit) => {
+      image.style.left = `${rect.left}px`;
+      image.style.top = `${rect.top}px`;
+      image.style.width = `${rect.width}px`;
+      image.style.height = `${rect.height}px`;
+      image.style.objectFit = objectFit;
+    };
+
+    const rectFromElement = (element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    };
+
+    const cancelActiveAnimationAtCurrentFrame = () => {
+      if (!activePreview || !activeAnimation) return null;
+
+      const currentRect = rectFromElement(activePreview);
+      activeAnimation.cancel();
+      activeAnimation = null;
+      applyPreviewRect(activePreview, currentRect, activePreview.style.objectFit || 'contain');
+      activePreview.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+      return currentRect;
+    };
+
+    const animatePreviewRect = (image, fromRect, toRect, options = {}) => {
+      applyPreviewRect(image, toRect, options.toFit || image.style.objectFit || 'contain');
+      image.style.transformOrigin = 'top left';
+
+      const fromTransform = `translate3d(${fromRect.left - toRect.left}px, ${fromRect.top - toRect.top}px, 0) scale(${fromRect.width / toRect.width}, ${fromRect.height / toRect.height})`;
+
+      const animation = image.animate(
+        [
+          {
+            transform: fromTransform,
+            opacity: options.fromOpacity ?? 1,
+          },
+          {
+            transform: 'translate3d(0, 0, 0) scale(1, 1)',
+            opacity: options.toOpacity ?? 1,
+          },
+        ],
+        previewTiming
+      );
+
+      activeAnimation = animation;
+
+      animation.finished
+        .then(() => {
+          if (activeAnimation !== animation || activePreview !== image) return;
+          applyPreviewRect(image, toRect, options.toFit || image.style.objectFit || 'contain');
+          image.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+          image.style.opacity = `${options.toOpacity ?? 1}`;
+          activeAnimation = null;
+          previewState = options.removeOnFinish ? 'idle' : options.state || previewState;
+
+          if (options.removeOnFinish) {
+            removePreview();
+          }
+        })
+        .catch(() => {});
+
+      return animation;
+    };
+
+    const removePreview = () => {
+      if (activeAnimation) {
+        activeAnimation.cancel();
+        activeAnimation = null;
+      }
+
+      if (!activePreview) return;
+      activePreview.remove();
+      activePreview = null;
+      activeTarget = null;
+      previewState = 'idle';
+      previewBackdrop.classList.remove('active');
+    };
+
+    const showPreview = (event) => {
+      const image = event.currentTarget;
+      const sourceRect = image.getBoundingClientRect();
+      const targetRect = getContainRect(image, window.innerWidth * 0.78, window.innerHeight * 0.78);
+
+      window.clearTimeout(closeTimer);
+
+      if (activePreview && activeTarget === image && previewState !== 'closing') {
+        return;
+      }
+
+      removePreview();
+
+      const clone = image.cloneNode(false);
+      activePreview = clone;
+      activeTarget = image;
+
+      clone.removeAttribute('data-hover-preview');
+      clone.removeAttribute('srcset');
+      clone.removeAttribute('sizes');
+      clone.src = image.currentSrc || image.src;
+      // Keep the decoded thumbnail visible until the original is ready to swap in.
+      if (image.dataset.previewSrc) {
+        const fullSize = new Image();
+        fullSize.decoding = 'async';
+        fullSize.src = image.dataset.previewSrc;
+        fullSize.decode().then(() => {
+          if (activePreview === clone) clone.src = fullSize.src;
+        }).catch(() => {});
+      }
+      clone.style.position = 'fixed';
+      clone.style.zIndex = '80';
+      clone.style.margin = '0';
+      clone.style.border = '1px solid rgba(172, 219, 251, 0.48)';
+      clone.style.background = '#040A10';
+      clone.style.boxShadow = '0 0 40px rgba(0, 0, 0, 0.85), 0 0 32px rgba(172, 219, 251, 0.14)';
+      clone.style.pointerEvents = 'none';
+      clone.style.transform = 'translateZ(0)';
+      clone.style.transformOrigin = 'top left';
+      clone.style.transition = 'none';
+      clone.style.animation = 'none';
+      clone.style.filter = 'none';
+      clone.style.willChange = 'transform, opacity';
+      clone.style.opacity = '0.98';
+
+      applyPreviewRect(clone, sourceRect, getComputedStyle(image).objectFit || 'cover');
+      document.body.appendChild(clone);
+      previewBackdrop.classList.add('active');
+      previewState = 'opening';
+      animatePreviewRect(clone, sourceRect, targetRect, {
+        fromOpacity: 0.98,
+        toOpacity: 1,
+        toFit: 'contain',
+        state: 'open',
+      });
+    };
+
+    const hidePreview = (event) => {
+      if (!activePreview || event.currentTarget !== activeTarget) return;
+      if (previewState === 'closing') return;
+
+      const sourceRect = activeTarget.getBoundingClientRect();
+      const clone = activePreview;
+      const currentRect = cancelActiveAnimationAtCurrentFrame() || rectFromElement(clone);
+
+      previewBackdrop.classList.remove('active');
+      previewState = 'closing';
+      animatePreviewRect(clone, currentRect, sourceRect, {
+        fromOpacity: Number.parseFloat(getComputedStyle(clone).opacity) || 1,
+        toOpacity: 0,
+        toFit: getComputedStyle(activeTarget).objectFit || 'cover',
+        removeOnFinish: true,
+        state: 'idle',
+      });
+    };
+
+    previewTargets.forEach((image) => {
+      image.addEventListener('mouseenter', showPreview);
+      image.addEventListener('mouseleave', hidePreview);
+      image.addEventListener('focus', showPreview);
+      image.addEventListener('blur', hidePreview);
+    });
+  </script>
+
+
+<style>
+  .project-introduction { margin-bottom:1.8rem; }
+  .project-kicker { color:var(--ed-blue); font-size:.72rem; margin-bottom:1rem; }
+  .project-summary { color:var(--ed-muted); line-height:1.9; font-size:1rem; margin:1.2rem 0; max-width:34em; }
+  .project-entry { content-visibility:visible; min-height:0; }
+  .left-panel { background:var(--ed-bg); }
+  .right-panel { background:var(--ed-bg); padding-top:2rem; min-height:0; }
+  .title-main { font-size:clamp(2.2rem,4.4vw,4.8rem); line-height:1.25; letter-spacing:-.035em; }
+  .meta-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; padding:1rem 0; margin:1.8rem 0; }
+  .meta-item-label { color:var(--ed-muted); letter-spacing:.04em; font-size:.65rem; }
+  .section-title { letter-spacing:.03em; font-size:.95rem; }
+  .section-text { line-height:2; color:var(--ed-muted); }
+  .left-panel-label { color:var(--ed-muted); letter-spacing:.08em; }
+  .thumb-strip { margin-top:2rem; }
+  .visual-meta { border-top:1px solid var(--ed-line); padding-top:1.25rem; }
+  .visual-meta-label { color:var(--ed-muted); }
+  .visual-meta-value { color:var(--ed-ink); }
+  .project-video-link { letter-spacing:.04em; }
+  .visual-caption:empty { display:none; }
+  @media(min-width:768px) {
+    .left-panel { min-height:0; padding:2rem 3rem 3rem; }
+    .right-panel { padding:2rem 3rem 3rem; }
+    /* Stretch both columns together and keep their last content on a shared baseline. */
+    .left-panel .thumb-strip { margin-top:auto; padding-top:2rem; }
+    .right-panel > section { margin-top:auto; }
+    .right-panel > section > .section:last-child { margin-bottom:0; }
+  }
+</style>
+<style>
+  @media(max-width:767px) {
+    .project-entry { display:grid; grid-template-columns:minmax(0,1fr); }
+    .right-panel { display:contents; }
+    .right-panel > .project-introduction { order:0; padding:1.5rem; margin-bottom:0; }
+    .left-panel { order:1; min-height:0; padding:1.5rem; border:0; }
+    .right-panel > .meta-grid { order:2; margin:1.5rem; }
+    .right-panel > section { order:3; padding:1.5rem; }
+  }
+</style>

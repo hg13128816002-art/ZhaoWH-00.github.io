@@ -7,7 +7,7 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
 ---
 
 <Layout
-  title="Contact // HAO"
+  title="联系与交流 — Zhao Wenhao"
   viewport="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   bodyClass="min-h-screen w-screen bg-[#090F15] text-neutral-100 flex flex-col justify-between px-6 pb-6 pt-6 md:px-12 md:pb-12 md:pt-10 relative overflow-x-hidden select-none box-border"
 >
@@ -121,10 +121,10 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
     resize(); setTimeout(resize, 100);
     canvas.style.visibility = 'hidden';
 
-    let targetFrequency = 0.02;
-    let currentFrequency = 0.02;
-    let targetAmplitude = height * 0.3; 
-    let currentAmplitude = height * 0.3;
+    let targetFrequency = 0.018;
+    let currentFrequency = 0.018;
+    let targetAmplitude = height * 0.12;
+    let currentAmplitude = height * 0.12;
     let phase = 0;
 
     // 支持移动端轻触与电脑端鼠标调频
@@ -132,8 +132,8 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
       if (feedback.style.opacity === '0' || feedback.style.opacity === '') {
         const normY = clientY / window.innerHeight;
         const normX = clientX / window.innerWidth;
-        targetFrequency = 0.01 + normY * 0.08;
-        targetAmplitude = (height * 0.15) + normX * (height * 0.6);
+        targetFrequency = 0.008 + normY * 0.02;
+        targetAmplitude = (height * 0.06) + normX * (height * 0.14);
       }
     };
 
@@ -147,24 +147,24 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
     function animate() {
       ctx.clearRect(0, 0, width, height);
 
-      currentFrequency += (targetFrequency - currentFrequency) * 0.08;
-      currentAmplitude += (targetAmplitude - currentAmplitude) * 0.08;
-      phase += 0.1;
+      currentFrequency += (targetFrequency - currentFrequency) * 0.05;
+      currentAmplitude += (targetAmplitude - currentAmplitude) * 0.05;
+      phase += 0.045;
 
       ctx.strokeStyle = '#191F25';
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(0, height / 2); ctx.lineTo(width, height / 2); ctx.stroke();
 
       ctx.strokeStyle = '#ACDBFB';
-      ctx.lineWidth = window.innerWidth < 768 ? 2 : 3;
-      ctx.shadowBlur = feedback.style.opacity === '1' ? 20 : 0;
+      ctx.lineWidth = window.innerWidth < 768 ? 1.5 : 2;
+      ctx.shadowBlur = feedback.style.opacity === '1' ? 8 : 0;
       ctx.shadowColor = '#ACDBFB';
       ctx.beginPath();
 
       for (let x = 0; x < width; x++) {
         const y = height / 2 
                 + Math.sin(x * currentFrequency + phase) * currentAmplitude 
-                + Math.cos(x * currentFrequency * 2 - phase) * (currentAmplitude * 0.25);
+                + Math.cos(x * currentFrequency * 2 - phase) * (currentAmplitude * 0.12);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
       ctx.stroke();
@@ -200,14 +200,14 @@ const headerText = '嗨！很高兴你能看到这里，如果你对我的作品
             targetLabel.style.color = '#ACDBFB';
             targetLabel.style.fontWeight = 'bold';
             
-            targetAmplitude = height * 0.9; 
+            targetAmplitude = height * 0.26;
             feedback.style.opacity = '1';
 
             setTimeout(() => {
               targetLabel.innerText = originalTexts.get(btnId);
               targetLabel.style.color = '#a3a3a3';
               targetLabel.style.fontWeight = 'normal';
-              targetAmplitude = height * 0.3;
+              targetAmplitude = height * 0.12;
               feedback.style.opacity = '0';
             }, 1400);
           }).catch(() => {

@@ -1,8 +1,8 @@
 ---
 // 首页区块导航：固定在视口中，独立于全站的跨页导航。
 const sections = [
-  { id: 'timeline', label: 'Timeline' },
   { id: 'works', label: 'Works' },
+  { id: 'timeline', label: 'Timeline' },
   { id: 'profile', label: 'Profile' },
 ];
 ---
@@ -102,10 +102,12 @@ const sections = [
       left: 50%;
       transform: translateX(-50%);
       flex-direction: row;
-      gap: 1.2rem;
-      padding: 0.25rem 0.85rem;
+      width: max-content;
+      max-width: calc(100vw - 5rem);
+      gap: 0.75rem;
+      padding: 0.25rem 0.4rem;
     }
-    .home-section-nav a { min-height: 2.5rem; font-size: 0.73rem; }
+    .home-section-nav a { min-height: 2.5rem; font-size: 0.7rem; white-space: nowrap; }
   }
   @media (prefers-reduced-motion: reduce) {
     .home-section-nav, .home-section-nav a { transition: none; }

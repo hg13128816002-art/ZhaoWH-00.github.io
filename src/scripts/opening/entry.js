@@ -5,7 +5,7 @@ export function claimOpeningEntry() {
   let visited = false;
   try {
     visited = window.sessionStorage.getItem(key) === 'true';
-    // Mark the visit before permission/loading, so even an immediate refresh skips the film.
+    // Mark the visit before loading, so even an immediate refresh skips the film.
     window.sessionStorage.setItem(key, 'true');
   } catch { /* Navigation type and referrer still prevent reload/internal replay. */ }
   if (navigation === 'reload') return 'reload';

@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectDetail from '../../components/ProjectDetail.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import ConversationFooter from '../../components/ConversationFooter.astro';
+import WorkVideos from '../../components/WorkVideos.astro';
+import { catalog, detailedIds } from '../../data/catalog';
+import { projectVideos } from '../../data/project-videos';
+import '../../styles/editorial.css';
+export function getStaticPaths() { return catalog.map(work => ({params:{slug:work.id},props:{work}})); }
+const { work } = Astro.props;
+const related = [...catalog.filter(w=>w.id !== work.id && w.collection === work.collection), ...catalog.filter(w=>w.id !== work.id && w.collection !== work.collection)].slice(0,2);
+---
+<Layout title={`${work.title} — Zhao Wenhao`} lang="zh-CN" bodyClass="project-detail-page catalog-page">
+  <nav class="detail-wayfinding" aria-label="作品路径"><a href="/works/">← 全部作品</a><span>/</span><a href={`/works/?category=${work.collection}`}>{work.collectionLabel}</a></nav>
+  {detailedIds.includes(work.id) ? <ProjectDetail slug={work.id} /> : (
+    <main class="editorial-section simple-work">
+      <p class="eyebrow">{work.era}</p><h1>{work.title}</h1><p class="simple-summary">{work.summary}</p>
+      {work.actionHref && !projectVideos[work.id]?.length && <a class="editorial-button" href={work.actionHref}>{work.action} ↗</a>}
+      <figure class="simple-work-media"><img src={work.image} alt={work.imageAlt} decoding="async" /></figure>
+      <div class="simple-work-copy"><h2>关于作品</h2><p>{work.description}</p></div>
+    </main>
+  )}
+  <WorkVideos workId={work.id} />
+  <section class="editorial-section" aria-labelledby="related-title">
+    <div class="editorial-heading"><div><p class="eyebrow">KEEP EXPLORING</p><h2 id="related-title">沿着兴趣，继续看。</h2></div><a class="work-card-link" href="/works/">全部作品 ↗</a></div>
+    <div class="catalog-grid">{related.map((item,index)=><WorkCard work={item} index={index}/>)}</div>
+  </section>
+  <ConversationFooter />
+</Layout>

@@ -129,38 +129,8 @@ document.documentElement.dataset.openingEntry = claimOpeningEntry();
       <path data-outro-mark />
     </g>
   </svg>
-  <!-- Fade 21.3–23.7 s to silence; retain the original 24.624 s length and musical cues. -->
-  <audio data-opening-audio preload="none" src="/opening/z-opening-37.mp3?v=fade-2400-v2"></audio>
-  <button class="opening-start" type="button" data-opening-start hidden>
-    <span aria-hidden="true">▶</span><span data-opening-start-label>播放开场 · 开启声音</span>
-  </button>
-  <span class="opening-status" data-opening-status role="status" aria-live="polite"></span>
 </div>
-<div class="opening-controls" data-opening-controls hidden>
-  <button class="opening-control opening-sound" type="button" data-opening-sound data-enabled="false" aria-label="打开声音" title="打开声音" aria-pressed="false">
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M11 5 6 9H3v6h3l5 4Z" />
-      <g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></g>
-      <path class="sound-off" d="m16 9 5 6m0-6-5 6" />
-    </svg>
-  </button>
-  <button class="opening-control opening-pause" type="button" data-opening-pause data-paused="false" aria-label="暂停开场动画" title="暂停开场动画">
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-      <g class="pause-icon"><rect x="7" y="5" width="3" height="14" /><rect x="14" y="5" width="3" height="14" /></g>
-      <path class="play-icon" d="m8 5 11 7-11 7Z" />
-    </svg>
-  </button>
-</div>
-<dialog class="opening-consent" data-opening-consent aria-labelledby="opening-consent-title">
-  <div class="opening-consent-content">
-    <h2 id="opening-consent-title" tabindex="-1" autofocus>是否允许本网页播放声音？</h2>
-    <div class="opening-consent-actions">
-      <button type="button" data-opening-deny>不允许</button>
-      <button type="button" data-opening-allow>允许</button>
-    </div>
-  </div>
-</dialog>
-<noscript><style>.hero-opening, .opening-controls { display: none !important; }</style></noscript>
+<noscript><style>.hero-opening { display: none !important; }</style></noscript>
 
 <style>
   :global(html[data-opening-entry]:not([data-opening-entry="fresh"])) .hero-opening { display: none !important; }
@@ -175,90 +145,7 @@ document.documentElement.dataset.openingEntry = claimOpeningEntry();
     contain: layout paint;
   }
   .hero-opening .zo-stage { display: block; width: 100%; height: 100%; overflow: hidden; color: #ACDBFB; }
-  .hero-opening[data-state="loading"],
-  .hero-opening[data-state="consent"] { background: #040a10; }
+  .hero-opening[data-state="loading"] { background: #040a10; }
   .hero-opening[data-revealed="true"] .zo-stage { opacity: 0; }
-  :global(html[data-opening-consent="true"]),
-  :global(html[data-opening-consent="true"] body) { overflow: hidden !important; }
-  .opening-consent {
-    position: fixed; inset: 0; margin: 0;
-    width: 100%; height: 100%; max-width: none; max-height: none;
-    padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem;
-    border: 0; background: transparent; color: #e8f3fd;
-    overflow: auto; overscroll-behavior: contain;
-  }
-  .opening-consent[open] { display: grid; place-items: center; }
-  .opening-consent::backdrop {
-    background: rgba(4, 10, 16, 0.48);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-  }
-  .opening-consent-content { width: min(100%, 34rem); text-align: center; transform: translateY(-1.75rem); }
-  .opening-consent h2 {
-    margin: 0; font-size: 1.0625rem;
-    font-weight: 500; line-height: 1.5; letter-spacing: 0.04em;
-  }
-  .opening-consent h2:focus { outline: none; }
-  .opening-consent-actions { display: flex; justify-content: center; gap: 2rem; margin-top: 2.25rem; }
-  .opening-consent button {
-    flex: 1; max-width: 9rem; min-height: 44px; padding: 0.625rem 0.875rem;
-    border: 1px solid #acdbfb; background: rgba(4, 10, 16, 0.2);
-    color: #e8f3fd; font: inherit; font-size: 0.9rem; cursor: pointer;
-    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
-  }
-  .opening-consent [data-opening-allow] { background: rgba(172, 219, 251, 0.55); color: #040a10; }
-  @media (hover: hover) {
-    .opening-consent button:hover {
-      background: #acdbfb;
-      color: #040a10;
-      border-color: #acdbfb;
-    }
-  }
-  .opening-consent button:focus-visible { outline: 2px solid #e8f3fd; outline-offset: 5px; }
-  .opening-start {
-    position: absolute;
-    border: 1px solid #ACDBFB;
-    color: #ACDBFB;
-    background: #040a10;
-    font: 500 0.8rem/1.4 "Helvetica Neue", Arial, sans-serif;
-    cursor: pointer;
-    pointer-events: auto;
-  }
-  .opening-start {
-    left: 50%; bottom: clamp(1rem, 5%, 2.5rem); transform: translateX(-50%);
-    display: flex; align-items: center; gap: 0.75rem;
-    min-height: 44px; padding: 0.65rem 1.1rem; white-space: nowrap;
-  }
-  .opening-start:hover { background: #ACDBFB; color: #040a10; }
-  .opening-start:focus-visible { outline: 2px solid #ACDBFB; outline-offset: 4px; }
-  /* Blend outside the opening's paint containment, including after the canvas is revealed. */
-  .opening-controls {
-    position: fixed; z-index: 0;
-    top: calc(var(--hero-canvas-height, 75svh) - 1rem - 44px);
-    right: max(1rem, env(safe-area-inset-right));
-    display: flex; gap: 4px;
-    color: #ACDBFB; mix-blend-mode: difference;
-  }
-  .opening-control {
-    display: grid; place-items: center;
-    width: 44px; height: 44px; padding: 0;
-    border: 0; border-radius: 0; background: transparent; box-shadow: none;
-    color: inherit; cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform 180ms ease;
-  }
-  .opening-control svg { display: block; width: 20px; height: 20px; }
-  .opening-control:focus-visible { outline: 1px solid currentColor; outline-offset: -4px; }
-  .opening-sound[data-enabled="false"] .sound-on,
-  .opening-sound[data-enabled="true"] .sound-off,
-  .opening-pause[data-paused="false"] .play-icon,
-  .opening-pause[data-paused="true"] .pause-icon { display: none; }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .opening-control:hover { transform: translateY(-2px) scale(1.08); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .opening-control { transition: none; }
-  }
   [hidden] { display: none !important; }
-  .opening-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 </style>

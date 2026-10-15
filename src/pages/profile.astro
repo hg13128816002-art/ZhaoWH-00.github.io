@@ -1,16 +1,19 @@
 ---
 // src/pages/profile.astro
 import Layout from '../layouts/Layout.astro';
+import ConversationFooter from '../components/ConversationFooter.astro';
+import '../styles/editorial.css';
 ---
 
 <Layout
   title="Profile // ZHAO WENHAO"
   lang="zh-CN"
-  bodyClass="min-h-screen w-full bg-[#040A10] text-neutral-100 select-none flex flex-col md:flex-row relative"
+  bodyClass="min-h-screen w-full bg-[#040A10] text-neutral-100 select-none flex flex-col relative"
   bodyStyle="margin: 0; padding: 0; background-color: #040A10;"
 >
   <canvas id="terminal-grid" class="absolute inset-0 block w-full h-full z-0 pointer-events-none opacity-20"></canvas>
 
+  <main class="flex flex-col md:flex-row relative w-full">
   <div class="w-full md:w-[40%] border-b md:border-b-0 md:border-r border-neutral-800 p-8 md:p-12 flex flex-col justify-between shrink-0 bg-[#090F15] z-20 relative overflow-hidden" style="background-color: #090F15;">
     <div class="absolute inset-0 z-0 opacity-35 grayscale hover:opacity-85 hover:grayscale-0 transition-all duration-700 pointer-events-auto">
       <img src="/main-picture.jpg" alt="Zhao Wenhao Portrait" class="w-full h-full object-cover" decoding="async" fetchpriority="high" onerror="this.style.display='none'">
@@ -42,7 +45,7 @@ import Layout from '../layouts/Layout.astro';
   </div>
 
   <div class="w-full md:w-[60%] p-8 md:p-16 z-10 bg-[#070D13] relative pointer-events-auto" style="background-color: #070D13;">
-    <div class="max-w-xl mx-auto space-y-16 md:space-y-20 pb-24 pt-4 md:pt-0">
+    <div class="max-w-xl mx-auto space-y-16 md:space-y-20 pb-24 pt-16 md:pt-12">
       <section class="space-y-8">
         <div class="flex items-center gap-2 text-[#ACDBFB] text-xs tracking-widest font-bold border-b border-neutral-800 pb-2">
           <span class="w-1.5 h-1.5 bg-[#ACDBFB]"></span>
@@ -154,6 +157,9 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
   </div>
+
+  </main>
+  <ConversationFooter />
 
   <script>
     const canvas = document.getElementById('terminal-grid') as HTMLCanvasElement;

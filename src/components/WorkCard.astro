@@ -1,0 +1,20 @@
+---
+import type { CatalogWork } from '../data/catalog';
+interface Props { work: CatalogWork; index?: number; featured?: boolean; headingLevel?: 2 | 3; }
+const { work, index = 0, featured = false, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+const image = work.image.includes('aliyuncs.com') ? `${work.image}?x-oss-process=image/resize,w_960` : work.image;
+---
+<article class:list={['work-card', { 'work-card-featured': featured }]} data-collection={work.collection}>
+  <a class="work-card-image" href={work.href} aria-label={`了解作品：${work.title}`}>
+    <img src={image} alt={work.imageAlt} loading="lazy" decoding="async" />
+    <span class="work-card-number">{String(index + 1).padStart(2, '0')}</span>
+    <span class="work-card-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="work-card-caption">
+    <span class="work-card-type">{work.era}</span>
+    <Heading><a href={work.href}>{work.title}</a></Heading>
+    <p>{work.summary}</p>
+    <a class="work-card-link" href={work.href}>探索作品 <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
