@@ -1,5 +1,6 @@
 import { works } from './works';
 import { covers } from './covers';
+import { redact } from './classified';
 
 export const collections = [
   { id: 'interactive', label: '交互与游戏' },
@@ -25,10 +26,12 @@ const entries: {id: string; source: number; collection: Collection; summary: str
 export const catalog = [
   // Follow the committed works list; homepage selections have their own order below.
   ...entries.slice().sort((a, b) => a.source - b.source).map(({source, ...entry}) => ({
-    ...works[source], ...entry, href:`/works/${entry.id}/`,
+    ...works[source], ...entry,
+    ...(works[source].classified ? {summary:redact(entry.summary), action:undefined, actionHref:undefined} : {}),
+    href:`/works/${entry.id}/`,
     collectionLabel:collections.find(c => c.id === entry.collection)!.label,
   })),
-  {id:'shadow-shell', title:'Shadow Shell', titleEn:'', collection:'spatial' as Collection,
+  {id:'shadow-shell', classified:false, title:'Shadow Shell', titleEn:'', collection:'spatial' as Collection,
     collectionLabel:'装置与空间', era:'建筑模型 / 2026', kind:'image' as const,
     description:'围绕光影、遮蔽与临时结构展开的建筑模型实验。',
     summary:'用结构捕捉光影，探索一个临时空间如何形成庇护。',

@@ -9,7 +9,6 @@ export const projectVideos: Partial<Record<string, ProjectVideo[]>> = {
     src: asset('videos/VR严肃游戏《未曾熄灭的》PV.mp4'),
     poster: covers.neverExtinguished,
   }],
-  liminal: [{ title: 'Liminal 临近边缘的幻想', src: reelVideos.liminal, poster: covers.liminal }],
   'stare-ewsn': [
     { title: 'starE', src: asset('videos/starE.mp4'), poster: asset('posters/starE封面.png') },
     { title: '任尔 EWSN 风？', src: asset('videos/任尔EWSN风？.mp4'), poster: asset('posters/任尔EWSN风？封面.png') },

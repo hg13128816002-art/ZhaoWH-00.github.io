@@ -242,6 +242,7 @@ import '../styles/editorial.css';
                 <a
                   class:list={['timeline-node', { 'has-media': media.length > 0 }]}
                   href={node.href}
+                  data-classified={node.classified}
                   data-timeline-node
                   data-node-index={index}
                   aria-label={`${node.meta.replace('/', '·')} — ${node.title}`}
@@ -256,7 +257,13 @@ import '../styles/editorial.css';
                     <span class="timeline-node-meta">{node.meta}</span>
                     <strong>{node.title}</strong>
                     <em>{node.note}</em>
-                    {media.length === 1 && (
+                    {media.length === 1 && node.classified && (
+                      <span class="timeline-node-media classified-media">
+                        <span class="coming-soon">Coming Soon</span>
+                        <img src={media[0].src} alt={media[0].alt} loading="lazy" decoding="async" />
+                      </span>
+                    )}
+                    {media.length === 1 && !node.classified && (
                       <img
                         class="timeline-node-media"
                         src={media[0].src}

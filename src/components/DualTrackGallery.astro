@@ -48,6 +48,8 @@ import '../styles/global.css';
 
 <script>
   import { asset } from '../data/assets';
+  import { redact } from '../data/classified';
+  import { drawClassifiedMedia } from '../scripts/classified-canvas';
 
   // ================= 1. 基础引擎初始化 =================
   const canvas = document.getElementById('gallery-canvas') as HTMLCanvasElement;
@@ -76,7 +78,7 @@ import '../styles/global.css';
 
   // ================= 2. 真实数据源 (33份机密档案) =================
   const projects = [
-    { title: "LIMINAL-临近边缘的幻想-海报", src: asset('images/Liminal-临近边缘的幻想-海报.webp') },
+    { classified: true, title: redact("LIMINAL-临近边缘的幻想-海报"), src: asset('images/Liminal-临近边缘的幻想-海报.webp') },
     { title: "VR严肃游戏《未曾熄灭的》宣传海报", src: asset('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp') },
     { title: "VR严肃游戏《未曾熄灭的》游戏场景1", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景1 拷贝.webp') },
     { title: "VR严肃游戏《未曾熄灭的》游戏场景10", src: asset('images/VR严肃游戏《未曾熄灭的》游戏场景10 拷贝.webp') },
@@ -310,7 +312,11 @@ import '../styles/global.css';
     const drawH = Math.floor(cH);
     
     ctx.globalAlpha = 1.0;
-    if (card.project.imgObj && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
+    if (card.project.classified) {
+      drawClassifiedMedia(ctx, card.project.imgObj, drawX, drawY, drawW, drawH);
+      ctx.restore();
+      return;
+    } else if (card.project.imgObj && card.project.imgObj.complete && card.project.imgObj.naturalWidth > 0) {
       ctx.drawImage(card.project.imgObj, drawX, drawY, drawW, drawH);
     } else {
       ctx.fillStyle = '#10161C';
@@ -360,6 +366,7 @@ import '../styles/global.css';
   const imageIndex = document.getElementById('image-index') as HTMLSelectElement;
   projects.forEach((project,index) => imageIndex.add(new Option(project.title, String(index))));
   function openImage(project: typeof projects[number]) {
+    if (project.classified) return;
     zScale = 1; zX = 0; zY = 0; updateTransform();
     targetImg.src = project.src; targetImg.alt = project.title;
     const workId = workIdForImage(project.title);
