@@ -5,7 +5,6 @@ import WorkCard from './WorkCard.astro';
 <section id="works" class="selected-works editorial-section" aria-labelledby="selected-title">
   <div class="editorial-heading">
     <div><p class="eyebrow">01 / SELECTED WORKS</p><h2 id="selected-title">Works</h2></div>
-    <p class="section-note">四件作品，四种进入方式。<br />观看、探索，或亲手试一试。</p>
   </div>
   <div class="selected-grid">{featuredWorks.map((work, index) => <WorkCard work={work} index={index} featured />)}</div>
   <a class="all-works-link" href="/works/">继续探索全部作品 <span>{catalog.length} 件作品 <b aria-hidden="true">↗</b></span></a>

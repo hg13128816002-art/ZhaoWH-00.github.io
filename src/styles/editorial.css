@@ -25,7 +25,8 @@ html[data-theme="light"] { --ed-bg:#fff; --ed-panel:#eef5f9; --ed-ink:#102333; -
 .editorial-button { display:inline-flex; align-items:center; justify-content:space-between; gap:2rem; padding:.9rem 1.3rem; color:var(--ed-ink); border:1px solid var(--ed-line); border-radius:var(--site-frame-radius); text-decoration:none; font-size:.85rem; transition:background .2s,transform .2s; }
 .editorial-button:hover { background:var(--ed-panel); transform:translateY(-2px); }
 .editorial-section a:focus-visible,.catalog-filters button:focus-visible { outline:2px solid var(--ed-blue); outline-offset:5px; }
-.conversation-footer { border-top:1px solid var(--ed-line); padding-top:4rem; padding-bottom:1.5rem; }
+.conversation-footer { padding-top:4rem; padding-bottom:1.5rem; }
+.conversation-footer::before { content:""; position:absolute; top:0; left:calc(var(--site-frame-inset) + 1px); right:calc(var(--site-frame-inset) + 1px); border-top:1px solid var(--ed-line); pointer-events:none; }
 .conversation-footer>div:not(.footer-signature) { display:flex; align-items:center; justify-content:space-between; gap:2rem; }
 .conversation-footer h2 { font-size:clamp(2rem,4.5vw,4rem); font-weight:500; line-height:1.35; letter-spacing:-.04em; }
 .footer-note { color:var(--ed-muted); font-size:.8rem; line-height:1.8; margin-top:1.5rem; }

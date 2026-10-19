@@ -1,0 +1,37 @@
+---
+interface Props { variant: 'email' | 'wechat' | 'bilibili'; }
+const { variant } = Astro.props;
+---
+<svg class:list={['station-svg', `station-${variant}`]} viewBox="0 0 200 150" fill="none" aria-hidden="true">
+  {variant === 'email' && <>
+    <path d="M48 54H152C149 85 130 104 100 104C70 104 51 85 48 54Z" />
+    <path d="M66 54L100 29L134 54M100 29V52" />
+    <path d="M94 104V124M106 104V124M94 115L78 134M106 115L122 134" />
+    <path d="M61 63C67 82 80 93 100 93C120 93 133 82 139 63M100 62V88" class="station-detail" />
+    <path d="M100 19V23M87 24L90 26M113 24L110 26" class="station-detail" />
+  </>}
+  {variant === 'wechat' && <>
+    <path d="M100 26V43M78 134L100 43L122 134M89 88H111M83 113H117M93 65H107" />
+    <path d="M89 88L117 113M111 88L83 113M93 65L111 88" class="station-detail" />
+    <rect x="62" y="59" width="12" height="31" rx="2" />
+    <rect x="126" y="59" width="12" height="31" rx="2" />
+    <path d="M74 74H92M108 74H126" />
+    <path d="M84 20A20 20 0 0 0 84 35M116 20A20 20 0 0 1 116 35" class="station-detail" />
+  </>}
+  {variant === 'bilibili' && <>
+    <rect x="63" y="83" width="74" height="51" rx="2" />
+    <path d="M78 83V72A22 22 0 0 1 122 72V83M100 50V29M86 55L73 39M114 55L127 39" />
+    <path d="M83 72H117M100 56V79" class="station-detail" />
+    <rect x="74" y="99" width="20" height="15" rx="1" />
+    <path d="M104 100H125M104 107H125M104 114H118M74 124H125" class="station-detail" />
+    <path d="M147 134V99M142 99H152M144 105H150" />
+  </>}
+  <path d="M46 134H154" class="station-ground" />
+</svg>
+<style>
+  .station-svg { display:block; width:200px; height:150px; overflow:visible; fill:none; stroke:var(--ed-blue); stroke-width:1.45; stroke-linecap:round; stroke-linejoin:round; opacity:.78; transition:transform 300ms ease,opacity 200ms ease; }
+  .station-svg :is(path,rect) { fill:none; vector-effect:non-scaling-stroke; }
+  .station-detail { stroke-width:.8; opacity:.55; }
+  .station-ground { stroke-width:1; opacity:.4; }
+  @media(prefers-reduced-motion:reduce) { .station-svg { transition:none; } }
+</style>

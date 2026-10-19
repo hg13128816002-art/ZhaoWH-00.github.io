@@ -1,221 +1,124 @@
 ---
-// src/pages/contact.astro
-// 像素级交互打磨版：violent 波形震荡反馈 + 稳定排版 + 多端自适应
 import Layout from '../layouts/Layout.astro';
-
-const headerText = '嗨！很高兴你能看到这里，如果你对我的作品有任何想法或合作意向，请联系我！';
+import ContactStation from '../components/ContactStation.astro';
+import '../styles/editorial.css';
+const channels = [
+  { id: 'email' as const, number: '01', name: 'E-mail', label: '邮箱', value: 'zhaowenhaodesign@163.com', action: '点击复制我的邮箱' },
+  { id: 'wechat' as const, number: '02', name: 'WeChat', label: '微信', value: 'Zwh1326562', action: '点击复制我的微信账号' },
+  { id: 'bilibili' as const, number: '03', name: 'bilibili', label: '哔哩哔哩', value: 'Direct launch to index', action: '点击跳转到我的B站首页' },
+];
 ---
-
-<Layout
-  title="联系与交流 — Zhao Wenhao"
-  viewport="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  bodyClass="min-h-screen w-screen bg-[#090F15] text-neutral-100 flex flex-col justify-between px-6 pb-6 pt-6 md:px-12 md:pb-12 md:pt-10 relative overflow-x-hidden select-none box-border"
->
-  <style>
-    .font-mono, body, button, a {
-      font-family: var(--font-mono-cn) !important;
-    }
-  </style>
-
-  <div class="flex justify-start items-start z-20 w-full">
-    <div>
-      <div class="text-[#ACDBFB] text-[10px] md:text-xs tracking-[0.4em] font-bold">// TELEMETRY_ACTIVE</div>
-      <div class="text-neutral-500 text-[9px] md:text-xs mt-1 tracking-widest">OSCILLOSCOPE_ONLINE</div>
+<Layout title="联系与交流 — Zhao Wenhao" bodyClass="contact-page">
+  <main class="terminal" data-contact-terminal>
+    <div class="terminal-top"><span>// TELEMETRY_ACTIVE<small>SATELLITE COMMUNICATION / ZW–02</small></span><span class="online"><i></i> ONLINE</span></div>
+    <header class="contact-intro"><h1>嗨！很高兴你能看到这里，如果你对我的作品有任何想法或合作意向，请联系我！</h1></header>
+    <div class="terminal-workspace">
+      <section class="satellite-stage" aria-label="卫星通信终端">
+        <div class="orbital-ring" aria-hidden="true"></div>
+        <span class="scene-cross cross-one" aria-hidden="true">+</span><span class="scene-cross cross-two" aria-hidden="true">+</span>
+        <div class="satellite-fallback" data-satellite-fallback aria-hidden="true">ZW–02<span>通信卫星</span></div>
+        <canvas class="satellite-canvas" data-satellite-canvas aria-label="金属通信卫星" role="img"></canvas>
+        <span class="satellite-source" aria-hidden="true"></span>
+        <div class="satellite-readout" aria-hidden="true"><span data-channel-readout>SATELLITE / ZW–02</span><span data-link-label>STANDBY</span></div>
+      </section>
+      <section class="channel-bank" aria-label="联系方式">
+        {channels.map(channel => {
+          const Tag = channel.id === 'bilibili' ? 'a' : 'button';
+          return (
+            <Tag class="channel" data-channel={channel.id} data-channel-action
+              type={channel.id === 'bilibili' ? undefined : 'button'}
+              href={channel.id === 'bilibili' ? 'https://space.bilibili.com/430411383' : undefined}
+              data-copy={channel.id === 'bilibili' ? undefined : channel.value}
+              aria-label={channel.id === 'bilibili' ? '前往 bilibili' : `${channel.action} ${channel.value}`}>
+              <span class="station-visual"><ContactStation variant={channel.id}/><span class="station-target" data-station-target aria-hidden="true"><i></i><i></i></span></span>
+              <span class="channel-card">
+                <span class="channel-heading">
+                  <svg class="channel-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    {channel.id === 'email' && <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"/>}
+                    {channel.id === 'wechat' && <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>}
+                    {channel.id === 'bilibili' && <><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></>}
+                  </svg>
+                  <span>// {channel.label}/{channel.name}</span>
+                </span>
+                <span class="channel-copy"><strong>{channel.action}{channel.id === 'bilibili' && <span class="channel-arrow" aria-hidden="true">↗</span>}</strong><span class="channel-address">{channel.value}</span></span>
+              </span>
+            </Tag>
+          );
+        })}
+      </section>
+      <svg class="signal-link" aria-hidden="true"><polygon class="signal-beam"/><path class="signal-base"/><path class="signal-pulse" pathLength="1000"/></svg>
     </div>
+    <p class="transmission-status" role="status" aria-live="polite" data-copy-status></p>
+  </main>
+  <div id="signal-feedback" class="signal-feedback" hidden data-signal-feedback role="status" aria-live="polite" aria-atomic="true">
+    <div class="feedback-message" data-feedback-message></div>
+    <div class="feedback-countdown" hidden data-countdown><span data-countdown-value>3</span><small>SECONDS</small><button type="button" data-cancel-navigation>取消跳转</button></div>
   </div>
-
-  <div id="developer-header" class="z-30 w-full mt-6 md:mt-12 text-center text-[#ACDBFB] font-bold text-base md:text-2xl leading-relaxed px-2 max-w-4xl mx-auto">
-    {headerText}
-  </div>
-
-  <div class="relative w-full flex items-center justify-center z-10 pointer-events-none my-4 flex-grow md:flex-grow-0">
-    <canvas id="oscilloscope-canvas" class="block w-full h-[25vh] md:h-[45vh]"></canvas>
-    
-    <div id="signal-feedback" class="absolute text-[#090F15] bg-[#ACDBFB] text-sm md:text-2xl font-black tracking-widest opacity-0 px-4 py-2 md:px-8 md:py-3 pointer-events-none border border-white/20 transition-opacity duration-150 whitespace-nowrap z-50">
-      / 您成功的复制了我的联系方式 /
-    </div>
-  </div>
-
-  <div class="z-20 w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-auto">
-    
-    <button 
-      data-copy="zhaowenhaodesign@163.com" 
-      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
-    >
-      <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
-          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-        </svg>
-        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 邮箱/E-mail</span>
-      </div>
-
-      <div>
-        <div class="text-white text-sm md:text-base font-black truncate">点击复制我的邮箱</div>
-        <div class="text-neutral-400 text-[11px] md:text-xs mt-1 truncate copy-target">zhaowenhaodesign@163.com</div>
-      </div>
-    </button>
-
-    <button 
-      data-copy="Zwh1326562" 
-      class="contact-btn group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer h-28 md:h-44 box-border"
-    >
-      <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-        </svg>
-        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 微信/WeChat</span>
-      </div>
-
-      <div>
-        <div class="text-white text-sm md:text-base font-black">点击复制我的微信账号</div>
-        <div class="text-neutral-400 text-[11px] md:text-xs mt-1 copy-target">Zwh1326562</div>
-      </div>
-    </button>
-
-    <a 
-      href="https://space.bilibili.com/430411383?spm_id_from=333.788.0.0" 
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group p-4 md:p-6 border-2 border-neutral-800 bg-[#0C1218] hover:border-[#ACDBFB] transition-all text-left flex flex-col justify-between cursor-pointer block h-28 md:h-44 text-decoration-none box-border"
-    >
-      <div class="flex items-center gap-3">
-        <svg fill="none" stroke="#ACDBFB" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5 md:w-6 md:h-6 flex-shrink: 0;">
-          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-          <polyline points="17 2 12 7 7 2"></polyline>
-        </svg>
-        <span class="text-[#ACDBFB] text-xs md:text-sm tracking-widest font-bold">// 哔哩哔哩/bilibili</span>
-      </div>
-
-      <div>
-        <div class="text-white text-sm md:text-base font-black flex items-center gap-2">
-          <span>点击跳转到我的B站首页</span>
-          <span style="color: #525252;">↗</span>
-        </div>
-        <div class="text-neutral-500 text-[11px] md:text-xs mt-1">Direct launch to index</div>
-      </div>
-    </a>
-
-  </div>
-
-  <script>
-    const canvas = document.getElementById('oscilloscope-canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d')!;
-    const feedback = document.getElementById('signal-feedback')!;
-
-    // 响应式物理像素测算
-    let width = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth;
-    let height = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight * 0.4;
-    
-    function resize() {
-      if (canvas.parentElement) {
-        width = canvas.parentElement.clientWidth;
-        height = canvas.parentElement.clientHeight;
-      } else {
-        width = window.innerWidth;
-        height = window.innerHeight * 0.4;
-      }
-      canvas.width = width;
-      canvas.height = height;
-    }
-    window.addEventListener('resize', resize);
-    resize(); setTimeout(resize, 100);
-    canvas.style.visibility = 'hidden';
-
-    let targetFrequency = 0.018;
-    let currentFrequency = 0.018;
-    let targetAmplitude = height * 0.12;
-    let currentAmplitude = height * 0.12;
-    let phase = 0;
-
-    // 支持移动端轻触与电脑端鼠标调频
-    const updateWave = (clientY: number, clientX: number) => {
-      if (feedback.style.opacity === '0' || feedback.style.opacity === '') {
-        const normY = clientY / window.innerHeight;
-        const normX = clientX / window.innerWidth;
-        targetFrequency = 0.008 + normY * 0.02;
-        targetAmplitude = (height * 0.06) + normX * (height * 0.14);
-      }
-    };
-
-    window.addEventListener('mousemove', (e) => updateWave(e.clientY, e.clientX));
-    window.addEventListener('touchmove', (e) => {
-      if(e.touches.length > 0) {
-        updateWave(e.touches[0].clientY, e.touches[0].clientX);
-      }
-    }, { passive: true });
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-
-      currentFrequency += (targetFrequency - currentFrequency) * 0.05;
-      currentAmplitude += (targetAmplitude - currentAmplitude) * 0.05;
-      phase += 0.045;
-
-      ctx.strokeStyle = '#191F25';
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(0, height / 2); ctx.lineTo(width, height / 2); ctx.stroke();
-
-      ctx.strokeStyle = '#ACDBFB';
-      ctx.lineWidth = window.innerWidth < 768 ? 1.5 : 2;
-      ctx.shadowBlur = feedback.style.opacity === '1' ? 8 : 0;
-      ctx.shadowColor = '#ACDBFB';
-      ctx.beginPath();
-
-      for (let x = 0; x < width; x++) {
-        const y = height / 2 
-                + Math.sin(x * currentFrequency + phase) * currentAmplitude 
-                + Math.cos(x * currentFrequency * 2 - phase) * (currentAmplitude * 0.12);
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-
-      requestAnimationFrame(animate);
-    }
-
-    if (window.fontsReadyPromise) {
-      window.fontsReadyPromise.then(() => { canvas.style.visibility = 'visible'; animate(); });
-    } else if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => { canvas.style.visibility = 'visible'; animate(); });
-    } else {
-      canvas.style.visibility = 'visible';
-      animate();
-    }
-
-    // 移动端安全复制内核
-    const buttons = document.querySelectorAll('.contact-btn');
-    const originalTexts = new Map();
-
-    buttons.forEach((btn, index) => {
-      const targetLabel = btn.querySelector('.copy-target') as HTMLElement;
-      const btnId = `btn-${index}`;
-      originalTexts.set(btnId, targetLabel.innerText);
-
-      btn.addEventListener('click', () => {
-        const copyText = (btn as HTMLElement).dataset.copy;
-
-        if (copyText) {
-          navigator.clipboard.writeText(copyText).then(() => {
-            targetLabel.innerText = "COPIED SUCCESSFULLY!";
-            targetLabel.style.color = '#ACDBFB';
-            targetLabel.style.fontWeight = 'bold';
-            
-            targetAmplitude = height * 0.26;
-            feedback.style.opacity = '1';
-
-            setTimeout(() => {
-              targetLabel.innerText = originalTexts.get(btnId);
-              targetLabel.style.color = '#a3a3a3';
-              targetLabel.style.fontWeight = 'normal';
-              targetAmplitude = height * 0.12;
-              feedback.style.opacity = '0';
-            }, 1400);
-          }).catch(() => {
-            // 移动端兜底策略：如果阻止了剪贴板，提示用户长按
-            targetLabel.innerText = copyText;
-          });
-        }
-      });
-    });
-  </script>
+  <script>import '../scripts/contact-terminal';</script>
 </Layout>
+<style>
+  :global(body.contact-page) { background:var(--ed-bg); color:var(--ed-ink); margin:0; }
+  .terminal { width:100%; min-height:100svh; display:flex; flex-direction:column; padding:2.5rem clamp(1.5rem,3vw,3rem) 1.4rem; }
+  .terminal-top { display:flex; align-items:start; justify-content:space-between; font:10px/1.8 'SFMono-Regular',Consolas,monospace; letter-spacing:.24em; color:var(--ed-blue); }
+  .terminal-top small { display:block; font-size:9px; letter-spacing:.12em; color:var(--ed-muted); }
+  .online { display:flex; align-items:center; gap:.6rem; font-size:9px; letter-spacing:.12em; margin-right:.7rem; }
+  .online i { width:4px; height:4px; background:currentColor; border-radius:50%; }
+  .contact-intro { margin:clamp(3.5rem,6vh,5rem) auto 0; max-width:1000px; text-align:center; }
+  .contact-intro h1 { color:var(--ed-blue); font-size:clamp(1rem,1.5vw,1.5rem); line-height:1.9; font-weight:600; margin:0; }
+  .terminal-workspace { display:flex; flex:1; flex-direction:column; position:relative; min-height:530px; }
+  .satellite-stage { position:relative; width:min(820px,80vw); flex:1; min-height:260px; margin:0 auto; }
+  .satellite-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; opacity:0; transition:opacity .4s; }
+  .satellite-canvas[data-ready="true"] { opacity:1; animation:satellite-float 9s ease-in-out infinite; }
+  /* Float the composited canvas without adding continuous WebGL rendering. */
+  @keyframes satellite-float {
+    0%,100% { transform:translate3d(-2px,5px,0) rotate(-.45deg); }
+    40% { transform:translate3d(3px,-7px,0) rotate(.45deg); }
+    72% { transform:translate3d(0,-2px,0) rotate(.1deg); }
+  }
+  .orbital-ring { position:absolute; left:12%; top:29%; width:76%; height:38%; border:1px solid var(--ed-line); border-radius:50%; transform:rotate(-19deg); opacity:.35; }
+  .scene-cross { position:absolute; color:var(--ed-blue); font:16px monospace; opacity:.35; }
+  .cross-one { left:7%; top:35%; }.cross-two { right:8%; top:58%; }
+  .satellite-source { position:absolute; left:50%; top:58%; width:1px; height:1px; pointer-events:none; }
+  .satellite-readout { position:absolute; left:0; right:0; bottom:6%; display:flex; justify-content:space-between; gap:1rem; color:var(--ed-muted); font:9px/1.5 'SFMono-Regular',Consolas,monospace; letter-spacing:.1em; }
+  .satellite-readout>span:last-child { color:var(--ed-blue); }
+  .satellite-fallback { position:absolute; inset:0; display:flex; justify-content:center; align-items:center; flex-direction:column; color:var(--ed-blue); letter-spacing:.2em; font:28px monospace; }
+  .satellite-fallback span { font:10px var(--font-sans-cn); margin-top:.7rem; }
+  .satellite-fallback[hidden] { display:none; }
+  .channel-bank { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(1rem,1.6vw,1.5rem); position:relative; z-index:2; align-items:end; }
+  .channel { display:flex; flex-direction:column; min-width:0; text-align:left; padding:0; background:none; border:0; color:var(--ed-ink); cursor:pointer; text-decoration:none; }
+  .station-visual { display:flex; align-items:end; justify-content:center; height:150px; position:relative; pointer-events:none; }
+  .station-target { position:absolute; width:7px; height:7px; top:17.333%; left:50%; margin:-3px 0 0 -3px; background:none; border:1px solid var(--ed-blue); border-radius:50%; opacity:.55; }
+  .channel[data-channel="wechat"] .station-target { top:14.667%; }
+  .station-target i { position:absolute; inset:-8px; border:1px solid var(--ed-blue); border-radius:50%; opacity:0; }
+  .channel-card { display:flex; flex-direction:column; justify-content:space-between; width:100%; min-height:176px; padding:24px; border:2px solid var(--ed-line); background:var(--ed-panel); transition:border-color .2s,background .2s; }
+  .channel-heading { display:flex; align-items:center; gap:12px; font-size:14px; line-height:20px; font-weight:700; color:var(--ed-blue); letter-spacing:.1em; }
+  .channel-icon { width:24px; height:24px; flex-shrink:0; }
+  .channel-copy { display:block; margin-top:2rem; }
+  .channel-copy strong { display:flex; justify-content:space-between; gap:1rem; font-size:16px; line-height:24px; font-weight:900; }
+  .channel-address { display:block; color:var(--ed-muted); font-size:12px; line-height:16px; margin-top:4px; overflow-wrap:anywhere; user-select:text; }
+  .channel-arrow { color:var(--ed-blue); font-weight:400; }
+  .channel:hover .channel-card,.channel[data-aimed="true"] .channel-card,.channel:focus-visible .channel-card { border-color:var(--ed-blue); background:var(--ed-bg); }
+  .channel[data-aimed="true"] :global(.station-svg) { transform:translateY(-4px); opacity:1; }
+  .channel[data-aimed="true"] .station-target { opacity:1; transform:translateY(-4px); }
+  .channel:focus-visible { outline:1px solid var(--ed-blue); outline-offset:5px; }
+  .signal-link { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; color:var(--ed-blue); z-index:1; }
+  .signal-link path { fill:none; stroke:currentColor; vector-effect:non-scaling-stroke; }
+  .signal-base { opacity:0; stroke-width:1; stroke-dasharray:4 7; }
+  .terminal[data-aiming="true"] .signal-base { opacity:.16; }
+  .signal-pulse { opacity:0; stroke-width:2.5; stroke-dasharray:100 1100; }
+  .signal-beam { fill:currentColor; opacity:0; }
+  .transmission-status { font-size:11px; line-height:1.5; min-height:1.5em; color:var(--ed-blue); text-align:center; margin:.7rem 0 0; }
+  .signal-feedback { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10060; max-width:calc(100vw - 3rem); width:max-content; background:#acdbfb; color:#040a10; padding:8px 16px; border:1px solid rgba(255,255,255,.2); }
+  .signal-feedback[hidden],.feedback-countdown[hidden] { display:none; }
+  .feedback-message { font-size:14px; font-weight:900; line-height:20px; letter-spacing:.1em; text-align:center; white-space:nowrap; }
+  @media(min-width:768px) { .signal-feedback { padding:12px 32px; }.feedback-message { font-size:24px; line-height:32px; } }
+  .feedback-countdown { display:flex; align-items:baseline; justify-content:center; gap:.8rem; margin-top:.5rem; }
+  .feedback-countdown>span { font:500 3rem/1 'Helvetica Neue',Arial,sans-serif; font-variant-numeric:tabular-nums; }
+  .feedback-countdown small { font:9px monospace; letter-spacing:.15em; }
+  .feedback-countdown button { font-size:11px; border:0; border-bottom:1px solid currentColor; background:none; color:inherit; padding:0 0 .15rem; margin-left:1.5rem; cursor:pointer; }
+  :global(html[data-theme="light"]) .signal-feedback,:global(html[data-theme="light"]) .signal-feedback :is(div,span,small,button) { color:#040a10 !important; }
+  @media(max-width:900px) { .terminal { padding-top:7rem; }.contact-intro { margin-top:2rem; }.satellite-stage { width:min(620px,80vw); } }
+  @media(max-width:767px) { .channel-card { min-height:112px; padding:16px; }.channel-heading { font-size:12px; line-height:16px; }.channel-icon { width:20px; height:20px; }.channel-copy strong { font-size:14px; line-height:20px; }.channel-address { font-size:11px; line-height:16px; } }
+  @media(max-width:600px) { .terminal { padding:6rem 1.5rem 1rem; }.terminal-top { font-size:8px; letter-spacing:.1em; }.terminal-top small { font-size:7px; }.online { font-size:8px; }.contact-intro { margin-top:1.8rem; }.contact-intro h1 { font-size:13px; line-height:1.9; }.terminal-workspace { min-height:0; }.satellite-stage { width:100%; flex:none; height:250px; min-height:0; }.satellite-readout { font-size:7px; bottom:4%; }.channel-bank { grid-template-columns:1fr; gap:.7rem; }.channel { display:grid; grid-template-columns:100px minmax(0,1fr); align-items:center; }.station-visual { height:115px; }.station-visual :global(.station-svg) { width:115px; height:86.25px; }.station-target { top:38%; }.channel[data-channel="wechat"] .station-target { top:36%; }.channel-card { min-height:112px; padding:16px; }.channel-heading { font-size:12px; line-height:16px; gap:12px; }.channel-icon { width:20px; height:20px; }.channel-copy { margin-top:.8rem; }.channel-copy strong { font-size:14px; line-height:20px; }.channel-address { font-size:11px; line-height:16px; }.feedback-countdown>span { font-size:2.5rem; }.feedback-countdown button { margin-left:.6rem; } }
+  @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
+</style>

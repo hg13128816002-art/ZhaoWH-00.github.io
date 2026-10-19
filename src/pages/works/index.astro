@@ -4,6 +4,8 @@ import WorkBrowser from '../../components/WorkBrowser.astro';
 import ConversationFooter from '../../components/ConversationFooter.astro';
 import { catalog, mainWorks } from '../../data/catalog';
 import '../../styles/editorial.css';
+
+const showExhibitionLinks = false;
 ---
 <Layout title="作品 / WORKS — Zhao Wenhao" lang="zh-CN" bodyClass="catalog-page">
   <main>
@@ -14,11 +16,11 @@ import '../../styles/editorial.css';
     </header>
     <section class="editorial-section catalog-body" aria-label="浏览作品">
       <WorkBrowser works={mainWorks} includeOthers />
-      <aside class="exhibition-links">
+      {showExhibitionLinks && <aside class="exhibition-links">
         <p class="eyebrow">ANOTHER WAY TO EXPLORE</p><h2>也可以，随意逛逛。</h2>
         <p class="section-note">进入影像与图像展厅，在流动的画面中偶遇一件作品。</p>
         <div><a class="editorial-button" href="/omni">影像展厅 ↗</a><a class="editorial-button" href="/dual">图像展厅 ↗</a></div>
-      </aside>
+      </aside>}
     </section>
   </main>
   <ConversationFooter />
