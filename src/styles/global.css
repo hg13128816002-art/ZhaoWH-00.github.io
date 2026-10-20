@@ -14,12 +14,18 @@
   --font-mono-cn: 'Noto Sans SC Local', 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --site-frame-inset: clamp(0.5rem, 1.1vw, 0.95rem);
   --site-frame-radius: clamp(0.5rem, 1vw, 0.9rem);
+  --site-accent: #ACDBFB;
+  --site-accent-rgb: 172 219 251;
+  --site-accent-contrast: #040A10;
   --site-frame-line: rgba(172, 219, 251, 0.34);
   --site-scrollbar-line: rgba(172, 219, 251, 0.76);
   --site-scrollbar-line-hover: rgba(172, 219, 251, 1);
 }
 
 html[data-theme="light"] {
+  --site-accent: #244e6c;
+  --site-accent-rgb: 36 78 108;
+  --site-accent-contrast: #ffffff;
   --site-frame-line: rgba(4, 10, 16, 0.28);
   --site-scrollbar-line: rgba(4, 10, 16, 0.64);
   --site-scrollbar-line-hover: rgba(4, 10, 16, 0.92);
@@ -168,10 +174,10 @@ html[data-theme="light"] .site-nav-link {
 html[data-theme="light"] .site-nav-link:hover,
 html[data-theme="light"] .site-nav-link:focus-visible,
 html[data-theme="light"] .site-nav-link.is-active {
-  color: #040A10 !important;
-  border-color: rgba(172, 219, 251, 0.82) !important;
-  background: #ACDBFB !important;
-  box-shadow: 0 0 18px rgba(172, 219, 251, 0.18) !important;
+  color: var(--site-accent-contrast) !important;
+  border-color: var(--site-accent) !important;
+  background: var(--site-accent) !important;
+  box-shadow: 0 0 18px rgb(var(--site-accent-rgb) / 0.12) !important;
 }
 
 html[data-theme="light"] :where(
@@ -261,7 +267,7 @@ html[data-theme="light"] :where(
   [style*="#acdbfb"],
   [style*="172, 219, 251"]
 ) {
-  color: #ACDBFB !important;
+  color: var(--site-accent) !important;
 }
 
 html[data-theme="light"] body :is(
@@ -289,6 +295,46 @@ html[data-theme="light"] body :is(
 html[data-theme="light"] body [style*="#ACDBFB"],
 html[data-theme="light"] body [style*="#acdbfb"],
 html[data-theme="light"] body [style*="172, 219, 251"] {
+  color: var(--site-accent) !important;
+}
+
+/* Accent roles also cover the newer pages alongside legacy utility classes. */
+html[data-theme="light"] body :is(
+  .eyebrow, .work-card-link, .work-card-link span, .all-works-link b, .detail-wayfinding a,
+  .project-kicker, .hero-explore, .back-to-top,
+  .home-section-nav a, .home-section-nav a span,
+  .contact-intro h1, .channel-heading, .channel-heading span, .channel-arrow,
+  .terminal-top > span, .terminal-top small, .online, .satellite-readout span,
+  .transmission-status
+) {
+  color: var(--site-accent) !important;
+}
+html[data-theme="light"] .home-section-nav a { opacity: .85; }
+html[data-theme="light"] .home-section-nav a:is(:hover,:focus-visible,[aria-current]) { opacity: 1; }
+
+html[data-theme="light"] :is(
+  .bg-\[\#ACDBFB\], [style*="background-color: #ACDBFB"]
+) {
+  background-color: var(--site-accent) !important;
+}
+html[data-theme="light"] body :is(
+  .bg-\[\#ACDBFB\], [style*="background-color: #ACDBFB"]
+),
+html[data-theme="light"] body :is(
+  .bg-\[\#ACDBFB\], [style*="background-color: #ACDBFB"]
+) :is(div,span,small,strong,svg) {
+  color: var(--site-accent-contrast) !important;
+}
+html[data-theme="light"] :is(
+  .border-\[\#ACDBFB\], .border-\[\#ACDBFB\]\/40,
+  .border-\[\#ACDBFB\]\/30, .border-\[\#ACDBFB\]\/20,
+  .border-l-2.border-\[\#ACDBFB\]
+) {
+  border-color: var(--site-accent) !important;
+}
+/* Labels over media keep their light ink against the image or dark scrim. */
+html[data-theme="light"] body .thumb-index,
+html[data-theme="light"] body #play-hint .text-\[\#ACDBFB\] {
   color: #ACDBFB !important;
 }
 
@@ -381,13 +427,13 @@ html[data-theme="light"] .timeline-node:not(.is-current) {
 
 html[data-theme="light"] .timeline-node.is-current {
   background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(172, 219, 251, 0.62) !important;
+  border-color: rgb(var(--site-accent-rgb) / 0.62) !important;
   box-shadow: 0 18px 60px rgba(4, 10, 16, 0.08) !important;
 }
 
 html[data-theme="light"] .profile-section::before {
   background:
-    linear-gradient(90deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--site-accent-rgb) / 0.14) 1px, transparent 1px),
     linear-gradient(180deg, rgba(4, 10, 16, 0.055) 1px, transparent 1px) !important;
   opacity: 0.38 !important;
 }
@@ -412,10 +458,10 @@ html[data-theme="light"] :where(
 html[data-theme="light"] .profile-model-panel {
   background-color: rgba(255, 255, 255, 0.72) !important;
   background-image:
-    linear-gradient(90deg, rgba(172, 219, 251, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--site-accent-rgb) / 0.14) 1px, transparent 1px),
     linear-gradient(180deg, rgba(4, 10, 16, 0.08) 1px, transparent 1px) !important;
   background-size: 62px 62px, 62px 62px !important;
-  border-color: rgba(172, 219, 251, 0.42) !important;
+  border-color: rgb(var(--site-accent-rgb) / 0.42) !important;
 }
 
 html[data-theme="light"] .profile-model-panel::after {

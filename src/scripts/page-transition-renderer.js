@@ -16,9 +16,10 @@ export function createPageTransitionRenderer(root, geometry) {
   const defs = make('defs', {}, svg);
   const gates = [-1, 1].map(side => {
     const group = make('g', {'data-z-shutter':side}, svg);
-    return { side, group, body:make('path', {fill:'#040A10'}, group), edge:make('path', {fill:'#ACDBFB'}, group) };
+    return { side, group, body:make('path', {fill:'var(--transition-bg, #040A10)'}, group),
+      edge:make('path', {fill:'var(--transition-ink, #ACDBFB)'}, group) };
   });
-  const mark = make('g', {'data-z-mark':'', fill:'#ACDBFB', color:'#ACDBFB'}, svg);
+  const mark = make('g', {'data-z-mark':'', fill:'var(--transition-ink, #ACDBFB)', color:'var(--transition-ink, #ACDBFB)'}, svg);
   const rotor = make('g', {'data-z-rotor':''}, mark);
   const bars = [true, false].map((top, i) => {
     const clip = make('clipPath', {id:'page-z-sand-'+i, clipPathUnits:'userSpaceOnUse'}, defs);

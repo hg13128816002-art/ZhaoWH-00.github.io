@@ -62,12 +62,12 @@ import '../styles/editorial.css';
     padding: clamp(1.6rem, 3vh, 2.4rem) clamp(1.5rem, 3.5vw, 4rem);
     padding-bottom: calc(clamp(1.6rem, 3vh, 2.4rem) + 1.25rem);
     background: #040A10;
-    color: #ACDBFB;
+    color: var(--site-accent);
   }
-  .hero-explore { display:inline-flex; gap:2rem; align-items:center; color:#acdbfb; font-size:.85rem; text-decoration:none; margin-top:1rem; padding:.5rem 0; border-bottom:1px solid rgba(172,219,251,.5); }
+  .hero-explore { display:inline-flex; gap:2rem; align-items:center; color:var(--site-accent); font-size:.85rem; text-decoration:none; margin-top:1rem; padding:.5rem 0; border-bottom:1px solid rgb(var(--site-accent-rgb) / .5); }
   .hero-intro-line { opacity:.75; }
   .hero-explore:hover { opacity:.75; }
-  :global(html[data-theme="light"]) .hero-explore { color:#244e6c; }
+  :global(html[data-theme="light"]) .hero-explore { color:var(--site-accent); }
   .hero-wordmark {
     margin: 0;
     font-family: "Helvetica Neue", Arial, sans-serif;
@@ -108,7 +108,7 @@ import '../styles/editorial.css';
     font-weight: 500;
     line-height: 1.35;
     letter-spacing: -0.035em;
-    color: #ACDBFB;
+    color: var(--site-accent);
   }
   .statement-word {
     display: inline-block;
@@ -1189,7 +1189,7 @@ import '../styles/editorial.css';
     }
 
     .section-kicker {
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -1229,9 +1229,9 @@ import '../styles/editorial.css';
 
     .section-link {
       align-items: center;
-      border: 1px solid rgba(172, 219, 251, 0.55);
+      border: 1px solid rgb(var(--site-accent-rgb) / 0.55);
       border-radius: 15px;
-      color: #ACDBFB;
+      color: var(--site-accent);
       display: inline-flex;
       font-family: "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, var(--font-sans-cn), sans-serif;
       font-size: 0.95rem;
@@ -1245,7 +1245,7 @@ import '../styles/editorial.css';
 
     .section-link:hover,
     .section-link:focus-visible {
-      background: #ACDBFB;
+      background: var(--site-accent);
       color: #040A10;
       outline: none;
       transform: translateY(-1px);
@@ -1322,8 +1322,8 @@ import '../styles/editorial.css';
     }
 
     .chronology-progress i::after {
-      background: #ACDBFB;
-      box-shadow: 0 0 14px rgba(172, 219, 251, 0.7);
+      background: var(--site-accent);
+      box-shadow: 0 0 14px rgb(var(--site-accent-rgb) / 0.7);
       content: "";
       inset: 0;
       position: absolute;
@@ -1379,23 +1379,23 @@ import '../styles/editorial.css';
     }
 
     .chronology-path.is-ghost {
-      stroke: rgba(172, 219, 251, 0.045);
+      stroke: rgb(var(--site-accent-rgb) / 0.045);
       stroke-width: 4;
     }
 
     .chronology-path.is-live {
-      filter: drop-shadow(0 0 12px rgba(172, 219, 251, 0.66));
-      stroke: #ACDBFB;
+      filter: drop-shadow(0 0 12px rgb(var(--site-accent-rgb) / 0.66));
+      stroke: var(--site-accent);
       stroke-width: 6;
       transition: none;
     }
 
     .timeline-head {
-      background: #ACDBFB;
+      background: var(--site-accent);
       border-radius: 50%;
       box-shadow:
-        0 0 0 8px rgba(172, 219, 251, 0.1),
-        0 0 28px rgba(172, 219, 251, 0.82);
+        0 0 0 8px rgb(var(--site-accent-rgb) / 0.1),
+        0 0 28px rgb(var(--site-accent-rgb) / 0.82);
       height: 0.72rem;
       left: 50%;
       pointer-events: none;
@@ -1408,7 +1408,7 @@ import '../styles/editorial.css';
 
     .timeline-head::after {
       animation: timelineHeadPulse 1.2s ease-in-out infinite;
-      border: 1px solid rgba(172, 219, 251, 0.7);
+      border: 1px solid rgb(var(--site-accent-rgb) / 0.7);
       border-radius: inherit;
       content: "";
       inset: -0.55rem;
@@ -1429,7 +1429,7 @@ import '../styles/editorial.css';
     /* ---- 引线：把卡片牵回轴上的刻度，长度由脚本按折线起伏算出；
            生长时由 0 沿自身方向撑开（见下方的生长样式块） ---- */
     .timeline-leader {
-      background: linear-gradient(180deg, rgba(172, 219, 251, 0.78), rgba(172, 219, 251, 0.14));
+      background: linear-gradient(180deg, rgb(var(--site-accent-rgb) / 0.78), rgb(var(--site-accent-rgb) / 0.14));
       left: 0;
       position: absolute;
       transform: translateX(-50%);
@@ -1443,14 +1443,14 @@ import '../styles/editorial.css';
     }
 
     .timeline-node[data-card-side="down"] .timeline-leader {
-      background: linear-gradient(0deg, rgba(172, 219, 251, 0.78), rgba(172, 219, 251, 0.14));
+      background: linear-gradient(0deg, rgb(var(--site-accent-rgb) / 0.78), rgb(var(--site-accent-rgb) / 0.14));
       height: var(--leader-length, 3rem);
       top: 0;
     }
 
     /* 引线末端的小横杠，像图表里的引出提示 */
     .timeline-leader::after {
-      background: rgba(172, 219, 251, 0.85);
+      background: rgb(var(--site-accent-rgb) / 0.85);
       content: "";
       height: 1px;
       left: 0;
@@ -1489,7 +1489,7 @@ import '../styles/editorial.css';
 
     .timeline-tick i {
       background: #040A10;
-      border: 2px solid rgba(172, 219, 251, 0.34);
+      border: 2px solid rgb(var(--site-accent-rgb) / 0.34);
       border-radius: 50%;
       display: block;
       height: 0.62rem;
@@ -1545,7 +1545,7 @@ import '../styles/editorial.css';
     .timeline-node-body {
       align-items: start;
       background: rgba(7, 13, 19, 0.94);
-      border: 1px solid rgba(172, 219, 251, 0.22);
+      border: 1px solid rgb(var(--site-accent-rgb) / 0.22);
       border-radius: 14px;
       box-shadow: 0 20px 54px rgba(4, 10, 16, 0.5);
       box-sizing: border-box;
@@ -1579,7 +1579,7 @@ import '../styles/editorial.css';
     }
 
     .timeline-node-body > .timeline-node-meta {
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
       font-weight: 700;
@@ -1640,9 +1640,9 @@ import '../styles/editorial.css';
 
     /* 已生长：刻度与文字转成高亮色（尺寸上的生长交给生长样式块的过渡） */
     .timeline-node.is-active .timeline-tick i {
-      background: #ACDBFB;
-      border-color: #ACDBFB;
-      box-shadow: 0 0 16px rgba(172, 219, 251, 0.55);
+      background: var(--site-accent);
+      border-color: var(--site-accent);
+      box-shadow: 0 0 16px rgb(var(--site-accent-rgb) / 0.55);
     }
 
     .timeline-node.is-active .timeline-tick b {
@@ -1650,7 +1650,7 @@ import '../styles/editorial.css';
     }
 
     .timeline-node.is-active .timeline-tick small {
-      color: rgba(172, 219, 251, 0.7);
+      color: rgb(var(--site-accent-rgb) / 0.7);
     }
 
     /* 当前节点：刻度放大 + 卡片提亮描边 */
@@ -1660,16 +1660,16 @@ import '../styles/editorial.css';
 
     .timeline-node.is-current .timeline-tick i {
       box-shadow:
-        0 0 0 6px rgba(172, 219, 251, 0.12),
-        0 0 26px rgba(172, 219, 251, 0.8);
+        0 0 0 6px rgb(var(--site-accent-rgb) / 0.12),
+        0 0 26px rgb(var(--site-accent-rgb) / 0.8);
       transform: translate(-50%, -50%) scale(1.45);
     }
 
     .timeline-node.is-current .timeline-node-body {
-      border-color: rgba(172, 219, 251, 0.62);
+      border-color: rgb(var(--site-accent-rgb) / 0.62);
       box-shadow:
         0 26px 64px rgba(4, 10, 16, 0.62),
-        0 0 0 1px rgba(172, 219, 251, 0.16);
+        0 0 0 1px rgb(var(--site-accent-rgb) / 0.16);
       opacity: 1;
     }
 
@@ -1910,7 +1910,7 @@ import '../styles/editorial.css';
       }
 
       html[data-theme="light"] .timeline-node-body .timeline-node-meta {
-        color: #2E6A96;
+        color: var(--site-accent);
       }
 
       html[data-theme="light"] .timeline-node.is-current .timeline-node-body {
@@ -1946,12 +1946,12 @@ import '../styles/editorial.css';
       }
 
       html[data-theme="light"] .timeline-node.is-active .timeline-tick small {
-        color: #2E6A96;
+        color: var(--site-accent);
       }
 
       html[data-theme="light"] .timeline-node.is-active .timeline-tick i {
-        background: #2E6A96;
-        border-color: #2E6A96;
+        background: var(--site-accent);
+        border-color: var(--site-accent);
         box-shadow: 0 0 14px rgba(46, 106, 150, 0.42);
       }
 
@@ -1974,7 +1974,7 @@ import '../styles/editorial.css';
 
     .profile-section::before {
       background:
-        linear-gradient(90deg, rgba(172, 219, 251, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(var(--site-accent-rgb) / 0.12) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
       background-size: 84px 84px;
       content: "";
@@ -2036,8 +2036,8 @@ import '../styles/editorial.css';
 
     .profile-copy h2::after {
       animation: profileCursorBlink 1s steps(2, start) infinite;
-      background: #ACDBFB;
-      box-shadow: 0 0 16px rgba(172, 219, 251, 0.8);
+      background: var(--site-accent);
+      box-shadow: 0 0 16px rgb(var(--site-accent-rgb) / 0.8);
       content: "";
       display: inline-block;
       height: 0.12em;
@@ -2062,7 +2062,7 @@ import '../styles/editorial.css';
     }
 
     .profile-brief-list span {
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: 0.72rem;
       font-weight: 700;
@@ -2097,7 +2097,7 @@ import '../styles/editorial.css';
     }
 
     .profile-detail-grid span {
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
       font-weight: 700;
@@ -2134,7 +2134,7 @@ import '../styles/editorial.css';
     }
 
     .profile-mini span {
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: 0.68rem;
       font-weight: 700;
@@ -2150,7 +2150,7 @@ import '../styles/editorial.css';
 
     .profile-mini-link {
       align-self: end;
-      color: #ACDBFB;
+      color: var(--site-accent);
       font-family: var(--font-mono-cn);
       font-size: clamp(0.78rem, 0.95vw, 0.9rem);
       font-weight: 700;
@@ -2167,11 +2167,11 @@ import '../styles/editorial.css';
 
     .profile-model-panel {
       background:
-        linear-gradient(90deg, rgba(172, 219, 251, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(var(--site-accent-rgb) / 0.08) 1px, transparent 1px),
         linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         rgba(4, 10, 16, 0.28);
       background-size: 62px 62px, 62px 62px, auto;
-      border: 1px solid rgba(172, 219, 251, 0.24);
+      border: 1px solid rgb(var(--site-accent-rgb) / 0.24);
       border-radius: 16px;
       height: 100%;
       min-height: 100%;
@@ -2450,7 +2450,7 @@ import '../styles/editorial.css';
       }
 
       .chronology-map {
-        border: 1px solid rgba(172, 219, 251, 0.22);
+        border: 1px solid rgb(var(--site-accent-rgb) / 0.22);
         border-radius: 18px;
         inset: auto;
         min-height: 0;
@@ -2508,7 +2508,7 @@ import '../styles/editorial.css';
 
       .timeline-node-body {
         background: rgba(7, 13, 19, 0.82);
-        border: 1px solid rgba(172, 219, 251, 0.3);
+        border: 1px solid rgb(var(--site-accent-rgb) / 0.3);
         border-radius: 13px;
         bottom: auto !important;
         box-shadow: none;
@@ -2576,9 +2576,9 @@ import '../styles/editorial.css';
 
       /* 卡片左上角的小圆点标记（移动端没有刻度，靠它做视觉锚点） */
       .timeline-node-body::before {
-        background: #ACDBFB;
+        background: var(--site-accent);
         border-radius: 50%;
-        box-shadow: 0 0 14px rgba(172, 219, 251, 0.52);
+        box-shadow: 0 0 14px rgb(var(--site-accent-rgb) / 0.52);
         content: "";
         display: block;
         height: 0.48rem;

@@ -108,7 +108,7 @@ const channels = [
   .signal-pulse { opacity:0; stroke-width:2.5; stroke-dasharray:100 1100; }
   .signal-beam { fill:currentColor; opacity:0; }
   .transmission-status { font-size:11px; line-height:1.5; min-height:1.5em; color:var(--ed-blue); text-align:center; margin:.7rem 0 0; }
-  .signal-feedback { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10060; max-width:calc(100vw - 3rem); width:max-content; background:#acdbfb; color:#040a10; padding:8px 16px; border:1px solid rgba(255,255,255,.2); }
+  .signal-feedback { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10060; max-width:calc(100vw - 3rem); width:max-content; background:var(--ed-blue); color:var(--site-accent-contrast); padding:8px 16px; border:1px solid rgba(255,255,255,.2); }
   .signal-feedback[hidden],.feedback-countdown[hidden] { display:none; }
   .feedback-message { font-size:14px; font-weight:900; line-height:20px; letter-spacing:.1em; text-align:center; white-space:nowrap; }
   @media(min-width:768px) { .signal-feedback { padding:12px 32px; }.feedback-message { font-size:24px; line-height:32px; } }
@@ -116,7 +116,7 @@ const channels = [
   .feedback-countdown>span { font:500 3rem/1 'Helvetica Neue',Arial,sans-serif; font-variant-numeric:tabular-nums; }
   .feedback-countdown small { font:9px monospace; letter-spacing:.15em; }
   .feedback-countdown button { font-size:11px; border:0; border-bottom:1px solid currentColor; background:none; color:inherit; padding:0 0 .15rem; margin-left:1.5rem; cursor:pointer; }
-  :global(html[data-theme="light"]) .signal-feedback,:global(html[data-theme="light"]) .signal-feedback :is(div,span,small,button) { color:#040a10 !important; }
+  :global(html[data-theme="light"]) .signal-feedback,:global(html[data-theme="light"]) .signal-feedback :is(div,span,small,button) { color:var(--site-accent-contrast) !important; }
   @media(max-width:900px) { .terminal { padding-top:7rem; }.contact-intro { margin-top:2rem; }.satellite-stage { width:min(620px,80vw); } }
   @media(max-width:767px) { .channel-card { min-height:112px; padding:16px; }.channel-heading { font-size:12px; line-height:16px; }.channel-icon { width:20px; height:20px; }.channel-copy strong { font-size:14px; line-height:20px; }.channel-address { font-size:11px; line-height:16px; } }
   @media(max-width:600px) { .terminal { padding:6rem 1.5rem 1rem; }.terminal-top { font-size:8px; letter-spacing:.1em; }.terminal-top small { font-size:7px; }.online { font-size:8px; }.contact-intro { margin-top:1.8rem; }.contact-intro h1 { font-size:13px; line-height:1.9; }.terminal-workspace { min-height:0; }.satellite-stage { width:100%; flex:none; height:250px; min-height:0; }.satellite-readout { font-size:7px; bottom:4%; }.channel-bank { grid-template-columns:1fr; gap:.7rem; }.channel { display:grid; grid-template-columns:100px minmax(0,1fr); align-items:center; }.station-visual { height:115px; }.station-visual :global(.station-svg) { width:115px; height:86.25px; }.station-target { top:38%; }.channel[data-channel="wechat"] .station-target { top:36%; }.channel-card { min-height:112px; padding:16px; }.channel-heading { font-size:12px; line-height:16px; gap:12px; }.channel-icon { width:20px; height:20px; }.channel-copy { margin-top:.8rem; }.channel-copy strong { font-size:14px; line-height:20px; }.channel-address { font-size:11px; line-height:16px; }.feedback-countdown>span { font-size:2.5rem; }.feedback-countdown button { margin-left:.6rem; } }

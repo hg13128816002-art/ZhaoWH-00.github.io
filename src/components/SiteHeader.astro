@@ -241,7 +241,7 @@ const startsVisible = !shouldHideAtTop;
     max-width: calc(100vw - 2rem);
     overflow-x: auto;
     scrollbar-width: none;
-    border: 1px solid rgba(172, 219, 251, 0.34);
+    border: 1px solid rgb(var(--site-accent-rgb) / 0.34);
     border-radius: 12px;
     background: rgba(7, 13, 19, 0.62);
     padding: 0.38rem;
@@ -276,9 +276,9 @@ const startsVisible = !shouldHideAtTop;
   .site-nav-link:focus-visible,
   .site-nav-link.is-active {
     color: #040A10;
-    border-color: rgba(172, 219, 251, 0.78);
-    background: #ACDBFB;
-    box-shadow: 0 0 22px rgba(172, 219, 251, 0.22);
+    border-color: rgb(var(--site-accent-rgb) / 0.78);
+    background: var(--site-accent);
+    box-shadow: 0 0 22px rgb(var(--site-accent-rgb) / 0.22);
     outline: none;
     transform: translateY(-1px);
   }
