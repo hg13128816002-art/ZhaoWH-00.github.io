@@ -32,6 +32,7 @@ html[data-theme="light"] { --ed-bg:#fff; --ed-panel:#eef5f9; --ed-ink:#102333; -
 .footer-note { color:var(--ed-muted); font-size:.8rem; line-height:1.8; margin-top:1.5rem; }
 .footer-signature { display:flex; justify-content:space-between; gap:1rem; margin-top:4rem; border-top:1px solid var(--ed-line); padding-top:1.3rem; color:var(--ed-muted); font-size:.65rem; }
 .catalog-page { background:var(--ed-bg); color:var(--ed-ink); }
+.catalog-page .work-card-image { aspect-ratio:16/9; }
 .catalog-intro { padding-bottom:2.5rem; padding-top:9rem; }
 .catalog-intro h1 { font-size:clamp(3.7rem,8vw,7.5rem); font-weight:500; line-height:1.08; letter-spacing:-.07em; margin:0 0 1.8rem; }
 .catalog-intro h1 span { color:var(--ed-muted); font-size:.17em; letter-spacing:.08em; margin-left:1.4rem; vertical-align:middle; }
