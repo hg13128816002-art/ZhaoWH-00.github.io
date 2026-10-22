@@ -8,37 +8,37 @@ import '../styles/editorial.css';
 <Layout
   title="Profile // ZHAO WENHAO"
   lang="zh-CN"
-  bodyClass="min-h-screen w-full bg-[#040A10] text-neutral-100 select-none flex flex-col relative"
+  bodyClass="profile-page min-h-screen w-full bg-[#040A10] text-neutral-100 select-none flex flex-col relative"
   bodyStyle="margin: 0; padding: 0; background-color: #040A10;"
 >
   <canvas id="terminal-grid" class="absolute inset-0 block w-full h-full z-0 pointer-events-none opacity-20"></canvas>
 
   <main class="flex flex-col md:flex-row relative w-full">
-  <div class="w-full md:w-[40%] border-b md:border-b-0 md:border-r border-neutral-800 p-8 md:p-12 flex flex-col justify-between shrink-0 bg-[#090F15] z-20 relative overflow-hidden" style="background-color: #090F15;">
-    <div class="absolute inset-0 z-0 opacity-35 grayscale hover:opacity-85 hover:grayscale-0 transition-all duration-700 pointer-events-auto">
+  <div class="profile-portrait-panel w-full md:w-[40%] border-b md:border-b-0 md:border-r border-neutral-800 p-8 md:p-12 flex flex-col justify-between shrink-0 bg-[#090F15] z-20 relative overflow-hidden" style="background-color: #090F15;">
+    <div class="profile-portrait-image absolute inset-0 z-0 pointer-events-auto">
       <img src="/main-picture.jpg" alt="Zhao Wenhao Portrait" class="w-full h-full object-cover" decoding="async" fetchpriority="high" onerror="this.style.display='none'">
     </div>
 
     <div class="relative z-10 pointer-events-none">
-      <div class="text-[#ACDBFB] text-xs tracking-[0.4em] font-bold">// CYBERNETIC_SHELL</div>
+      <div class="portrait-kicker text-[#ACDBFB] text-xs tracking-[0.4em] font-bold">// CYBERNETIC_SHELL</div>
       <h1 class="text-white text-5xl md:text-7xl font-black tracking-tighter mt-4 leading-none" style="color: #ffffff;">
         <span class="font-black" style="font-weight: 900; letter-spacing: -0.04em;">赵文浩</span><br/>WENHAO
       </h1>
-      <div class="mt-4 inline-block bg-[#040A10] px-3 py-1.5 border border-[#ACDBFB]/40 text-[#ACDBFB] text-xs tracking-widest font-bold" style="color: #ACDBFB; background-color: #040A10;">
+      <div class="portrait-badge mt-4 inline-block bg-[#040A10] px-3 py-1.5 border border-[#ACDBFB]/40 text-[#ACDBFB] text-xs tracking-widest font-bold" style="color: #ACDBFB; background-color: #040A10;">
         [ 男 / 19岁 / 25级本科生 ]
       </div>
     </div>
 
     <div class="relative z-10 space-y-2 my-12 md:my-32 pointer-events-none">
-      <div class="text-neutral-500 text-[10px] tracking-widest uppercase" style="color: #737373;">// ACADEMIC_AFFILIATION:</div>
-      <div class="text-white text-xs md:text-sm font-bold tracking-widest leading-relaxed" style="color: #e5e5e5;">
+      <div class="portrait-caption text-neutral-500 text-[10px] tracking-widest uppercase" style="color: #737373;">// ACADEMIC_AFFILIATION:</div>
+      <div class="portrait-affiliation text-white text-xs md:text-sm font-bold tracking-widest leading-relaxed" style="color: #e5e5e5;">
         北京师范大学珠海校区<br/>
         未来设计学院 // School of Future Design
       </div>
     </div>
 
     <div class="relative z-10 pt-4 pointer-events-auto">
-      <a href="/" class="text-neutral-500 hover:text-[#ACDBFB] text-xs tracking-widest font-bold transition-colors" style="color: #737373;">
+      <a href="/" class="portrait-return text-neutral-500 hover:text-[#ACDBFB] text-xs tracking-widest font-bold transition-colors" style="color: #737373;">
         ← RETURN_HOME
       </a>
     </div>
@@ -203,6 +203,40 @@ import '../styles/editorial.css';
   </script>
 
   <style>
+    :global(body.profile-page::before) {
+      box-shadow: 0 0 0 3rem var(--ed-bg);
+    }
+    .profile-portrait-panel {
+      --site-accent: #acdbfb;
+      --site-accent-rgb: 172 219 251;
+      --site-accent-contrast: #040a10;
+      background-color: #090f15 !important;
+    }
+    .profile-portrait-image img { filter: grayscale(1); transition: filter 700ms ease; }
+    .profile-portrait-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #040a10;
+      opacity: .65;
+      pointer-events: none;
+      transition: opacity 700ms ease;
+    }
+    .profile-portrait-image:hover img { filter: grayscale(0); }
+    .profile-portrait-image:hover::after { opacity: .15; }
+    :global(html[data-theme="light"]) .profile-portrait-panel :is(h1, h1 span) { color: #fff !important; }
+    :global(html[data-theme="light"]) .profile-portrait-panel .portrait-affiliation { color: #e5e5e5 !important; }
+    .profile-portrait-panel .portrait-kicker { color: #acdbfb !important; }
+    .profile-portrait-panel :is(.portrait-caption, .portrait-return) { color: #737373 !important; }
+    .profile-portrait-panel .portrait-return:hover { color: #acdbfb !important; }
+    .profile-portrait-panel .portrait-badge {
+      background-color: #040a10 !important;
+      color: #acdbfb !important;
+      border-color: rgb(172 219 251 / .4) !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .profile-portrait-image img, .profile-portrait-image::after { transition: none; }
+    }
     @keyframes scan {
       0% { top: 0%; opacity: 1; }
       95% { top: 100%; opacity: 1; }
