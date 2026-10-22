@@ -950,10 +950,43 @@ import '../styles/editorial.css';
       // 三者各写一个数字的话很容易错开，模型就会「浮」在网格上方
       const FLOOR_Y = -1.35;
 
-      const grid = new THREE.GridHelper(5.6, 18, 0xacdbfb, 0x1d3a4d);
+      // 用一个平面计算重复网格，远处逐渐淡出；扩展范围不增加线段或网格细分。
+      const gridMaterial = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          gridColor: { value: new THREE.Color(0x5c8aa6) },
+          gridOpacity: { value: 0.22 },
+        },
+        vertexShader: `
+          varying vec3 gridWorldPosition;
+          void main() {
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            gridWorldPosition = worldPosition.xyz;
+            gl_Position = projectionMatrix * viewMatrix * worldPosition;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 gridColor;
+          uniform float gridOpacity;
+          varying vec3 gridWorldPosition;
+          void main() {
+            vec2 cells = gridWorldPosition.xz / 0.32;
+            vec2 footprint = max(fwidth(cells), vec2(0.0001));
+            vec2 lineDistance = abs(fract(cells - 0.5) - 0.5) / footprint;
+            vec2 lines = (1.0 - smoothstep(vec2(0.45), vec2(1.45), lineDistance))
+              * (1.0 - smoothstep(vec2(0.35), vec2(0.85), footprint));
+            float fade = 1.0 - smoothstep(8.0, 28.0, distance(cameraPosition, gridWorldPosition));
+            float alpha = max(lines.x, lines.y) * fade * gridOpacity;
+            gl_FragColor = vec4(gridColor, alpha);
+            #include <colorspace_fragment>
+          }
+        `,
+      });
+      const grid = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), gridMaterial);
+      grid.rotation.x = -Math.PI / 2;
       grid.position.y = FLOOR_Y;
-      grid.material.transparent = true;
-      grid.material.opacity = 0.26;
       scene.add(grid);
 
       // 径向渐变贴图：辉光与接触阴影都用它，省掉后处理管线
@@ -972,8 +1005,7 @@ import '../styles/editorial.css';
         return texture;
       }
 
-      // 模型背后不再有辉光、光晕一类的附加亮斑：整套灯只负责把光打在模型自己身上，
-      // 背景留给面板的网格底纹（与参考图一致——黑底 + 网格，模型之外不发光）。
+      // 灯光只照亮模型，背景保持纯色，网格只出现在脚下的地面。
 
       // 假接触阴影：贴在支架脚下，把模型「按」到地面上（不占一张阴影贴图）
       // 比地面略高 6‰，免得和网格线抢深度；脚底压在这层之上，看着才是踩进阴影里
@@ -1012,6 +1044,9 @@ import '../styles/editorial.css';
       // 模型材质是异步加载的，所以两处都要能重复调用
       function applyLightingTheme() {
         const preset = currentThemeLighting();
+        gridMaterial.uniforms.gridColor.value.set(
+          document.documentElement.dataset.theme === 'light' ? 0x244e6c : 0x5c8aa6
+        );
         renderer.toneMappingExposure = preset.exposure;
         fillLight.intensity = preset.hemisphere;
         keyLight.intensity = preset.key;
@@ -2167,11 +2202,7 @@ import '../styles/editorial.css';
     }
 
     .profile-model-panel {
-      background:
-        linear-gradient(90deg, rgb(var(--site-accent-rgb) / 0.08) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        rgba(4, 10, 16, 0.28);
-      background-size: 62px 62px, 62px 62px, auto;
+      background: #040a10;
       border: 1px solid rgb(var(--site-accent-rgb) / 0.24);
       border-radius: 16px;
       height: 100%;
