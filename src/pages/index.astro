@@ -972,7 +972,7 @@ import '../styles/editorial.css';
           uniform float gridOpacity;
           varying vec3 gridWorldPosition;
           void main() {
-            vec2 cells = gridWorldPosition.xz / 0.32;
+            vec2 cells = gridWorldPosition.xz / 0.52;
             vec2 footprint = max(fwidth(cells), vec2(0.0001));
             vec2 lineDistance = abs(fract(cells - 0.5) - 0.5) / footprint;
             vec2 lines = (1.0 - smoothstep(vec2(0.45), vec2(1.45), lineDistance))
