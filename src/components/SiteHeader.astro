@@ -18,17 +18,14 @@ const isActive = (item: typeof navItems[number]) => item.match === '/works'
   ? ['/works', '/project-detail', '/omni', '/dual'].some(p => currentPath === p || currentPath.startsWith(p + '/'))
   : currentPath === item.match;
 
-const shouldHideAtTop = false;
-const startsVisible = !shouldHideAtTop;
 ---
 
 <header
   class="site-header"
-  data-hide-at-top={shouldHideAtTop ? 'true' : 'false'}
-  data-visible={startsVisible ? 'true' : 'false'}
-  aria-hidden={startsVisible ? 'false' : 'true'}
+  data-visible="true"
+  aria-hidden="false"
   aria-label="Primary navigation"
-  style={startsVisible ? 'opacity: 1; visibility: visible; transform: translate3d(0, 0, 0);' : undefined}
+  style="opacity: 1; visibility: visible; transform: translate3d(0, 0, 0);"
 >
   <nav class="site-nav" aria-label="Main sections">
     {navItems.map((item) => (
@@ -154,6 +151,7 @@ const startsVisible = !shouldHideAtTop;
 
       header.dataset.visible = nextVisibleState;
       header.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+      header.inert = !isVisible;
       header.style.opacity = isVisible ? '1' : '0';
       header.style.transform = isVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, calc(-100% - 0.75rem), 0)';
       if (nav) {
@@ -172,11 +170,37 @@ const startsVisible = !shouldHideAtTop;
       }, 260);
     };
 
+    // 累积同一方向的滚动，过滤触控板微抖与页面边缘的回弹。
+    const getScrollTop = () => Math.max(0, Math.min(
+      window.scrollY || 0,
+      Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+    ));
+    let lastScrollTop = getScrollTop();
+    let directionDistance = 0;
+    const resetHeaderVisibility = () => {
+      if (!siteHeader) return;
+      lastScrollTop = getScrollTop();
+      directionDistance = 0;
+      setHeaderVisibility(siteHeader, true);
+    };
+
     const syncSiteHeaderVisibility = () => {
       if (!siteHeader) return;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      const isVisible = siteHeader.dataset.hideAtTop !== 'true' || scrollTop > 28;
-      setHeaderVisibility(siteHeader, isVisible);
+      const scrollTop = getScrollTop();
+      const delta = scrollTop - lastScrollTop;
+      lastScrollTop = scrollTop;
+
+      if (scrollTop <= 72 || siteHeader.matches(':hover') || siteHeader.contains(document.activeElement)) {
+        directionDistance = 0;
+        setHeaderVisibility(siteHeader, true);
+        return;
+      }
+      if (!delta) return;
+      directionDistance = Math.sign(delta) === Math.sign(directionDistance)
+        ? directionDistance + delta : delta;
+      if (Math.abs(directionDistance) < 12) return;
+      setHeaderVisibility(siteHeader, directionDistance < 0);
+      directionDistance = 0;
     };
 
     let frameId = 0;
@@ -190,11 +214,16 @@ const startsVisible = !shouldHideAtTop;
 
     const syncSiteHeaderRoute = () => {
       syncSiteHeaderActiveState();
-      scheduleSiteHeaderVisibility();
+      resetHeaderVisibility();
     };
 
     syncSiteHeaderActiveState();
-    syncSiteHeaderVisibility();
+    resetHeaderVisibility();
+    // 键盘使用者随时可以重新访问导航，不必先滚动页面。
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') resetHeaderVisibility();
+    });
+    siteHeader?.addEventListener('focusin', resetHeaderVisibility);
     window.addEventListener('hashchange', syncSiteHeaderRoute);
     window.addEventListener('popstate', syncSiteHeaderRoute);
     window.addEventListener('scroll', scheduleSiteHeaderVisibility, { passive: true });
@@ -270,6 +299,10 @@ const startsVisible = !shouldHideAtTop;
     letter-spacing: 0;
     line-height: 1;
     transition: color 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header { transition: none; }
   }
 
   .site-nav-link:hover,
