@@ -167,7 +167,7 @@ const isActive = (item: typeof navItems[number]) => item.match === '/works'
         if (header.dataset.visible === 'false') {
           header.style.visibility = 'hidden';
         }
-      }, 260);
+      }, 360);
     };
 
     // 累积同一方向的滚动，过滤触控板微抖与页面边缘的回弹。
@@ -262,6 +262,10 @@ const isActive = (item: typeof navItems[number]) => item.match === '/works'
     pointer-events: auto;
   }
 
+  .site-header[data-visible="false"] {
+    transition: opacity 300ms ease, transform 360ms cubic-bezier(0.4, 0, 0.2, 1), visibility 0ms linear 360ms;
+  }
+
   .site-nav {
     display: flex;
     align-items: center;
@@ -302,7 +306,7 @@ const isActive = (item: typeof navItems[number]) => item.match === '/works'
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-header { transition: none; }
+    .site-header, .site-header[data-visible="false"] { transition: none; }
   }
 
   .site-nav-link:hover,
