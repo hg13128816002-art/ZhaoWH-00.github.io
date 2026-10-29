@@ -6,7 +6,7 @@ interface ProjectVideo { title: string; src: string; poster: string; }
 export const projectVideos: Partial<Record<string, ProjectVideo[]>> = {
   'flesh-factory': [
     { title: '血肉工厂 / Flesh Factory · 作品视频', src: asset('videos/flesh-factory.mp4'), poster: covers.fleshFactory },
-    { title: '血肉工厂 / Flesh Factory · 技术路径演示', src: asset('videos/flesh-factory-technical-demo.mp4'), poster: asset('images/flesh-factory-01.webp') },
+    { title: '血肉工厂 / Flesh Factory · 技术路径演示', src: asset('videos/flesh-factory-technical-demo.mp4'), poster: asset('posters/flesh-factory-technical-demo.webp') },
   ],
   'never-extinguished': [{
     title: '未曾熄灭的 · 游戏演示',

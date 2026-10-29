@@ -1156,7 +1156,7 @@ const projectImage = (path: string, poster = false) => {
         <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
         <div class="img-container">
           <div class="corner-tl"></div><div class="corner-br"></div>
-          <img {...projectImage('images/flesh-factory-05.webp', true)} alt="血肉工厂：作品主视觉" loading="eager" decoding="async" data-hover-preview class="main-img" />
+          <img {...projectImage('images/flesh-factory-01.webp', true)} alt="血肉工厂：工厂中的服务器与监控设备" loading="eager" decoding="async" data-hover-preview class="main-img" />
         </div>
         <div class="visual-caption"></div>
         <div class="visual-meta">
@@ -1167,8 +1167,8 @@ const projectImage = (path: string, poster = false) => {
         </div>
         <div class="thumb-strip thumb-strip-wide">
           {[
-            ['01', '工厂中的服务器与监控设备'], ['02', '流水线上的血肉机器'],
-            ['03', '从血肉机器中走出的人'], ['04', '血肉机器的喷涂工序'],
+            ['02', '流水线上的血肉机器'], ['03', '从血肉机器中走出的人'],
+            ['04', '血肉机器的喷涂工序'], ['05', '血肉工厂：作品标题画面'],
           ].map(([number,alt]) => <div class="thumb-item">
             <img {...projectImage(`images/flesh-factory-${number}.webp`)} alt={alt} loading="lazy" decoding="async" data-hover-preview />
             <span class="thumb-index">{number}</span>
