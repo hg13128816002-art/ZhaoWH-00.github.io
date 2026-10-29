@@ -24,6 +24,13 @@ const entries: {id: string; source: number; collection: Collection; summary: str
   {id:'landscape', source:9, collection:'visual', summary:'在现场观察中，记录自然的结构、色块与空间关系。', action:'查看原图', actionHref:'/dual#landscape'},
 ];
 export const catalog = [
+  {id:'flesh-factory', classified:false, title:'血肉工厂 / Flesh Factory', titleEn:'Flesh Factory', collection:'film' as Collection,
+    collectionLabel:'影像', era:'AI 影像 / 2026', kind:'video' as const,
+    description:'由骨肉组成的机器在流水线上工作，制造出一条最终替代自身的机械流水线。',
+    summary:'一条血肉流水线制造出机械流水线，并最终被自己的产物替代。',
+    image:covers.fleshFactory, imageAlt:'血肉工厂：血肉机器组成的工业流水线', href:'/works/flesh-factory/',
+    action:undefined, actionHref:undefined,
+  },
   // Follow the committed works list; homepage selections have their own order below.
   ...entries.slice().sort((a, b) => a.source - b.source).map(({source, ...entry}) => ({
     ...works[source], ...entry,
@@ -40,9 +47,9 @@ export const catalog = [
   },
 ];
 export type CatalogWork = typeof catalog[number];
-const mainWorkIds = ['never-extinguished', 'liminal', 'stare-ewsn', 'nazhou-ar', 'miao-generator', 'synesthesia-canvas', 'shadow-shell'];
+const mainWorkIds = ['flesh-factory', 'never-extinguished', 'liminal', 'stare-ewsn', 'nazhou-ar', 'miao-generator', 'synesthesia-canvas', 'shadow-shell'];
 export const mainWorks = mainWorkIds.map(id => catalog.find(work => work.id === id)!);
 export const otherWorks = catalog.filter(work => !mainWorkIds.includes(work.id));
 export const featuredWorks = ['stare-ewsn', 'liminal', 'synesthesia-canvas', 'never-extinguished']
   .map(id => catalog.find(work => work.id === id)!);
-export const detailedIds = ['never-extinguished','liminal','stare-ewsn','nazhou-ar','miao-generator','shadow-shell','synesthesia-canvas'];
+export const detailedIds = ['flesh-factory','never-extinguished','liminal','stare-ewsn','nazhou-ar','miao-generator','shadow-shell','synesthesia-canvas'];

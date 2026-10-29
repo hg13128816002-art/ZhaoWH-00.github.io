@@ -3,6 +3,7 @@
 // 项目详情页：每个项目一个全屏 project-entry（左侧视觉档案 + 右侧解密档案文本）
 import { catalog } from '../data/catalog';
 import { projectVideos } from '../data/project-videos';
+import { fleshFactorySections, fleshFactoryTools, fleshFactoryCredits } from '../data/flesh-factory';
 interface Props { slug: string; }
 const { slug } = Astro.props;
 const work = catalog.find(w => w.id === slug)!;
@@ -1150,6 +1151,57 @@ const projectImage = (path: string, poster = false) => {
       </div>
     </article>)}
 
+    {slug === "flesh-factory" && (<article id="flesh-factory" class="project-entry project-entry-flesh-factory">
+      <div class="left-panel">
+        <div class="left-panel-label">作品图像 / VISUAL NOTES</div>
+        <div class="img-container">
+          <div class="corner-tl"></div><div class="corner-br"></div>
+          <img {...projectImage('images/flesh-factory-05.webp', true)} alt="血肉工厂：作品主视觉" loading="eager" decoding="async" data-hover-preview class="main-img" />
+        </div>
+        <div class="visual-caption"></div>
+        <div class="visual-meta">
+          {[
+            ['FIELD', 'Digital Art'], ['MEDIUM', 'AI Film'],
+            ['THEME', 'Labor / Alienation'], ['DURATION', '02:17'],
+          ].map(([label,value]) => <div class="visual-meta-item"><div class="visual-meta-label">{label}</div><div class="visual-meta-value">{value}</div></div>)}
+        </div>
+        <div class="thumb-strip thumb-strip-wide">
+          {[
+            ['01', '工厂中的服务器与监控设备'], ['02', '流水线上的血肉机器'],
+            ['03', '从血肉机器中走出的人'], ['04', '血肉机器的喷涂工序'],
+          ].map(([number,alt]) => <div class="thumb-item">
+            <img {...projectImage(`images/flesh-factory-${number}.webp`)} alt={alt} loading="lazy" decoding="async" data-hover-preview />
+            <span class="thumb-index">{number}</span>
+          </div>)}
+        </div>
+      </div>
+      <div class="right-panel">
+        <header class="project-introduction">
+          <p class="project-kicker">{work.era}</p>
+          <h1 class="title-main">血肉工厂<br /><span class="flesh-factory-subtitle">Flesh Factory</span></h1>
+          <p class="project-summary">{work.summary}</p>
+        </header>
+        <div class="meta-grid">
+          <div><div class="meta-item-label">年份</div><div class="meta-item-value">2026</div></div>
+          <div><div class="meta-item-label">创作类型</div><div class="meta-item-value green">AI 影像 / 小组创作</div></div>
+          <div class="meta-full-width"><div class="meta-item-label">创作工具</div><div class="meta-item-value">{fleshFactoryTools}</div></div>
+          <div class="meta-full-width"><div class="meta-item-label">我的工作</div><div class="meta-item-value">作品方向与进度管理、图片生成、AI 3D、视频生成、创作报告</div></div>
+        </div>
+        <section>
+          {fleshFactorySections.map(section => <div class="section">
+            <h2 class="section-title">{section.title}</h2>
+            {section.paragraphs.map(paragraph => <p class="section-text">{paragraph}</p>)}
+          </div>)}
+          <div class="section">
+            <details class="flesh-factory-credits">
+              <summary class="section-title">小组分工 / CREDITS</summary>
+              {fleshFactoryCredits.map(([name,role]) => <p class="section-text"><strong>{name}</strong><br />{role}</p>)}
+            </details>
+          </div>
+        </section>
+      </div>
+    </article>)}
+
     {slug === "synesthesia-canvas" && (<article id="synesthesia-canvas" class="project-entry project-entry-synesthesia">
       <div class="left-panel">
         <div class="left-panel-label">VISUAL_DATA // INTERACTIVE_CANVAS</div>
@@ -1469,6 +1521,10 @@ const projectImage = (path: string, poster = false) => {
   .left-panel { background:var(--ed-bg); }
   .right-panel { background:var(--ed-bg); padding-top:2rem; min-height:0; }
   .title-main { font-size:clamp(2.2rem,4.4vw,4.8rem); line-height:1.25; letter-spacing:-.035em; }
+  .flesh-factory-subtitle { font-size:.62em; letter-spacing:.02em; }
+  .project-entry-flesh-factory .section-text + .section-text { margin-top:1rem; }
+  .flesh-factory-credits summary { cursor:pointer; }
+  .flesh-factory-credits:not([open]) summary { margin-bottom:0; }
   .meta-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; padding:1rem 0; margin:1.8rem 0; }
   .meta-item-label { color:var(--ed-muted); letter-spacing:.04em; font-size:.65rem; }
   .section-title { letter-spacing:.03em; font-size:.95rem; }

@@ -8,6 +8,7 @@ import { asset } from './assets';
 
 /** 各作品的主视觉（封面） */
 export const covers = {
+  fleshFactory: asset('images/flesh-factory-05.webp'),
   synesthesia: '/synesthesia-canvas-cover.svg',
   synesthesiaReal: '/synesthesia-canvas-real.png',
   neverExtinguished: asset('images/VR严肃游戏《未曾熄灭的》宣传海报 拷贝.webp'),
