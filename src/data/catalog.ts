@@ -47,7 +47,7 @@ export const catalog = [
   },
 ];
 export type CatalogWork = typeof catalog[number];
-const mainWorkIds = ['flesh-factory', 'never-extinguished', 'liminal', 'stare-ewsn', 'nazhou-ar', 'miao-generator', 'synesthesia-canvas', 'shadow-shell'];
+const mainWorkIds = ['liminal', 'stare-ewsn', 'flesh-factory', 'never-extinguished', 'nazhou-ar', 'miao-generator', 'synesthesia-canvas', 'shadow-shell'];
 export const mainWorks = mainWorkIds.map(id => catalog.find(work => work.id === id)!);
 export const otherWorks = catalog.filter(work => !mainWorkIds.includes(work.id));
 export const featuredWorks = ['stare-ewsn', 'liminal', 'synesthesia-canvas', 'never-extinguished']
