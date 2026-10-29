@@ -18,6 +18,11 @@ export const projectVideos: Partial<Record<string, ProjectVideo[]>> = {
     src: asset('videos/那洲村AR小游戏Demo演示.mp4'),
     poster: covers.nazhou,
   }],
+  'shadow-shell': [{
+    title: '影壳 / Shadow Shell · 作品影像',
+    src: asset('videos/087cb193a217b693444d7e8c3a5074dc.mp4'),
+    poster: covers.shadowShell,
+  }],
   yuan: [{ title: '缘', src: reelVideos.yuan, poster: covers.yuan }],
   'land-temple': [{ title: '清迈良园土地庙微改造', src: reelVideos.landTemple, poster: covers.landTemple }],
 };
