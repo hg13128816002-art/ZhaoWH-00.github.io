@@ -1,12 +1,13 @@
 ---
 import type { CatalogWork } from '../data/catalog';
-interface Props { work: CatalogWork; index?: number; featured?: boolean; headingLevel?: 2 | 3; }
-const { work, index = 0, featured = false, headingLevel = 3 } = Astro.props;
+interface Props { work: CatalogWork; index?: number; featured?: boolean; headingLevel?: 2 | 3; context?: 'listing' | 'related'; }
+const { work, index = 0, featured = false, headingLevel = 3, context = 'listing' } = Astro.props;
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
 const image = work.image.includes('aliyuncs.com') ? `${work.image}?x-oss-process=image/resize,w_960` : work.image;
+const actionLabel = work.classified ? '查看封存档案' : context === 'related' ? '查看相关作品' : '查看详情';
 ---
 <article class:list={['work-card', { 'work-card-featured': featured }]} data-collection={work.collection} data-classified={work.classified}>
-  <a class:list={["work-card-image", {"classified-media":work.classified}]} href={work.href} aria-label={`了解作品：${work.title}`}>
+  <a class:list={["work-card-image", {"classified-media":work.classified}]} href={work.href} aria-label={`${actionLabel}：${work.title}`}>
     <img src={image} alt={work.imageAlt} loading="lazy" decoding="async" />
     {work.classified && <span class="coming-soon">Coming Soon</span>}
     <span class="work-card-number">{String(index + 1).padStart(2, '0')}</span>
@@ -16,6 +17,6 @@ const image = work.image.includes('aliyuncs.com') ? `${work.image}?x-oss-process
     <span class="work-card-type">{work.era}</span>
     <Heading><a href={work.href}>{work.title}</a></Heading>
     <p>{work.summary}</p>
-    <a class="work-card-link" href={work.href}>{work.classified ? "查看封存档案" : "探索作品"} <span aria-hidden="true">↗</span></a>
+    <a class="work-card-link" href={work.href} aria-label={`${actionLabel}：${work.title}`}>{actionLabel} <span aria-hidden="true">↗</span></a>
   </div>
 </article>

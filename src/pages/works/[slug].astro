@@ -24,7 +24,7 @@ const related = [...catalog.filter(w=>w.id !== work.id && w.collection === work.
   <WorkVideos workId={work.id} />
   <section class="editorial-section" aria-labelledby="related-title">
     <div class="editorial-heading"><div><p class="eyebrow">KEEP EXPLORING</p><h2 id="related-title">沿着兴趣，继续看。</h2></div><a class="work-card-link" href="/works/">全部作品 ↗</a></div>
-    <div class="catalog-grid">{related.map((item,index)=><WorkCard work={item} index={index}/>)}</div>
+    <div class="catalog-grid">{related.map((item,index)=><WorkCard work={item} index={index} context="related"/>)}</div>
   </section>
   <ConversationFooter />
 </Layout>
